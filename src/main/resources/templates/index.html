@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
+    <meta name="description" content="LisenUp! It's Your Feedback">
     <meta name="author" content="">
     <link rel="icon" href="favicon.ico">
 
-    <title>LisenUp: Delivers Your Feedback</title>
+    <title>LisenUp! It's Your Feedback</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <link href="assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
@@ -37,23 +37,35 @@
 
           <div class="masthead clearfix">
             <div class="inner">
-              <h3 class="masthead-brand">LisenUp</h3>
+              <!-- <h3 class="masthead-brand">LisenUp</h3> -->
+				<a class="navbar-brand" href="http://lisenup.com"><img src="assets/img/LisenUp-logo-home-page.png" alt="LisenUp"></a>
               <nav>
                 <ul class="nav masthead-nav">
                   <li class="active"><a href="#">Home</a></li>
-                  <li><a href="#">Features</a></li>
-                  <li><a href="#">Contact</a></li>
+<!--                   <li><a href="#">Features</a></li>
+                  <li><a href="#">Contact</a></li> -->
                 </ul>
               </nav>
             </div>
           </div>
 
           <div class="inner cover">
-            <h1 class="cover-heading">LisenUp:</h1>
-            <p class="lead">Delivers Your Feedback.</p>
+            <h1 class="cover-heading">LisenUp!</h1>
+            <p class="lead">It's Your Feedback</p>
             <p class="lead">
-              <a href="#" class="btn btn-lg btn-default">Learn more</a>
+              <a class="btn btn-lg btn-default" role="button" data-toggle="collapse" href="#learnMore" aria-expanded="false" aria-controls="learnMore">Learn more</a>
             </p>
+
+			<div class="collapse" id="learnMore">
+			  <div class="well" id="about-lisenup">
+				<p>LisenUp is an anonymous feedback engine.</p>				
+				<p>Have you even prepared a meal and then asked someone if they liked it?  Do you think the answer you got was genuine?  Probably not ;)  Because the person giving you this untruthful answer didn't want to hurt your feelings.  In their mind, they were doing you a favor!  However, in reality, they were doing you a huge disservice - because now, that mediocre meal became your baseline.</p>
+				<p>LisenUp fixes this problem by never revealing the identity of your reviewer - giving them complete anonymity.  So now, instead of asking someone what they think on the spot, just give them a link to your LisenUp feedback page.  Then, this person will give you an honest feedback, at a later moment, when they had time to really think about it and are not concerned with hurting your feelings.</p>
+				<p>LisenUp is currently in private beta.  To get notified when we launch please subscribe to our mailing list:</p> 
+				<a class="btn btn-lg btn-primary" role="button" href="http://eepurl.com/cE8PY5"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Subscribe!</a>
+			  </div>
+			</div>
+
           </div>
 
           <div class="mastfoot">
@@ -73,7 +85,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="assets/js/vendor/jquery.min.js"><\/script>')</script>
-    <script src="dist/js/bootstrap.min.js"></script>
+    <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="assets/js/ie10-viewport-bug-workaround.js"></script>
   </body>

@@ -62,6 +62,16 @@ body {
 /*
  * Header
  */
+ 
+ .navbar-brand {
+  padding: 0px;
+}
+.navbar-brand>img {
+  height: 100%;
+  /* padding: 15px; */
+  width: auto;
+}
+
 .masthead-brand {
   margin-top: 10px;
   margin-bottom: 10px;
@@ -117,6 +127,9 @@ body {
   font-weight: bold;
 }
 
+#about-lisenup {
+	color: #333;
+}
 
 /*
  * Footer
