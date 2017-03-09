@@ -1,10 +1,5 @@
 package com.lisenup.web.portal;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import javax.validation.constraints.Null;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
