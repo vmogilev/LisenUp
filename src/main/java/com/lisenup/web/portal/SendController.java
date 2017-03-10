@@ -39,7 +39,6 @@ public class SendController {
 			throw new GroupNotFoundException(groupSlug);
 		}
 		
-		
 		model.addAttribute("toId", toId);
 		model.addAttribute("email", user.getUaEmail());
 		model.addAttribute("groupName", userGroup.getUgaName());
