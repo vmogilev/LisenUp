@@ -1,4 +1,4 @@
-package com.lisenup.web.portal;
+package com.lisenup.web.portal.models;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -36,6 +36,9 @@ public class UserGroup {
 
 	@NotNull
 	private String ugaSlug;
+	
+	@NotNull
+	private boolean ugaActive;
 
 	// default constructor needed for hibernate
 	public UserGroup() { }
@@ -75,5 +78,13 @@ public class UserGroup {
 		this.modifiedBy = MODIFIED_BY;
 	}
 
+	public boolean isUgaActive() {
+		return ugaActive;
+	}
+
+	public void setUgaActive(boolean ugaActive) {
+		this.ugaActive = ugaActive;
+		this.modifiedBy = MODIFIED_BY;
+	}
 
 }

@@ -1,4 +1,4 @@
-package com.lisenup.web.portal;
+package com.lisenup.web.portal.models;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

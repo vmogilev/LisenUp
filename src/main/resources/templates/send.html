@@ -1,11 +1,11 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="'Sending Feedback To: ' + ${toId}"></title>
+    <title th:text="'Sending Feedback To: ' + ${user.uaFirstname}"></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-	<p th:text="'Group Name: ' + ${groupName}"></p>
-    <p th:text="'Sending message to: ' + ${toId} + ': ' + ${email} + '!'"></p>
+	<p th:text="'Group Name: ' + ${group.ugaName}"></p>
+    <p th:text="'Sending message to: ' + ${user.uaFirstname} + ': ' + ${user.uaEmail} + '!'"></p>
 </body>
 </html>

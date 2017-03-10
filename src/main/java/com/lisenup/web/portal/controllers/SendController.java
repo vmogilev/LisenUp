@@ -1,4 +1,4 @@
-package com.lisenup.web.portal;
+package com.lisenup.web.portal.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -7,8 +7,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.lisenup.web.exceptions.GroupNotFoundException;
-import com.lisenup.web.exceptions.UserNotFoundException;
+import com.lisenup.web.portal.exceptions.GroupNotFoundException;
+import com.lisenup.web.portal.exceptions.UserNotFoundException;
+import com.lisenup.web.portal.models.User;
+import com.lisenup.web.portal.models.UserGroup;
+import com.lisenup.web.portal.models.UserGroupRepository;
+import com.lisenup.web.portal.models.UserRepository;
 
 @Controller
 public class SendController {
@@ -29,19 +33,17 @@ public class SendController {
 			Model model) {
 		
 		User user = userRepository.findByUaUsername(toId);
-		UserGroup userGroup = userGroupRepository.findByUgaSlug(groupSlug);
-		
 		if (user == null || !user.isUaActive()) {
 			throw new UserNotFoundException(toId);
 		}
 		
-		if (userGroup == null) {
+		UserGroup userGroup = userGroupRepository.findByUaIdAndUgaSlug(user.getUaId(), groupSlug);
+		if (userGroup == null || !userGroup.isUgaActive()) {
 			throw new GroupNotFoundException(groupSlug);
 		}
 		
-		model.addAttribute("toId", toId);
-		model.addAttribute("email", user.getUaEmail());
-		model.addAttribute("groupName", userGroup.getUgaName());
+		model.addAttribute("user", user);
+		model.addAttribute("group", userGroup);
 		return "send";
 	}
 	

@@ -1,4 +1,4 @@
-package com.lisenup.web.portal;
+package com.lisenup.web.portal.models;
 
 import javax.transaction.Transactional;
 

@@ -1,4 +1,4 @@
-package com.lisenup.web.portal;
+package com.lisenup.web.portal.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
