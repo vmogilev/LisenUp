@@ -1,0 +1,17 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="'Sending Feedback To: ' + ${user.uaFirstname}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <p th:text="'Sending message to: ' + ${user.uaFirstname}"></p>
+	<p th:text="${group.ugaName}"></p>
+	<p th:text="${group.ugaDesc}"></p>
+
+    <ol th:each="question : ${questions}">
+    	<li><a th:href="@{/{usr}/{grp}/{q}(usr=${user.uaUsername},grp=${group.ugaSlug},q=${question.gqaId})}" th:text="${question.gqaTitle}">Question Title</a></li>
+    </ol>
+
+</body>
+</html>

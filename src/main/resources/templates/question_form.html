@@ -5,7 +5,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-	<p th:text="'Group Name: ' + ${group.ugaName}"></p>
-    <p th:text="'Sending message to: ' + ${user.uaFirstname} + ': ' + ${user.uaEmail} + '!'"></p>
+	<p th:text="'Sending message to: ' + ${user.uaFirstname}"></p>
+	<p th:text="${group.ugaName} + ': ' + ${question.gqaTitle}"></p>
+    
+	<div th:text="${question.gqaText}">Question Text</div>
+
 </body>
 </html>

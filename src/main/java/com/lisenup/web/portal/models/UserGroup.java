@@ -9,11 +9,10 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "user_groups_all")
-
 public class UserGroup {
 
-	public static final String CREATED_BY = "PORTAL_USERGROUP_CLASS";
-	public static final String MODIFIED_BY = "PORTAL_USERGROUP_CLASS";
+	public static final String CREATED_BY = "PORTAL_USER_GROUP_CLASS";
+	public static final String MODIFIED_BY = "PORTAL_USER_GROUP_CLASS";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

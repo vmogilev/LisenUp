@@ -403,3 +403,347 @@ commit
 Query OK, 0 rows affected (0.00 sec)
 
 mysql> notee
+mysql> source LisenUp_ddl_all.sql
+--------------
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES'
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+CREATE SCHEMA IF NOT EXISTS `lisenupdb` DEFAULT CHARACTER SET utf8
+--------------
+
+Query OK, 1 row affected, 1 warning (0.00 sec)
+
+Note (Code 1007): Can't create database 'lisenupdb'; database exists
+Database changed
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`users_all`
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`users_all` (
+  `ua_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `modified_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_by` VARCHAR(30) NOT NULL,
+  `ua_username` VARCHAR(30) NOT NULL,
+  `ua_firstname` VARCHAR(45) NOT NULL,
+  `ua_lastname` VARCHAR(45) NOT NULL,
+  `ua_email` VARCHAR(254) NOT NULL,
+  `ua_password` VARCHAR(256) NOT NULL,
+  `ua_active` TINYINT(1) NOT NULL,
+  PRIMARY KEY (`ua_id`),
+  UNIQUE INDEX `ua_uk1` (`ua_username` ASC),
+  UNIQUE INDEX `ua_uk2` (`ua_email` ASC))
+--------------
+
+Query OK, 0 rows affected (0.01 sec)
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`user_groups_all`
+--------------
+
+Query OK, 0 rows affected (0.01 sec)
+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`user_groups_all` (
+  `uga_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ua_id` INT UNSIGNED NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `modified_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_by` VARCHAR(30) NOT NULL,
+  `uga_name` VARCHAR(45) NOT NULL,
+  `uga_desc` VARCHAR(256) NOT NULL,
+  `uga_slug` VARCHAR(19) NOT NULL,
+  `uga_active` TINYINT(1) NOT NULL,
+  PRIMARY KEY (`uga_id`),
+  INDEX `uga_ua_fk_idx` (`ua_id` ASC),
+  UNIQUE INDEX `uga_uk1` (`ua_id` ASC, `uga_slug` ASC),
+  CONSTRAINT `uga_ua_fk`
+    FOREIGN KEY (`ua_id`)
+    REFERENCES `lisenupdb`.`users_all` (`ua_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+--------------
+
+Query OK, 0 rows affected (0.01 sec)
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`group_questions_all`
+--------------
+
+Query OK, 0 rows affected (0.01 sec)
+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`group_questions_all` (
+  `gqa_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uga_id` INT UNSIGNED NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `modified_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_by` VARCHAR(30) NOT NULL,
+  `gqa_title` VARCHAR(45) NOT NULL,
+  `gqa_text` TEXT NOT NULL,
+  `gqa_active` TINYINT(1) NOT NULL,
+  PRIMARY KEY (`gqa_id`),
+  INDEX `gqa_uga_fk_idx` (`uga_id` ASC),
+  CONSTRAINT `gqa_uga_fk`
+    FOREIGN KEY (`uga_id`)
+    REFERENCES `lisenupdb`.`user_groups_all` (`uga_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`question_feedback_all`
+--------------
+
+Query OK, 0 rows affected (0.01 sec)
+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`question_feedback_all` (
+  `qfa_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `gqa_id` INT UNSIGNED NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `modified_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_by` VARCHAR(30) NOT NULL,
+  `qfa_ip_addr` VARCHAR(39) NOT NULL,
+  `qfa_text` TEXT NOT NULL,
+  PRIMARY KEY (`qfa_id`),
+  INDEX `qfa_gqa_fk_idx` (`gqa_id` ASC),
+  CONSTRAINT `qfa_gqa_fk`
+    FOREIGN KEY (`gqa_id`)
+    REFERENCES `lisenupdb`.`group_questions_all` (`gqa_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+--------------
+
+Query OK, 0 rows affected (0.02 sec)
+
+--------------
+SET SQL_MODE=@OLD_SQL_MODE
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS
+--------------
+
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> source seed_data.sql
+--------------
+insert into lisenupdb.users_all (
+  ua_id,
+  created_by,
+  modified_by,
+  ua_username,
+  ua_firstname,
+  ua_lastname,
+  ua_email,
+  ua_password,
+  ua_active)
+values (
+    1,
+    'VMOGILEV',
+    'VMOGILEV',
+    'mve',
+    'Vitaliy',
+    'Mogilevskiy',
+    'admin@lisenup.com',
+    'junk',
+    1)
+--------------
+
+Query OK, 1 row affected (0.00 sec)
+
+--------------
+insert into lisenupdb.user_groups_all (
+  uga_id,
+  ua_id,
+  created_by,
+  modified_by,
+  uga_name,
+  uga_desc,
+  uga_slug,
+  uga_active)
+values (
+    1,
+    1,
+    'VMOGILEV',
+    'VMOGILEV',
+    'LinkedIn Colleagues',
+    'You are my LinkedIn colleague and I value your feedback on the following questions:',
+    'LinkedIn',
+    1)
+--------------
+
+Query OK, 1 row affected (0.00 sec)
+
+--------------
+insert into lisenupdb.group_questions_all (
+  gqa_id,
+  uga_id,
+  created_by,
+  modified_by,
+  gqa_title,
+  gqa_text,
+  gqa_active)
+values (
+    1,
+    1,
+    'VMOGILEV',
+    'VMOGILEV',
+    'What could I have done better?',
+    'If you ever wanted to give me a constructive criticism - now is your chance.  What could I have done better?',
+    1
+)
+--------------
+
+Query OK, 1 row affected (0.00 sec)
+
+--------------
+insert into lisenupdb.group_questions_all (
+  gqa_id,
+  uga_id,
+  created_by,
+  modified_by,
+  gqa_title,
+  gqa_text)
+values (
+    2,
+    1,
+    'VMOGILEV',
+    'VMOGILEV',
+    'Would you work with me again?',
+    'Given another oportunity, would you work with me again?',
+    1
+)
+--------------
+
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+mysql> source seed_data.sql
+--------------
+insert into lisenupdb.users_all (
+  ua_id,
+  created_by,
+  modified_by,
+  ua_username,
+  ua_firstname,
+  ua_lastname,
+  ua_email,
+  ua_password,
+  ua_active)
+values (
+    1,
+    'VMOGILEV',
+    'VMOGILEV',
+    'mve',
+    'Vitaliy',
+    'Mogilevskiy',
+    'admin@lisenup.com',
+    'junk',
+    1)
+--------------
+
+ERROR 1062 (23000): Duplicate entry '1' for key 'PRIMARY'
+--------------
+insert into lisenupdb.user_groups_all (
+  uga_id,
+  ua_id,
+  created_by,
+  modified_by,
+  uga_name,
+  uga_desc,
+  uga_slug,
+  uga_active)
+values (
+    1,
+    1,
+    'VMOGILEV',
+    'VMOGILEV',
+    'LinkedIn Colleagues',
+    'You are my LinkedIn colleague and I value your feedback on the following questions:',
+    'LinkedIn',
+    1)
+--------------
+
+ERROR 1062 (23000): Duplicate entry '1' for key 'PRIMARY'
+--------------
+insert into lisenupdb.group_questions_all (
+  gqa_id,
+  uga_id,
+  created_by,
+  modified_by,
+  gqa_title,
+  gqa_text,
+  gqa_active)
+values (
+    1,
+    1,
+    'VMOGILEV',
+    'VMOGILEV',
+    'What could I have done better?',
+    'If you ever wanted to give me a constructive criticism - now is your chance.  What could I have done better?',
+    1
+)
+--------------
+
+ERROR 1062 (23000): Duplicate entry '1' for key 'PRIMARY'
+--------------
+insert into lisenupdb.group_questions_all (
+  gqa_id,
+  uga_id,
+  created_by,
+  modified_by,
+  gqa_title,
+  gqa_text,
+  gqa_active)
+values (
+    2,
+    1,
+    'VMOGILEV',
+    'VMOGILEV',
+    'Would you work with me again?',
+    'Given another oportunity, would you work with me again?',
+    1
+)
+--------------
+
+Query OK, 1 row affected (0.00 sec)
+
+mysql> commit;
+--------------
+commit
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
