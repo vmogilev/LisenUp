@@ -35,42 +35,42 @@ values (
     'VMOGILEV',
     'VMOGILEV',
     'LinkedIn Colleagues!',
-    'Please answer the following question(s):',
+    'I value your candid feedback - fire away.',
     'LinkedIn',
     1);
 
-insert into lisenupdb.group_questions_all (
-  gqa_id,
+insert into lisenupdb.group_topics_all (
+  gta_id,
   uga_id,
   created_by,
   modified_by,
-  gqa_title,
-  gqa_text,
-  gqa_active)
+  gta_title,
+  gta_text,
+  gta_active)
 values (
     1,
     1,
     'VMOGILEV',
     'VMOGILEV',
-    'What could I have done better?',
-    'If you ever wanted to give me a constructive criticism - now is your chance.  What could I have done better?',
+    'Constructive Criticism',
+    'If you ever wanted to give me a constructive criticism - now is your chance to provide your candid feedback.',
     1
 );
 
-insert into lisenupdb.group_questions_all (
-  gqa_id,
+insert into lisenupdb.group_topics_all (
+  gta_id,
   uga_id,
   created_by,
   modified_by,
-  gqa_title,
-  gqa_text,
-  gqa_active)
+  gta_title,
+  gta_text,
+  gta_active)
 values (
     2,
     1,
     'VMOGILEV',
     'VMOGILEV',
-    'Would you work with me again?',
-    'Given another oportunity, would you work with me again?',
+    'Vitaliy Is Know For ...',
+    'If someone asked you what is Vitaliy known for?  What is the one thing that comes to your mind?  No bullshit please!',
     1
 );

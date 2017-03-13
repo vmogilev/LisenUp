@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.lisenup.web.portal.exceptions.GroupNotFoundException;
-import com.lisenup.web.portal.exceptions.QuestionNotFoundException;
+import com.lisenup.web.portal.exceptions.TopicNotFoundException;
 import com.lisenup.web.portal.exceptions.UserNotFoundException;
-import com.lisenup.web.portal.models.GroupQuestion;
-import com.lisenup.web.portal.models.GroupQuestionRepository;
+import com.lisenup.web.portal.models.GroupTopic;
+import com.lisenup.web.portal.models.GroupTopicRepository;
 import com.lisenup.web.portal.models.User;
 import com.lisenup.web.portal.models.UserGroup;
 import com.lisenup.web.portal.models.UserGroupRepository;
@@ -29,30 +29,30 @@ public class SendController {
 	private UserGroupRepository userGroupRepository;
 	
 	@Autowired
-	private GroupQuestionRepository groupQuestionRepository;
+	private GroupTopicRepository groupTopicRepository;
 
 	// RegEx only allows letters, numbers, '-' and '_'
 	@RequestMapping(
-			value = "/{toId:[A-Za-z0-9\\-\\_]+}/{groupSlug:[A-Za-z0-9\\-\\_]+}/{qId:[0-9]+}", 
+			value = "/{toId:[A-Za-z0-9\\-\\_]+}/{groupSlug:[A-Za-z0-9\\-\\_]+}/{tId:[0-9]+}", 
 			method = RequestMethod.GET)
-	public String questionForm(
+	public String topicForm(
 			@PathVariable("toId") String toId, 
 			@PathVariable("groupSlug") String groupSlug,
-			@PathVariable("qId") Long qId,
+			@PathVariable("tId") Long tId,
 			Model model) {
 		
 		User user = findUser(toId);
 		UserGroup userGroup = findGroup(groupSlug, user);
 		
-		GroupQuestion question = groupQuestionRepository.findByGqaIdAndGqaActive(qId, true);
-		if (question == null) {
-			throw new QuestionNotFoundException(qId);
+		GroupTopic topic = groupTopicRepository.findByGtaIdAndGtaActive(tId, true);
+		if (topic == null) {
+			throw new TopicNotFoundException(tId);
 		}
 
 		model.addAttribute("user", user);
 		model.addAttribute("group", userGroup);
-		model.addAttribute("question", question);
-		return "question_form";
+		model.addAttribute("topic", topic);
+		return "topic_form";
 	}
 	
 	// RegEx only allows letters, numbers, '-' and '_'
@@ -67,11 +67,11 @@ public class SendController {
 		User user = findUser(toId);
 		UserGroup userGroup = findGroup(groupSlug, user);
 		
-		List<GroupQuestion> questions = groupQuestionRepository.findByUgaIdAndGqaActive(userGroup.getUgaId(), true);
+		List<GroupTopic> topics = groupTopicRepository.findByUgaIdAndGtaActive(userGroup.getUgaId(), true);
 		
 		model.addAttribute("user", user);
 		model.addAttribute("group", userGroup);
-		model.addAttribute("questions", questions);
+		model.addAttribute("topics", topics);
 		return "user_group";
 	}
 

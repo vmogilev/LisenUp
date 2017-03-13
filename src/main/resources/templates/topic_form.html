@@ -6,9 +6,9 @@
 </head>
 <body>
 	<p th:text="'Sending message to: ' + ${user.uaFirstname}"></p>
-	<p th:text="${group.ugaName} + ': ' + ${question.gqaTitle}"></p>
+	<p th:text="${group.ugaName} + ': ' + ${topic.gtaTitle}"></p>
     
-	<div th:text="${question.gqaText}">Question Text</div>
+	<div th:text="${topic.gtaText}">Topic Text</div>
 
 </body>
 </html>

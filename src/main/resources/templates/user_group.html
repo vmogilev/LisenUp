@@ -10,7 +10,7 @@
 	<p th:text="${group.ugaDesc}"></p>
 
     <ol>
-    	<li th:each="question : ${questions}"><a th:href="@{/{usr}/{grp}/{q}(usr=${user.uaUsername},grp=${group.ugaSlug},q=${question.gqaId})}" th:text="${question.gqaTitle}">Question Title</a></li>
+    	<li th:each="topic : ${topics}"><a th:href="@{/{usr}/{grp}/{q}(usr=${user.uaUsername},grp=${group.ugaSlug},q=${topic.gtaId})}" th:text="${topic.gtaTitle}">Topic Title</a></li>
     </ol>
 
 </body>
