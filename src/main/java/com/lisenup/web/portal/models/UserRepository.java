@@ -2,10 +2,10 @@ package com.lisenup.web.portal.models;
 
 import javax.transaction.Transactional;
 
-import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.CrudRepository;
 
 @Transactional
-public interface UserRepository extends Repository<User, Long> {
+public interface UserRepository extends CrudRepository<User, Long> {
 
 	public User findByUaUsername(String username);
 }

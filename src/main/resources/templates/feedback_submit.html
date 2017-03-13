@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="'Feedback Sent To: ' + ${user.uaFirstname}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<p th:text="'Your Feedback Was Sent To: ' + ${user.uaFirstname}"></p>
+	<p th:text="${group.ugaName} + ': ' + ${topic.gtaTitle}"></p>
+    
+	<div th:text="${topic.gtaText}">Topic</div>
+	<div th:text="${feedback.tfaId}">Id</div>
+	<div th:text="${feedback.tfaText}">Feedback</div>
+	
+	
+
+</body>
+</html>

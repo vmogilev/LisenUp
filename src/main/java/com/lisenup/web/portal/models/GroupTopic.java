@@ -47,6 +47,14 @@ public class GroupTopic {
 		return ugaId;
 	}
 
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
 	public String getGtaTitle() {
 		return gtaTitle;
 	}

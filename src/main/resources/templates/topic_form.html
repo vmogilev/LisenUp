@@ -9,6 +9,13 @@
 	<p th:text="${group.ugaName} + ': ' + ${topic.gtaTitle}"></p>
     
 	<div th:text="${topic.gtaText}">Topic Text</div>
+	
+    <form action="#" th:action="@{/feedback}" th:object="${feedback}" method="post">
+    	<p>Topic Id: <input type="text" th:field="*{gtaId}" /></p>
+        <p>Feedback: <input type="text" th:field="*{tfaText}" /></p>
+        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+    </form>
+
 
 </body>
 </html>

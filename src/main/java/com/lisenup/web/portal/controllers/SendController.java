@@ -2,10 +2,14 @@ package com.lisenup.web.portal.controllers;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -14,6 +18,8 @@ import com.lisenup.web.portal.exceptions.TopicNotFoundException;
 import com.lisenup.web.portal.exceptions.UserNotFoundException;
 import com.lisenup.web.portal.models.GroupTopic;
 import com.lisenup.web.portal.models.GroupTopicRepository;
+import com.lisenup.web.portal.models.TopicFeedback;
+import com.lisenup.web.portal.models.TopicFeedbackRepository;
 import com.lisenup.web.portal.models.User;
 import com.lisenup.web.portal.models.UserGroup;
 import com.lisenup.web.portal.models.UserGroupRepository;
@@ -30,25 +36,52 @@ public class SendController {
 	
 	@Autowired
 	private GroupTopicRepository groupTopicRepository;
+	
+	@Autowired
+	private TopicFeedbackRepository topicFeedbackRepository;
+	
+	@PostMapping("/feedback")
+	//public String feedbackSubmit(HttpServletRequest request, Model model) {
+	public String feedbackSubmit(@ModelAttribute TopicFeedback feedback, HttpServletRequest request, Model model) {
+		
+		//String toId = request.getParameter("to_id");
+		//String topicId = request.getParameter("topic_id");
+		
+		feedback.setTfaIpAddr(request.getRemoteAddr());
+		topicFeedbackRepository.save(feedback);
+		
+		GroupTopic topic = groupTopicRepository.findByGtaIdAndGtaActive(feedback.getGtaId(), true);
+		UserGroup userGroup = userGroupRepository.findOne(topic.getUgaId());
+		User user = userRepository.findOne(userGroup.getUaId());
+
+		model.addAttribute("user", user);
+		model.addAttribute("group", userGroup);
+		model.addAttribute("topic", topic);
+		model.addAttribute("feedback", feedback);
+
+		return "feedback_submit";
+		
+	}
 
 	// RegEx only allows letters, numbers, '-' and '_'
 	@RequestMapping(
-			value = "/{toId:[A-Za-z0-9\\-\\_]+}/{groupSlug:[A-Za-z0-9\\-\\_]+}/{tId:[0-9]+}", 
+			value = "/{toId:[A-Za-z0-9\\-\\_]+}/{groupSlug:[A-Za-z0-9\\-\\_]+}/{topicId:[0-9]+}", 
 			method = RequestMethod.GET)
 	public String topicForm(
 			@PathVariable("toId") String toId, 
 			@PathVariable("groupSlug") String groupSlug,
-			@PathVariable("tId") Long tId,
+			@PathVariable("topicId") Long topicId,
 			Model model) {
 		
 		User user = findUser(toId);
 		UserGroup userGroup = findGroup(groupSlug, user);
 		
-		GroupTopic topic = groupTopicRepository.findByGtaIdAndGtaActive(tId, true);
+		GroupTopic topic = groupTopicRepository.findByGtaIdAndGtaActive(topicId, true);
 		if (topic == null) {
-			throw new TopicNotFoundException(tId);
+			throw new TopicNotFoundException(topicId);
 		}
 
+		model.addAttribute("feedback", new TopicFeedback(topicId));
 		model.addAttribute("user", user);
 		model.addAttribute("group", userGroup);
 		model.addAttribute("topic", topic);
