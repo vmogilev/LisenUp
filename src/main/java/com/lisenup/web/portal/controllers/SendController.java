@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.lisenup.web.portal.exceptions.EmptyFeedbackException;
 import com.lisenup.web.portal.exceptions.GroupNotFoundException;
 import com.lisenup.web.portal.exceptions.TopicNotFoundException;
 import com.lisenup.web.portal.exceptions.UserNotFoundException;
@@ -46,6 +47,10 @@ public class SendController {
 		
 		//String toId = request.getParameter("to_id");
 		//String topicId = request.getParameter("topic_id");
+		
+		if (feedback.getTfaText() == "") {
+			throw new EmptyFeedbackException();
+		}
 		
 		feedback.setTfaIpAddr(request.getRemoteAddr());
 		topicFeedbackRepository.save(feedback);

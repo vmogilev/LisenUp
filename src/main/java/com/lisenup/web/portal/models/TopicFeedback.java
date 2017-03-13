@@ -45,7 +45,6 @@ public class TopicFeedback {
 		this.modifiedBy = MODIFIED_BY;
 	}
 	
-
 	public long getTfaId() {
 		return tfaId;
 	}
