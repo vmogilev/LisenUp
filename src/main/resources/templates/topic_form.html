@@ -12,7 +12,10 @@
 	
     <form action="#" th:action="@{/feedback}" th:object="${feedback}" method="post">
     	<p>Topic Id: <input type="text" th:field="*{gtaId}" /></p>
-        <p>Feedback: <input type="text" th:field="*{tfaText}" /></p>
+        <p>Feedback: <textarea th:field="*{tfaText}"></textarea></p>
+        <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
+        <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
+        <input id="orig_gtaId" name="orig_gtaId" type="hidden" th:value="${topic.gtaId}" />
         <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
     </form>
 

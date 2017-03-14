@@ -7,11 +7,13 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lisenup.web.portal.exceptions.EmptyFeedbackException;
 import com.lisenup.web.portal.exceptions.GroupNotFoundException;
@@ -42,13 +44,15 @@ public class SendController {
 	private TopicFeedbackRepository topicFeedbackRepository;
 	
 	@PostMapping("/feedback")
-	//public String feedbackSubmit(HttpServletRequest request, Model model) {
-	public String feedbackSubmit(@ModelAttribute TopicFeedback feedback, HttpServletRequest request, Model model) {
-		
-		//String toId = request.getParameter("to_id");
-		//String topicId = request.getParameter("topic_id");
-		
-		if (feedback.getTfaText() == "") {
+	public String feedbackSubmit(
+			@ModelAttribute TopicFeedback feedback,
+			@RequestParam("orig_uaId") long orig_uaId,
+			@RequestParam("orig_ugaId") long orig_ugaId,
+			@RequestParam("orig_gtaId") long orig_gtaId,
+			HttpServletRequest request, 
+			Model model) {
+				
+		if ( StringUtils.isEmpty(feedback.getTfaText()) ) {
 			throw new EmptyFeedbackException();
 		}
 		
@@ -59,6 +63,18 @@ public class SendController {
 		UserGroup userGroup = userGroupRepository.findOne(topic.getUgaId());
 		User user = userRepository.findOne(userGroup.getUaId());
 
+		if ( orig_uaId != user.getUaId() ) {
+			throw new UserNotFoundException(Long.toString(orig_uaId));
+		}
+
+		if ( orig_ugaId != userGroup.getUgaId() ) {
+			throw new GroupNotFoundException(Long.toString(orig_ugaId));
+		}
+
+		if ( orig_gtaId != topic.getGtaId() ) {
+			throw new TopicNotFoundException(orig_gtaId);
+		}
+		
 		model.addAttribute("user", user);
 		model.addAttribute("group", userGroup);
 		model.addAttribute("topic", topic);
