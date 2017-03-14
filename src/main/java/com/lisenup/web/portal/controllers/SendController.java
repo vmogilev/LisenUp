@@ -75,7 +75,7 @@ public class SendController {
 			throw new TopicNotFoundException(orig_gtaId);
 		}
 		
-		feedback.setTfaIpAddr(request.getRemoteAddr());
+		feedback.setTfaIpAddr(getIp(request));
 		topicFeedbackRepository.save(feedback);
 
 		model.addAttribute("user", user);
@@ -149,4 +149,16 @@ public class SendController {
 		return user;
 		
 	}
+	
+	private String getIp(HttpServletRequest request) {
+		
+		String ipAddress = request.getHeader("X-FORWARDED-FOR"); 
+		if (ipAddress == null) {     
+		    ipAddress = request.getRemoteAddr(); 
+		}
+
+		return ipAddress;
+		
+	}
+	
 }
