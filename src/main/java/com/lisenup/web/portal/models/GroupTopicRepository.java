@@ -4,10 +4,10 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.CrudRepository;
 
 @Transactional
-public interface GroupTopicRepository extends Repository<GroupTopic, Long> {
+public interface GroupTopicRepository extends CrudRepository<GroupTopic, Long> {
 	
 	public List<GroupTopic> findByUgaId(long ugaId);
 	public List<GroupTopic> findByUgaIdAndGtaActive(long ugaId, boolean active);

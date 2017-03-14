@@ -55,26 +55,29 @@ public class SendController {
 		if ( StringUtils.isEmpty(feedback.getTfaText()) ) {
 			throw new EmptyFeedbackException();
 		}
-		
-		feedback.setTfaIpAddr(request.getRemoteAddr());
-		topicFeedbackRepository.save(feedback);
-		
-		GroupTopic topic = groupTopicRepository.findByGtaIdAndGtaActive(feedback.getGtaId(), true);
+
+		// we have to use findOne() and not check *Active attributes
+		// to avoid null pointer exceptions ... the active flags are
+		// checked below ... 
+		GroupTopic topic = groupTopicRepository.findOne(feedback.getGtaId());
 		UserGroup userGroup = userGroupRepository.findOne(topic.getUgaId());
 		User user = userRepository.findOne(userGroup.getUaId());
 
-		if ( orig_uaId != user.getUaId() ) {
+		if ( orig_uaId != user.getUaId() || !user.isUaActive() ) {
 			throw new UserNotFoundException(Long.toString(orig_uaId));
 		}
 
-		if ( orig_ugaId != userGroup.getUgaId() ) {
+		if ( orig_ugaId != userGroup.getUgaId() || !userGroup.isUgaActive() ) {
 			throw new GroupNotFoundException(Long.toString(orig_ugaId));
 		}
 
-		if ( orig_gtaId != topic.getGtaId() ) {
+		if ( orig_gtaId != topic.getGtaId() || !topic.isGtaActive() ) {
 			throw new TopicNotFoundException(orig_gtaId);
 		}
 		
+		feedback.setTfaIpAddr(request.getRemoteAddr());
+		topicFeedbackRepository.save(feedback);
+
 		model.addAttribute("user", user);
 		model.addAttribute("group", userGroup);
 		model.addAttribute("topic", topic);
