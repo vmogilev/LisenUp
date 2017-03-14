@@ -49,10 +49,10 @@ public class TopicFeedback {
 		return tfaId;
 	}
 
-	public void setTfaId(long tfaId) {
-		this.tfaId = tfaId;
-		this.modifiedBy = MODIFIED_BY;
-	}
+//	public void setTfaId(long tfaId) {
+//		this.tfaId = tfaId;
+//		this.modifiedBy = MODIFIED_BY;
+//	}
 
 	public long getGtaId() {
 		return gtaId;
