@@ -35,7 +35,7 @@ values (
     'VMOGILEV',
     'VMOGILEV',
     'LinkedIn Colleagues!',
-    'I value your candid feedback - fire away.',
+    'I value your candid feedback - so fire away.',
     'LinkedIn',
     1);
 
@@ -53,7 +53,7 @@ values (
     'VMOGILEV',
     'VMOGILEV',
     'Constructive Criticism',
-    'If you ever wanted to give me a constructive criticism - now is your chance to provide your candid feedback.',
+    'If you ever wanted to give me a constructive criticism - now is your chance to provide a candid feedback.',
     1
 );
 

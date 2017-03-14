@@ -35,9 +35,16 @@ public class GroupTopic {
 	
 	@NotNull
 	private boolean gtaActive;
+	
+	@NotNull
+	private int gtaOrder;
 
 	// default constructor needed for hibernate
-	public GroupTopic() { }
+	public GroupTopic() { 
+		this.createdBy = CREATED_BY;
+		this.modifiedBy = MODIFIED_BY;
+		this.gtaOrder = 0;
+	}
 
 	public long getGtaId() {
 		return gtaId;
@@ -81,5 +88,16 @@ public class GroupTopic {
 		this.gtaActive = gtaActive;
 		this.modifiedBy = MODIFIED_BY;
 	}
+
+	public int getGtaOrder() {
+		return gtaOrder;
+	}
+
+	public void setGtaOrder(int gtaOrder) {
+		this.gtaOrder = gtaOrder;
+		this.modifiedBy = MODIFIED_BY;
+	}
+	
+	
 	
 }

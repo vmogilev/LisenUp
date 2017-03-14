@@ -5,18 +5,19 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-	<p th:text="'Sending message to: ' + ${user.uaFirstname}"></p>
-	<p th:text="${group.ugaName} + ': ' + ${topic.gtaTitle}"></p>
+	<p th:text="'Feedback To: ' + ${user.uaFirstname}"></p>
+	<!-- <p th:text="${group.ugaName} + ': ' + ${topic.gtaTitle}"></p> -->
     
 	<div th:text="${topic.gtaText}">Topic Text</div>
 	
     <form action="#" th:action="@{/feedback}" th:object="${feedback}" method="post">
-    	<p>Topic Id: <input type="text" th:field="*{gtaId}" /></p>
-        <p>Feedback: <textarea th:field="*{tfaText}"></textarea></p>
+    	<!-- <p>Topic Id: <input type="text" th:field="*{gtaId}" /></p> -->
+        <p><textarea th:field="*{tfaText}" rows="10" cols="50"></textarea></p>
+        <input type="hidden" th:field="*{gtaId}" />
         <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
         <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
         <input id="orig_gtaId" name="orig_gtaId" type="hidden" th:value="${topic.gtaId}" />
-        <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+        <p><input type="submit" value="Send!" /> <input type="reset" value="Reset" /></p>
     </form>
 
 

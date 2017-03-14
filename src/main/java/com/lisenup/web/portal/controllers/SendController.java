@@ -124,7 +124,7 @@ public class SendController {
 		User user = findUser(toId);
 		UserGroup userGroup = findGroup(groupSlug, user);
 		
-		List<GroupTopic> topics = groupTopicRepository.findByUgaIdAndGtaActive(userGroup.getUgaId(), true);
+		List<GroupTopic> topics = groupTopicRepository.findByUgaIdAndGtaActiveOrderByGtaOrderAsc(userGroup.getUgaId(), true);
 		
 		model.addAttribute("user", user);
 		model.addAttribute("group", userGroup);
