@@ -37,19 +37,16 @@ public class User {
 	private String uaEmail;
 	
 	@NotNull
+	private String uaPassword;
+	
+	@NotNull
 	private boolean uaActive;
 
 	// default constructor needed for hibernate
-	public User() { }
-
-	public User(String username, String firstname, String lastname, String email, boolean active) {
+	public User() {
 		this.createdBy = CREATED_BY;
 		this.modifiedBy = MODIFIED_BY;
-		this.uaUsername = username;
-		this.uaFirstname = firstname;
-		this.uaLastname = lastname;
-		this.uaEmail = email;
-		this.uaActive = active;
+		this.uaActive = true;
 	}
 
 	public long getUaId() {
@@ -58,6 +55,11 @@ public class User {
 
 	public String getUaUsername() {
 		return uaUsername;
+	}
+	
+	public void setUaUsername(String uaUsername) {
+		this.uaUsername = uaUsername;
+		this.modifiedBy = MODIFIED_BY;
 	}
 
 	public String getUaFirstname() {
@@ -87,6 +89,16 @@ public class User {
 		this.modifiedBy = MODIFIED_BY;
 	}
 
+	
+	public String getUaPassword() {
+		return uaPassword;
+	}
+
+	public void setUaPassword(String uaPassword) {
+		this.uaPassword = uaPassword;
+		this.modifiedBy = MODIFIED_BY;
+	}
+
 	public boolean isUaActive() {
 		return uaActive;
 	}
@@ -94,6 +106,10 @@ public class User {
 	public void setUaActive(boolean uaActive) {
 		this.uaActive = uaActive;
 		this.modifiedBy = MODIFIED_BY;
+	}
+	
+	public String getFullName() {
+		return uaFirstname + " " + uaLastname;
 	}
 
 }

@@ -44,6 +44,7 @@ public class GroupTopic {
 		this.createdBy = CREATED_BY;
 		this.modifiedBy = MODIFIED_BY;
 		this.gtaOrder = 0;
+		this.gtaActive = true;
 	}
 
 	public long getGtaId() {

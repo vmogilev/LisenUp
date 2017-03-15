@@ -2,8 +2,7 @@ package com.lisenup.web.portal.models;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.repository.CrudRepository;
 
 @Transactional

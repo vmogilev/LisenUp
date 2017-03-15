@@ -27,6 +27,7 @@ import com.lisenup.web.portal.models.User;
 import com.lisenup.web.portal.models.UserGroup;
 import com.lisenup.web.portal.models.UserGroupRepository;
 import com.lisenup.web.portal.models.UserRepository;
+import com.lisenup.web.portal.utils.HttpUtils;
 
 @Controller
 public class SendController {
@@ -75,7 +76,7 @@ public class SendController {
 			throw new TopicNotFoundException(orig_gtaId);
 		}
 		
-		feedback.setTfaIpAddr(getIp(request));
+		feedback.setTfaIpAddr(HttpUtils.getIp(request));
 		topicFeedbackRepository.save(feedback);
 
 		model.addAttribute("user", user);
@@ -133,11 +134,13 @@ public class SendController {
 	}
 
 	private UserGroup findGroup(String groupSlug, User user) {
+		
 		UserGroup userGroup = userGroupRepository.findByUaIdAndUgaSlug(user.getUaId(), groupSlug);
 		if (userGroup == null || !userGroup.isUgaActive()) {
 			throw new GroupNotFoundException(groupSlug);
 		}
 		return userGroup;
+	
 	}
 	
 	private User findUser(String toId) {
@@ -147,17 +150,6 @@ public class SendController {
 			throw new UserNotFoundException(toId);
 		}
 		return user;
-		
-	}
-	
-	private String getIp(HttpServletRequest request) {
-		
-		String ipAddress = request.getHeader("X-FORWARDED-FOR"); 
-		if (ipAddress == null) {     
-		    ipAddress = request.getRemoteAddr(); 
-		}
-
-		return ipAddress;
 		
 	}
 	

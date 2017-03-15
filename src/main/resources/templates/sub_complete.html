@@ -1,0 +1,14 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="'Subscribed To: ' + ${user.uaFirstname} + '/' + ${group.ugaName}"></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+	<p th:text="'Congradulations ' + ${newuser.uaFirstname} + ' you succesfuly subscribed to: ' + ${user.uaFirstname} + '/' + ${group.ugaName}"></p>
+	
+	<p th:text="'Please check your mailbox (' + ${newuser.uaEmail} + ') for our confirmation email and make sure to confirm your email address.'"></p>
+	
+	<p>For your protection we will not email any updates until your email address is confirmed.</p>
+</body>
+</html>

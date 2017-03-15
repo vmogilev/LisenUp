@@ -11,5 +11,10 @@
 	<div th:text="${topic.gtaText}">Topic</div>
 	<div th:text="${feedback.tfaId}">Id</div>
 	<div th:text="${feedback.tfaText}">Feedback</div>
+	
+	<div th:text="'Would you like to subscribe to ' + ${user.uaFirstname} + '\'s group ' + ${group.ugaName} + '?'">Sub</div>
+	
+	<p><a th:href="@{/{usr}/{grp}/sub(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="'Subscribe to: ' + ${group.ugaName}">Sub Link</a></p>
+	
 </body>
 </html>

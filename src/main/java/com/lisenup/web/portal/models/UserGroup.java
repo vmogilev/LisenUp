@@ -40,7 +40,11 @@ public class UserGroup {
 	private boolean ugaActive;
 
 	// default constructor needed for hibernate
-	public UserGroup() { }
+	public UserGroup() {
+		this.createdBy = CREATED_BY;
+		this.modifiedBy = MODIFIED_BY;
+		this.ugaActive = true;
+	}
 
 	public long getUgaId() {
 		return ugaId;
