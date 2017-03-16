@@ -26,13 +26,25 @@ import com.lisenup.web.portal.models.UserGroup;
 import com.lisenup.web.portal.models.UserGroupRepository;
 import com.lisenup.web.portal.models.UserRepository;
 import com.lisenup.web.portal.utils.HttpUtils;
+import com.lisenup.web.portal.utils.MailUtils;
 
 @Controller
 public class SubController {
 
-	private static final String SUB_PREFIX = "$S-";
+	private static final String SUB_PREFIX = "$S";
 
 	private static final String CHANGE_PASSWORD = "change_me";
+
+	private static final String MAIL_FROM = "admin@lisenup.com";
+
+	private static final String REPLY_TO = MAIL_FROM;
+
+	private static final String MAIL_SUBJECT = "Please Confirm Your Subscription";
+	
+	private static final String SUB_CONFIRM_LINK = "http://lisenup.com/subconf";
+	
+	@Autowired
+	private MailUtils mailer;
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -87,29 +99,7 @@ public class SubController {
 			return "sub_form";
 		}
 		
-		// if we got here, then all is good - lets start creating shit
-		
-		// first lets create a semi-random username for the new user
-		// I just grab the last bit from UUID, add PREFIX and Group ID to It
-		// for example:
-		//    UUID = 067e6162-3b6f-4ae2-a171-2470b63dff00
-		//    GROUP_ID = 2
-		//    PREFIX = $S-
-		//    UserName = $S-2-2470b63dff00
-		String newUserName = UUID.randomUUID().toString();
-		newUserName = newUserName.substring(newUserName.lastIndexOf('-'));
-		newUser.setUaUsername(SUB_PREFIX + userGroup.getUgaId() + newUserName);
-		
-		// set the user's password
-		newUser.setUaPassword(CHANGE_PASSWORD);
-		
-		// make the user inactive until email is confirmed
-		newUser.setUaActive(false);
-		
-		// save user
-		// TODO: Duplicate Email will fail with 
-		//       constraint [ua_uk2]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement
-		userRepository.save(newUser);
+		newUser = createOrFindUser(newUser);
 		
 		// update sub with the new user Id and where the sub came from
 		GroupUsers newSub = new GroupUsers();
@@ -121,14 +111,74 @@ public class SubController {
 		// make the sub inactive until email is confirmed
 		newSub.setGuaActive(false);
 		
-		// finally save the sub too
-		groupUsersRepository.save(newSub);
-
+		// check if the email is already sub'ed to this group
+		if ( createOrFindSub(newSub) ) {
+			model.addAttribute("error", true);
+		} else {
+						
+			// TODO: this *REALLY* should be done async!  But it's an MVP ;) 
+			// NOTE: the auto generated username has a $ as a first char
+			//       it has to be URL Encoded as %24
+			mailer.send(newUser.getUaEmail(), 
+					MAIL_FROM, REPLY_TO, MAIL_SUBJECT, 
+					"Please confirm your Subsription to " +
+					user.getFullName() + " / " + userGroup.getUgaName() +
+					" by clicking the following link: " +
+					SUB_CONFIRM_LINK + 
+					"?u=" + newUser.getUaUsername().replaceAll("\\$", "%24") + 
+					"&g=" + newSub.getGuaId()
+					);
+		}
+		
 		model.addAttribute("user", user);
 		model.addAttribute("group", userGroup);
 		model.addAttribute("newuser", newUser);
 
 		return "sub_complete";
+	}
+
+	private boolean createOrFindSub(GroupUsers newSub) {
+		
+		GroupUsers existingSub = groupUsersRepository.findByUgaIdAndUaId(newSub.getUgaId(), newSub.getUaId());
+		if ( existingSub != null ) {
+			return true;
+		}
+		
+		// if we got here save the sub
+		groupUsersRepository.save(newSub);
+		return false;
+	}
+
+	private User createOrFindUser(User newUser) {
+		
+		User foundUser = userRepository.findByUaEmail(newUser.getUaEmail()); 
+		if ( foundUser != null ) {
+			return foundUser;
+		}
+		
+		// if we got here, then all is good - lets start creating shit
+		
+		// first lets create a semi-random username for the new user
+		// I just grab the last bit from UUID, add PREFIX and Group ID to It
+		// for example:
+		//    UUID = 067e6162-3b6f-4ae2-a171-2470b63dff00
+		//    PREFIX = $S
+		//    UserName = $S-2470b63dff00
+		String newUserName = UUID.randomUUID().toString();
+		newUserName = newUserName.substring(newUserName.lastIndexOf('-'));
+		newUser.setUaUsername(SUB_PREFIX + newUserName);
+		
+		// set the user's password
+		newUser.setUaPassword(CHANGE_PASSWORD);
+		
+		// make the user inactive until email is confirmed
+		newUser.setUaActive(false);
+		
+		// save user
+		// TODO: Duplicate Email will fail with 
+		//       constraint [ua_uk2]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement
+		userRepository.save(newUser);
+		return newUser;
 	}
 	
 	@RequestMapping(

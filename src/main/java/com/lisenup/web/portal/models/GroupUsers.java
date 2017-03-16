@@ -45,6 +45,10 @@ public class GroupUsers {
 		this.modifiedBy = MODIFIED_BY;
 		this.guaActive = true;
 	}
+	
+	public long getGuaId() {
+		return guaId;
+	}
 
 	public long getUgaId() {
 		return ugaId;

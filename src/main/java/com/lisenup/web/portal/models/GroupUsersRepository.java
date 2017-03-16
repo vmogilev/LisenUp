@@ -5,5 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface GroupUsersRepository extends CrudRepository<GroupUsers, Long> {
+	
+	public GroupUsers findByUgaIdAndUaId(long ugaId, long uaId);
 
 }
