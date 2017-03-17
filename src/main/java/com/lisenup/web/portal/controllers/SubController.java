@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,8 +27,8 @@ import com.lisenup.web.portal.models.User;
 import com.lisenup.web.portal.models.UserGroup;
 import com.lisenup.web.portal.models.UserGroupRepository;
 import com.lisenup.web.portal.models.UserRepository;
+import com.lisenup.web.portal.service.MailService;
 import com.lisenup.web.portal.utils.HttpUtils;
-import com.lisenup.web.portal.utils.MailUtils;
 
 @Controller
 public class SubController {
@@ -43,8 +45,11 @@ public class SubController {
 	
 	private static final String SUB_CONFIRM_LINK = "http://lisenup.com/subconf";
 	
+	private Logger logger = LoggerFactory.getLogger(SubController.class);
+	
 	@Autowired
-	private MailUtils mailer;
+	private MailService mailer;
+	//private MailUtils mailer;
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -114,20 +119,22 @@ public class SubController {
 		// check if the email is already sub'ed to this group
 		if ( createOrFindSub(newSub) ) {
 			model.addAttribute("error", true);
-		} else {
-						
-			// TODO: this *REALLY* should be done async!  But it's an MVP ;) 
+		} else {			 
 			// NOTE: the auto generated username has a $ as a first char
 			//       it has to be URL Encoded as %24
-			mailer.send(newUser.getUaEmail(), 
-					MAIL_FROM, REPLY_TO, MAIL_SUBJECT, 
-					"Please confirm your Subsription to " +
-					user.getFullName() + " / " + userGroup.getUgaName() +
-					" by clicking the following link: " +
-					SUB_CONFIRM_LINK + 
-					"?u=" + newUser.getUaUsername().replaceAll("\\$", "%24") + 
-					"&g=" + newSub.getGuaId()
-					);
+			try {
+				mailer.send(newUser.getUaEmail(), 
+						MAIL_FROM, REPLY_TO, MAIL_SUBJECT, 
+						"Please confirm your Subsription to " +
+						user.getFullName() + " / " + userGroup.getUgaName() +
+						" by clicking the following link: " +
+						SUB_CONFIRM_LINK + 
+						"?u=" + newUser.getUaUsername().replaceAll("\\$", "%24") + 
+						"&g=" + newSub.getGuaId()
+						);				
+			} catch (Exception e) {
+				logger.info("Error Sending Email: " + e.getMessage());
+			}
 		}
 		
 		model.addAttribute("user", user);

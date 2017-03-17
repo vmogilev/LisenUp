@@ -1,21 +1,28 @@
-package com.lisenup.web.portal.utils;
+package com.lisenup.web.portal.service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
-@Configuration
-public class MailUtils {
-	@Autowired
+@Service
+public class MailService {
+
 	private JavaMailSender javaMailSender;
-
-	@Required
-	public void send(String to, String from, String replyTo, String subject, String body) {
+	
+	@Autowired
+	public MailService(JavaMailSender javaMailSender){
+		this.javaMailSender = javaMailSender;
+	}
+	
+	@Async
+	public void send(String to, String from, String replyTo, String subject, String body) 
+			throws InterruptedException {
+		
         MimeMessage mail = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mail, true);
@@ -27,7 +34,9 @@ public class MailUtils {
         } catch (MessagingException e) {
             e.printStackTrace();
         } finally {}
+        
         javaMailSender.send(mail);
-        //return helper;
-    }
+
+	}
+
 }
