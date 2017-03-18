@@ -87,12 +87,12 @@ public class SubController {
 		if ( StringUtils.isEmpty(newUser.getUaEmail()) ) {
 			errors.add("Please enter your Email Address");
 		}
-		if ( StringUtils.isEmpty(newUser.getUaFirstname()) ) {
-			errors.add("Please enter your First Name");
-		}
-		if ( StringUtils.isEmpty(newUser.getUaLastname()) ) {
-			errors.add("Please enter your Last Name");
-		}
+//		if ( StringUtils.isEmpty(newUser.getUaFirstname()) ) {
+//			errors.add("Please enter your First Name");
+//		}
+//		if ( StringUtils.isEmpty(newUser.getUaLastname()) ) {
+//			errors.add("Please enter your Last Name");
+//		}
 
 		// if there are any correctable errors send the sub back to form
 		if ( !errors.isEmpty() ) {			
@@ -174,6 +174,10 @@ public class SubController {
 		String newUserName = UUID.randomUUID().toString();
 		newUserName = newUserName.substring(newUserName.lastIndexOf('-'));
 		newUser.setUaUsername(SUB_PREFIX + newUserName);
+		
+		// set fake names
+		newUser.setUaFirstname(SUB_PREFIX + "-FirstName");
+		newUser.setUaLastname(SUB_PREFIX + "-LastName");
 		
 		// set the user's password
 		newUser.setUaPassword(CHANGE_PASSWORD);

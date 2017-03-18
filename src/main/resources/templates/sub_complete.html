@@ -7,7 +7,7 @@
 <body>
 	<p th:if="${error}" th:text="'Your email address is already subscribed to this group'"></p>
 	
-	<p th:unless="${error}" th:text="'Congradulations ' + ${newuser.uaFirstname} + ' you succesfuly subscribed to: ' + ${user.uaFirstname} + '/' + ${group.ugaName}"></p>
+	<p th:unless="${error}" th:text="'You succesfuly subscribed to: ' + ${user.uaFirstname} + '/' + ${group.ugaName}"></p>
 	
 	<p th:unless="${error}" th:text="'Please check your mailbox (' + ${newuser.uaEmail} + ') for our confirmation email and make sure to confirm your email address.'"></p>
 	

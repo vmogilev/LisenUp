@@ -8,12 +8,19 @@
 	<p th:text="'Thank you! Your Feedback Was Sent To: ' + ${user.uaFirstname}"></p>
 	<!-- <p th:text="${group.ugaName} + ': ' + ${topic.gtaTitle}"></p> -->
     
-	<div th:text="${topic.gtaText}">Topic</div>
+<!-- 	<div th:text="${topic.gtaText}">Topic</div>
 	<div th:text="${feedback.tfaId}">Id</div>
-	<div th:text="${feedback.tfaText}">Feedback</div>
+	<div th:text="${feedback.tfaText}">Feedback</div> -->
 	
-	<div th:text="'Would you like to subscribe to ' + ${user.uaFirstname} + '\'s group ' + ${group.ugaName} + '?'">Sub</div>
+	<p th:text="'Would you like to anonymously subscribe to ' + ${user.uaFirstname} + '\'s ' + ${group.ugaName} + ' group?'">Sub</p>
+	<p>By subscribing:</p>
 	
+	<ul>
+		<li th:text="'you will be notified when ' + ${user.uaFirstname} + ' posts new feedback requests'">Notified</li>
+		<li th:text="'you will continue helping ' + ${user.uaFirstname} + ' by providing your candid feedback'">Safe</li>
+		<li th:text="'your email address and identity is never shared with ' + ${user.uaFirstname}">Safe</li>
+	</ul>
+
 	<p><a th:href="@{/{usr}/{grp}/sub(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="'Subscribe to: ' + ${group.ugaName}">Sub Link</a></p>
 	
 </body>

@@ -12,8 +12,8 @@
 	</ul>
 	
     <form action="#" th:action="@{/sub}" th:object="${newuser}" method="post">
-    	<p>First Name: <input type="text" th:field="*{uaFirstname}" /></p>
-    	<p>Last Name: <input type="text" th:field="*{uaLastname}" /></p>
+    	<!-- <p>First Name: <input type="text" th:field="*{uaFirstname}" /></p>
+    	<p>Last Name: <input type="text" th:field="*{uaLastname}" /></p> -->
     	<p>Email Address: <input type="text" th:field="*{uaEmail}" /></p>
         <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
         <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
