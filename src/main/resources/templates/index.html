@@ -18,7 +18,7 @@
     <link href="assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="assets/css/homepage.css" rel="stylesheet">
+    <link href="assets/css/homepage-narrow.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -29,63 +29,59 @@
 
   <body>
 
-    <div class="site-wrapper">
-
-      <div class="site-wrapper-inner">
-
-        <div class="cover-container">
-
-          <div class="masthead clearfix">
-            <div class="inner">
-              <!-- <h3 class="masthead-brand">LisenUp</h3> -->
-				<a class="navbar-brand" href="http://lisenup.com"><img src="assets/img/LisenUp-logo-home-page.png" alt="LisenUp"></a>
-              <nav>
-                <ul class="nav masthead-nav">
-                  <li class="active"><a href="#">Home</a></li>
-<!--                   <li><a href="#">Features</a></li>
-                  <li><a href="#">Contact</a></li> -->
-                </ul>
-              </nav>
-            </div>
-          </div>
-
-          <div class="inner cover">
-            <h1 class="cover-heading">LisenUp!</h1>
-            <p class="lead">It's Your Feedback</p>
-            <p class="lead">
-              <a class="btn btn-lg btn-default" role="button" data-toggle="collapse" href="#learnMore" aria-expanded="false" aria-controls="learnMore">Learn more</a>
-            </p>
-
-			<div class="collapse" id="learnMore">
-			  <div class="well" id="about-lisenup">
-				<p>LisenUp is an anonymous feedback engine.</p>				
-				<p>Have you ever prepared a meal and then asked someone if they liked it?  Do you think the answer you got was genuine?  Probably not ;)  Because the person giving you this untruthful answer didn't want to hurt your feelings.  In their mind, they were doing you a favor!  However, in reality, they were doing you a huge disservice - because now, that mediocre meal became your baseline.</p>
-				<p>LisenUp fixes this problem by never revealing the identity of your reviewer - giving them complete anonymity.  So now, instead of asking someone what they think on the spot, just give them a link to your LisenUp feedback page.  Then, this person will give you an honest feedback, at a later moment, when they had time to really think about it and are not concerned with hurting your feelings.</p>
-				<p>LisenUp is currently in private beta.  To get notified when we launch please subscribe to our mailing list:</p> 
-				<a class="btn btn-lg btn-primary" role="button" href="http://eepurl.com/cE8PY5"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> Subscribe!</a>
-			  </div>
-			</div>
-
-          </div>
-
-          <div class="mastfoot">
-            <div class="inner">
-              <p>&#169; 2017 <a href="http://hashjoin.com">hashjoin</a></p>
-            </div>
-          </div>
-
-        </div>
-
+    <div class="container">
+      <div class="header clearfix">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+            <li role="presentation" class="active"><a href="http://lisenup.com">Home</a></li>
+            <li role="presentation"><a href="#">About</a></li>
+            <li role="presentation"><a href="#">Contact</a></li>
+          </ul>
+        </nav>
+        <!-- <h3 class="text-muted">LisenUp</h3> -->
+        <a class="navbar-brand" href="http://lisenup.com"><img src="assets/img/LisenUp-logo-home-page.png" alt="LisenUp"></a>
       </div>
 
-    </div>
+      <div class="jumbotron">
+        <h1>LisenUp - It's Your Feedback!</h1>
+        <p class="lead">LisenUp is an anonymous feedback engine.</p>
+			<p>Have you ever prepared a meal and then asked someone if they liked it?  Do you think the answer you got was genuine?  Probably not ;)  Because the person giving you this untruthful answer didn't want to hurt your feelings.  In their mind, they were doing you a favor!  However, in reality, they were doing you a huge disservice - because now, that mediocre meal became your baseline.</p>
+			<p>LisenUp fixes this problem by never revealing the identity of your reviewer - giving them complete anonymity.  So now, instead of asking someone what they think on the spot, just give them a link to your LisenUp feedback page.  Then, this person will give you an honest feedback, at a later moment, when they had time to really think about it and are not concerned with hurting your feelings.</p>
+			<p>LisenUp is currently in private beta.  To get notified when we launch please subscribe to our mailing list:</p> 
+        <p><a class="btn btn-lg btn-success" href="http://eepurl.com/cE8PY5" role="button">Subscribe!</a></p>
+      </div>
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="assets/js/vendor/jquery.min.js"><\/script>')</script>
-    <script src="bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+<!--       <div class="row marketing">
+        <div class="col-lg-6">
+          <h4>Subheading</h4>
+          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+
+          <h4>Subheading</h4>
+          <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+
+          <h4>Subheading</h4>
+          <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+        </div>
+
+        <div class="col-lg-6">
+          <h4>Subheading</h4>
+          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+
+          <h4>Subheading</h4>
+          <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+
+          <h4>Subheading</h4>
+          <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+        </div>
+      </div>
+ -->
+      <footer class="footer">
+        <p>&copy; 2017 LisenUp.com</p>
+      </footer>
+
+    </div> <!-- /container -->
+
+
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="assets/js/ie10-viewport-bug-workaround.js"></script>
   </body>

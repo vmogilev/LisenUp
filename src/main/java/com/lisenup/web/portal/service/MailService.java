@@ -20,8 +20,11 @@ public class MailService {
 	}
 	
 	@Async
-	public void send(String to, String from, String replyTo, String subject, String body) 
-			throws InterruptedException {
+	public void send(
+			String to, String from, 
+			String replyTo, String subject, 
+			String body
+		) throws InterruptedException {
 		
         MimeMessage mail = javaMailSender.createMimeMessage();
         try {
