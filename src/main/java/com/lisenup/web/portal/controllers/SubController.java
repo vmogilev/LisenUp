@@ -6,8 +6,8 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.lisenup.web.portal.config.EmailProperties;
 import com.lisenup.web.portal.exceptions.GroupNotFoundException;
 import com.lisenup.web.portal.exceptions.InvalidSubException;
 import com.lisenup.web.portal.exceptions.UserNotFoundException;
@@ -35,18 +36,21 @@ import com.lisenup.web.portal.utils.HttpUtils;
 @Controller
 public class SubController {
 
-	private static final String SUB_PREFIX = "$S";
-
-	private static final String CHANGE_PASSWORD = "change_me";
-
-	private static final String MAIL_FROM = "admin@lisenup.com";
-
-	private static final String REPLY_TO = MAIL_FROM;
-
-	private static final String MAIL_SUBJECT = "Please Confirm Your Subscription";
+	@Autowired
+	private EmailProperties email;
 	
-	private static final String SUB_CONFIRM_LINK = "http://lisenup.com/subconf";
-	
+//	private static final String SUB_PREFIX = "$S";
+//
+//	private static final String CHANGE_PASSWORD = "change_me";
+//
+//	private static final String MAIL_FROM = "admin@lisenup.com";
+//
+//	private static final String REPLY_TO = MAIL_FROM;
+//
+//	private static final String MAIL_SUBJECT = "Please Confirm Your Subscription";
+//	
+//	private static final String SUB_CONFIRM_LINK = "http://lisenup.com/subconf";
+		
 	private Logger logger = LoggerFactory.getLogger(SubController.class);
 	
 	@Autowired
@@ -157,11 +161,11 @@ public class SubController {
 			//       it has to be URL Encoded as %24
 			try {
 				mailer.send(newUser.getUaEmail(), 
-						MAIL_FROM, REPLY_TO, MAIL_SUBJECT, 
+						this.email.getMailFrom(), this.email.getReplyTo(), this.email.getMailSubject(), 
 						"Please confirm your Subsription to " +
 						user.getUaFirstname() + "'s " + userGroup.getUgaName() +
 						" by clicking the following link: " +
-						SUB_CONFIRM_LINK + 
+						this.email.getSubConfirmLink() + 
 						"?u=" + newUser.getUaUsername().replaceAll("\\$", "%24") + 
 						"&g=" + newSub.getGuaId()
 						);				
@@ -206,14 +210,14 @@ public class SubController {
 		//    UserName = $S-2470b63dff00
 		String newUserName = UUID.randomUUID().toString();
 		newUserName = newUserName.substring(newUserName.lastIndexOf('-'));
-		newUser.setUaUsername(SUB_PREFIX + newUserName);
+		newUser.setUaUsername(this.email.getSubPrefix() + newUserName);
 		
 		// set fake names
-		newUser.setUaFirstname(SUB_PREFIX + "-FirstName");
-		newUser.setUaLastname(SUB_PREFIX + "-LastName");
+		newUser.setUaFirstname(this.email.getSubPrefix() + "-FirstName");
+		newUser.setUaLastname(this.email.getSubPrefix() + "-LastName");
 		
 		// set the user's password
-		newUser.setUaPassword(CHANGE_PASSWORD);
+		newUser.setUaPassword(this.email.getChangePassword());
 		
 		// make the user inactive until email is confirmed
 		newUser.setUaActive(false);
