@@ -1,27 +1,66 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title th:text="'Feedback Sent To: ' + ${user.uaFirstname}"></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header :: copy (description=${group.ugaDesc},title='Feedback Sent To: ' + ${user.uaFirstname})">
 </head>
-<body>
-	<p th:text="'Thank you! Your Feedback Was Sent To: ' + ${user.uaFirstname}"></p>
-	<!-- <p th:text="${group.ugaName} + ': ' + ${topic.gtaTitle}"></p> -->
-    
-<!-- 	<div th:text="${topic.gtaText}">Topic</div>
-	<div th:text="${feedback.tfaId}">Id</div>
-	<div th:text="${feedback.tfaText}">Feedback</div> -->
-	
-	<p th:text="'Would you like to anonymously subscribe to ' + ${user.uaFirstname} + '\'s ' + ${group.ugaName} + ' group?'">Sub</p>
-	<p>By subscribing:</p>
-	
-	<ul>
-		<li th:text="'you will be notified when ' + ${user.uaFirstname} + ' posts new feedback requests'">Notified</li>
-		<li th:text="'you will continue helping ' + ${user.uaFirstname} + ' by providing your candid feedback'">Safe</li>
-		<li th:text="'your email address and identity is never shared with ' + ${user.uaFirstname}">Safe</li>
-	</ul>
 
-	<p><a th:href="@{/{usr}/{grp}/sub(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="'Subscribe to: ' + ${group.ugaName}">Sub Link</a></p>
+<body>
+
+    <!-- Begin page content -->
+    <div class="container">
+    
+		<div class="page-header">
+		  <h1 th:text="'Thank you!'">Thank you!</h1>
+		</div>
+
+		<div class="row">
+		<div class="col-xs-12 col-md-12 col-lg-12">
+		    <div class="clearfix content-heading">
+		        <img th:src="'http://www.gravatar.com/avatar/' + ${user.uaGravatarHash} + '?s=80'" src="" alt="" class="pull-left img-rounded center-block" style="margin-right: 10px; margin-bottom: 5px">
+		        <p th:text="'Thank you for your feedback!  Would you like to continue influencing ' + ${group.ugaName} + '?  Then please subscribe below:'" class="lead"></p>
+		    </div>
+		</div>
+		</div>
+
+		<!-- <p th:text="'Thank you! Your Feedback Was Sent To: ' + ${user.uaFirstname}"></p> -->
+		<!-- <p th:text="${group.ugaName} + ': ' + ${topic.gtaTitle}"></p> -->
+	    
+	<!-- 	<div th:text="${topic.gtaText}">Topic</div>
+		<div th:text="${feedback.tfaId}">Id</div>
+		<div th:text="${feedback.tfaText}">Feedback</div> -->
+		
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Subscribe (anonymously):</h3>
+			</div>
+			<div class="panel-body">
+
+			    <div class="alert alert-success" role="alert">
+					<ul>
+						<li th:text="'you will be notified when ' + ${user.uaFirstname} + ' posts new feedback topics'">Notified</li>
+						<li th:text="'your email address and identity is never shared with ' + ${user.uaFirstname}">Safe</li>
+					</ul>
+				</div>
 	
+				<a th:href="@{/{usr}/{grp}/sub(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="'Subscribe!'" class="btn btn-success btn-lg" role="button">Sub Link</a>
+			</div>
+		</div>
+		
+		
+	
+    </div>
+    <!-- End page content -->
+    
+ 	<div th:replace="footer :: copy"></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="/assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/assets/js/ie10-viewport-bug-workaround.js"></script>
+    
 </body>
 </html>

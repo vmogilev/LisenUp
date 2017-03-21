@@ -19,14 +19,12 @@
 			<div class="panel-body">
 
 				<div th:if="${error}" class="alert alert-warning" role="alert">
-					<p>Your email address was already subscribed to this group</p>
+					<p>Error</p>
 				</div>
 				
 				<div th:unless="${error}" class="alert alert-success" role="alert">
 					<ul>
-						<li th:text="'You successfully subscribed to: ' + ${user.uaFirstname} + '\'s ' + ${group.ugaName} + ' group'"></li>
-						<li th:text="'Please check your mailbox (' + ${newuser.uaEmail} + ') for our confirmation email and make sure to confirm your email address.'"></li>
-						<li>For your protection we will not email any updates until your email address is confirmed.</li>
+						<li>Your email is confirmed!  Thank you!</li>
 					</ul>
 				</div>				
 			

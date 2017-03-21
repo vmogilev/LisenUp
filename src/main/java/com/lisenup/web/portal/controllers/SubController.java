@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lisenup.web.portal.exceptions.GroupNotFoundException;
+import com.lisenup.web.portal.exceptions.InvalidSubException;
 import com.lisenup.web.portal.exceptions.UserNotFoundException;
 import com.lisenup.web.portal.models.GroupUsers;
 import com.lisenup.web.portal.models.GroupUsersRepository;
@@ -60,6 +62,37 @@ public class SubController {
 	@Autowired
 	private GroupUsersRepository groupUsersRepository;
 
+	@GetMapping("/subconf")
+	public String subConfirmed(
+			@RequestParam("u") String uaUsername,
+			@RequestParam("g") long guaId,
+			Model model
+			) {
+		
+		User user = userRepository.findByUaUsername(uaUsername);
+		GroupUsers sub = groupUsersRepository.findOne(guaId);
+		UserGroup group = userGroupRepository.findOne(sub.getUgaId());
+		User groupOwner = userRepository.findOne(group.getUaId());
+		
+		if ( user.getUaId() != sub.getUaId() ) {
+			throw new InvalidSubException("uaUsername=" + uaUsername + " guaId=" + Long.toString(guaId));
+		}
+		
+		// update user's active flag if it was not set
+		if ( !user.isUaActive() ) {
+			userRepository.setActiveForUserId(true, "SUB_CONFIRMED", user.getUaId());
+		}
+		
+		// update user's sub active flag if it was not set
+		if ( !sub.isGuaActive() ) {
+			groupUsersRepository.setActiveForSubId(true, "SUB_CONFIRMED", sub.getGuaId());
+		}
+
+		model.addAttribute("user", groupOwner);
+		model.addAttribute("group", group);
+
+		return "sub_confirmed";
+	}
 	
 	@PostMapping("/sub")
 	public String subComplete(
@@ -126,7 +159,7 @@ public class SubController {
 				mailer.send(newUser.getUaEmail(), 
 						MAIL_FROM, REPLY_TO, MAIL_SUBJECT, 
 						"Please confirm your Subsription to " +
-						user.getFullName() + " / " + userGroup.getUgaName() +
+						user.getUaFirstname() + "'s " + userGroup.getUgaName() +
 						" by clicking the following link: " +
 						SUB_CONFIRM_LINK + 
 						"?u=" + newUser.getUaUsername().replaceAll("\\$", "%24") + 
@@ -184,6 +217,9 @@ public class SubController {
 		
 		// make the user inactive until email is confirmed
 		newUser.setUaActive(false);
+		
+		// parse Gravatar email hash
+		newUser.setUaGravatarHash(HttpUtils.getGravatarUrl(newUser.getUaEmail()));
 		
 		// save user
 		// TODO: Duplicate Email will fail with 

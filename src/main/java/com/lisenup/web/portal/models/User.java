@@ -41,6 +41,9 @@ public class User {
 	
 	@NotNull
 	private boolean uaActive;
+	
+	@NotNull
+	private String uaGravatarHash;
 
 	// default constructor needed for hibernate
 	public User() {
@@ -48,9 +51,25 @@ public class User {
 		this.modifiedBy = MODIFIED_BY;
 		this.uaActive = true;
 	}
-
+	
 	public long getUaId() {
 		return uaId;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
 	}
 
 	public String getUaUsername() {
@@ -112,4 +131,13 @@ public class User {
 		return uaFirstname + " " + uaLastname;
 	}
 
+	public String getUaGravatarHash() {
+		return uaGravatarHash;
+	}
+
+	public void setUaGravatarHash(String uaGravatarHash) {
+		this.uaGravatarHash = uaGravatarHash;
+		this.modifiedBy = MODIFIED_BY;
+	}
+	
 }

@@ -1,17 +1,45 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title th:text="'Sending Feedback To: ' + ${user.uaFirstname}"></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header :: copy (description=${group.ugaDesc},title='Feedback For: ' + ${user.uaFirstname})">
 </head>
+
 <body>
-    <p th:text="'Sending message to: ' + ${user.uaFirstname}"></p>
-	<p th:text="${group.ugaName}"></p>
-	<p th:text="${group.ugaDesc}"></p>
 
-    <ol>
-    	<li th:each="topic : ${topics}"><a th:href="@{/{usr}/{grp}/{q}(usr=${user.uaUsername},grp=${group.ugaSlug},q=${topic.gtaId})}" th:text="${topic.gtaTitle}">Topic Title</a></li>
-    </ol>
+    <!-- Begin page content -->
+    <div class="container">
+    
+		<div class="page-header">
+		  <h1 th:text="'Feedback For: ' + ${user.uaFirstname}">Feedback For</h1>
+		</div>
 
+
+		<div class="row">
+		<div class="col-xs-12 col-md-12 col-lg-12">
+		    <div class="clearfix content-heading">
+		        <img th:src="'http://www.gravatar.com/avatar/' + ${user.uaGravatarHash} + '?s=80'" src="" alt="" class="pull-left img-rounded center-block" style="margin-right: 10px; margin-bottom: 5px">
+		        <p th:text="${group.ugaDesc}" class="lead"></p>
+		    </div>
+		</div>
+		</div>
+		
+		<div class="list-group">
+			<a th:each="topic : ${topics}" th:href="@{/{usr}/{grp}/{q}(usr=${user.uaUsername},grp=${group.ugaSlug},q=${topic.gtaId})}" th:text="${topic.gtaTitle}" class="list-group-item">Topic Title</a>
+		</div>
+
+    </div>
+    <!-- End page content -->
+    
+ 	<div th:replace="footer :: copy"></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="/assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/assets/js/ie10-viewport-bug-workaround.js"></script>
+    
 </body>
 </html>

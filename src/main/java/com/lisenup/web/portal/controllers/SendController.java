@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lisenup.web.portal.exceptions.EmptyFeedbackException;
 import com.lisenup.web.portal.exceptions.GroupNotFoundException;
+import com.lisenup.web.portal.exceptions.LongFeedbackException;
 import com.lisenup.web.portal.exceptions.TopicNotFoundException;
 import com.lisenup.web.portal.exceptions.UserNotFoundException;
 import com.lisenup.web.portal.models.GroupTopic;
@@ -31,6 +32,8 @@ import com.lisenup.web.portal.utils.HttpUtils;
 
 @Controller
 public class SendController {
+
+	private static final int MAX_FEEDBACK = 1124;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -55,6 +58,10 @@ public class SendController {
 				
 		if ( StringUtils.isEmpty(feedback.getTfaText()) ) {
 			throw new EmptyFeedbackException();
+		}
+
+		if ( feedback.getTfaText().length() > MAX_FEEDBACK ) {
+			throw new LongFeedbackException();
 		}
 
 		// we have to use findOne() and not check *Active attributes

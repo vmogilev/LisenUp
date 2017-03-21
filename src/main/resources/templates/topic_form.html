@@ -1,24 +1,67 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title th:text="'Sending Feedback To: ' + ${user.uaFirstname}"></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header :: copy (description=${group.ugaDesc},title=${topic.gtaTitle})">
 </head>
+
 <body>
-	<p th:text="'Feedback To: ' + ${user.uaFirstname}"></p>
-	<!-- <p th:text="${group.ugaName} + ': ' + ${topic.gtaTitle}"></p> -->
+
+    <!-- Begin page content -->
+    <div class="container">
+		<div class="page-header">
+		  <h1 th:text="${topic.gtaTitle}">Topic Title</h1>
+		</div>
+
+		<div class="row">
+		<div class="col-xs-12 col-md-12 col-lg-12">
+		    <div class="clearfix content-heading">
+		        <img th:src="'http://www.gravatar.com/avatar/' + ${user.uaGravatarHash} + '?s=80'" src="" alt="" class="pull-left img-rounded center-block" style="margin-right: 10px; margin-bottom: 5px">
+		        <p th:text="${topic.gtaText}" class="lead"></p>
+		    </div>
+		</div>
+		</div>
+		
+	    <form action="#" th:action="@{/feedback}" th:object="${feedback}" method="post">
+		    <div class="form-group">
+		    	<!-- <p>Topic Id: <input type="text" th:field="*{gtaId}" /></p> -->
+		        <textarea th:field="*{tfaText}" class="form-control" rows="5" placeholder="Your Feedback" required></textarea>
+		        <input type="hidden" th:field="*{gtaId}" />
+		        <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
+		        <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
+		        <input id="orig_gtaId" name="orig_gtaId" type="hidden" th:value="${topic.gtaId}" />
+		    </div>
+		    <div class="btn-group" role="group" aria-label="submit-group">
+		    	<button type="button" class="btn btn-default" id="chars-left">1024</button>
+		    	<button type="submit" class="btn btn-primary">Send Feedback</button>
+		    </div>
+	    </form>
+	    
+    </div>
+    <!-- End page content -->
     
-	<div th:text="${topic.gtaText}">Topic Text</div>
-	
-    <form action="#" th:action="@{/feedback}" th:object="${feedback}" method="post">
-    	<!-- <p>Topic Id: <input type="text" th:field="*{gtaId}" /></p> -->
-        <p><textarea th:field="*{tfaText}" rows="10" cols="50"></textarea></p>
-        <input type="hidden" th:field="*{gtaId}" />
-        <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
-        <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
-        <input id="orig_gtaId" name="orig_gtaId" type="hidden" th:value="${topic.gtaId}" />
-        <p><input type="submit" value="Send!" /> <input type="reset" value="Reset" /></p>
-    </form>
+ 	<div th:replace="footer :: copy"></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="/assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/assets/js/ie10-viewport-bug-workaround.js"></script>
+
+<script type="text/javascript">
+$('textarea').keydown(function(e) {
+    var tval = $('textarea').val(),
+        tlength = tval.length,
+        set = 1024,
+        remain = parseInt(set - tlength);
+    $("#chars-left").text(remain);
+    if (remain <= 0 && e.which !== 0 && e.charCode !== 0) {
+        $('textarea').val((tval).substring(0, tlength - 1))
+    }
+})
+</script>
 
 </body>
 </html>

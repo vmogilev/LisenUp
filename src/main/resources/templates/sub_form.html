@@ -1,24 +1,69 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title th:text="'Subscribe To: ' + ${user.uaFirstname} + '/' + ${group.ugaName}"></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header :: copy (description=${group.ugaDesc},title='Subscribe To: ' + ${user.uaFirstname} + '/' + ${group.ugaName})">
 </head>
-<body>
-	<p th:text="'Subscribe To: ' + ${user.uaFirstname} + '/' + ${group.ugaName}"></p>
-    
-	<ul>
-		<li th:each="error : ${errors}" th:text="${error}">Error</li>
-	</ul>
-	
-    <form action="#" th:action="@{/sub}" th:object="${newuser}" method="post">
-    	<!-- <p>First Name: <input type="text" th:field="*{uaFirstname}" /></p>
-    	<p>Last Name: <input type="text" th:field="*{uaLastname}" /></p> -->
-    	<p>Email Address: <input type="text" th:field="*{uaEmail}" /></p>
-        <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
-        <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
-        <p><input type="submit" value="Subscribe" /> <input type="reset" value="Reset" /></p>
-    </form>
 
+<body>
+
+    <!-- Begin page content -->
+    <div class="container">
+    
+		<div class="page-header">
+		  <h1 th:text="${user.uaFirstname} + '\'s ' + ${group.ugaName} + ' Group'">Subscribe</h1>
+		</div>
+	    
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Subscribe (anonymously):</h3>
+			</div>
+			<div class="panel-body">
+
+		    <div th:if="${errors}" class="alert alert-warning" role="alert">
+				<ul>
+					<li th:each="error : ${errors}" th:text="${error}">Error</li>
+				</ul>
+			</div>
+
+		    <div th:if="${#lists.isEmpty(errors)}" class="alert alert-success" role="alert">
+				<ul>
+					<li th:text="'you will be notified when ' + ${user.uaFirstname} + ' posts new feedback topics'">Notified</li>
+					<li th:text="'your email address and identity is never shared with ' + ${user.uaFirstname}">Safe</li>
+					<li>your subscription is managed by <strong>LisenUp</strong> and is subject to our <a href="/legal/privacy">privacy policy</a></li>
+				</ul>
+			</div>
+			
+		    <form action="#" th:action="@{/sub}" th:object="${newuser}" method="post">
+		    	<div class="form-group">
+		    		<label class="control-label" for="uaEmail">Email Address</label>
+		    		<input th:field="*{uaEmail}" type="email" class="form-control" id="uaEmail" placeholder="Email" aria-describedby="helpBlock1" required>
+		    		<span th:text="'You\'ll receive a confirmation email to this address shortly, when you do - please click the confirmation link to verify your email address.'" id="helpBlock1" class="help-block">Help</span>
+		    	</div>
+		    	<!-- <p>Email Address: <input type="text" th:field="*{uaEmail}" /> -->
+		        <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
+		        <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
+		        <button type="submit" class="btn btn-success">Subscribe</button>
+		    </form>
+	    
+	    	</div>
+	    </div>
+	    
+	    
+
+    </div>
+    <!-- End page content -->
+    
+ 	<div th:replace="footer :: copy"></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="/assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/assets/js/ie10-viewport-bug-workaround.js"></script>
+    
 </body>
 </html>

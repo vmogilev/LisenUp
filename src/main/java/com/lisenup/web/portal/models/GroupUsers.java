@@ -39,13 +39,13 @@ public class GroupUsers {
 	@NotNull
 	private String guaIpAddr;
 	
-	
+	// Default for hibernate
 	public GroupUsers() {
 		this.createdBy = CREATED_BY;
 		this.modifiedBy = MODIFIED_BY;
 		this.guaActive = true;
 	}
-	
+		
 	public long getGuaId() {
 		return guaId;
 	}
@@ -66,6 +66,22 @@ public class GroupUsers {
 	public void setUaId(long uaId) {
 		this.uaId = uaId;
 		this.modifiedBy = MODIFIED_BY;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getModifiedBy() {
+		return modifiedBy;
+	}
+
+	public void setModifiedBy(String modifiedBy) {
+		this.modifiedBy = modifiedBy;
 	}
 
 	public boolean isGuaActive() {
