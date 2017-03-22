@@ -61,7 +61,7 @@ values (
     'VMOGILEV',
     'VMOGILEV',
     'Constructive Criticism',
-    'If you ever wanted to give me a constructive criticism - please do not hesitate to do so:',
+    'If you ever wanted to give me a constructive criticism - please do not hesitate to do so now:',
     1
 );
 
@@ -80,5 +80,23 @@ values (
     'VMOGILEV',
     'I am Know For ...',
     'If someone asked you what I am known for?  What is the one thing that comes to mind?',
+    1
+);
+
+insert into lisenupdb.group_topics_all (
+  gta_id,
+  uga_id,
+  created_by,
+  modified_by,
+  gta_title,
+  gta_text,
+  gta_active)
+values (
+    3,
+    1,
+    'VMOGILEV',
+    'VMOGILEV',
+    'One Thing Better ...',
+    'If we were to work together again, what is the one thing that I should do better?',
     1
 );
