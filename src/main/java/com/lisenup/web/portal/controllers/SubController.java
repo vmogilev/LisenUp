@@ -38,19 +38,7 @@ public class SubController {
 
 	@Autowired
 	private EmailProperties email;
-	
-//	private static final String SUB_PREFIX = "$S";
-//
-//	private static final String CHANGE_PASSWORD = "change_me";
-//
-//	private static final String MAIL_FROM = "admin@lisenup.com";
-//
-//	private static final String REPLY_TO = MAIL_FROM;
-//
-//	private static final String MAIL_SUBJECT = "Please Confirm Your Subscription";
-//	
-//	private static final String SUB_CONFIRM_LINK = "http://lisenup.com/subconf";
-		
+			
 	private Logger logger = LoggerFactory.getLogger(SubController.class);
 	
 	@Autowired
