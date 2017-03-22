@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="header :: copy (description=${group.ugaDesc},title='Subscribe To: ' + ${user.uaFirstname} + '/' + ${group.ugaName})">
+<head th:replace="header :: copy (description=${group.ugaDesc},title='Subscribe To: ' + ${user.uaName} + '/' + ${group.ugaName})">
 </head>
 
 <body>
@@ -9,7 +9,7 @@
     <div class="container">
     
 		<div class="page-header">
-		  <h1 th:text="${user.uaFirstname} + '\'s ' + ${group.ugaName} + ' Group'">Subscribe</h1>
+		  <h1 th:text="${user.uaName} + '\'s ' + ${group.ugaName} + ' Group'">Subscribe</h1>
 		</div>
 	    
 
@@ -19,31 +19,31 @@
 			</div>
 			<div class="panel-body">
 
-		    <div th:if="${errors}" class="alert alert-warning" role="alert">
-				<ul>
-					<li th:each="error : ${errors}" th:text="${error}">Error</li>
-				</ul>
-			</div>
-
-		    <div th:if="${#lists.isEmpty(errors)}" class="alert alert-success" role="alert">
-				<ul>
-					<li th:text="'you will be notified when ' + ${user.uaFirstname} + ' posts new feedback topics'">Notified</li>
-					<li th:text="'your email address and identity is never shared with ' + ${user.uaFirstname}">Safe</li>
-					<li>your subscription is managed by <strong>LisenUp</strong> and is subject to our <a href="/legal/privacy">privacy policy</a></li>
-				</ul>
-			</div>
-			
-		    <form action="#" th:action="@{/sub}" th:object="${newuser}" method="post">
-		    	<div class="form-group">
-		    		<label class="control-label" for="uaEmail">Email Address</label>
-		    		<input th:field="*{uaEmail}" type="email" class="form-control" id="uaEmail" placeholder="Email" aria-describedby="helpBlock1" required>
-		    		<span th:text="'You\'ll receive a confirmation email to this address shortly, when you do - please click the confirmation link to verify your email address.'" id="helpBlock1" class="help-block">Help</span>
-		    	</div>
-		    	<!-- <p>Email Address: <input type="text" th:field="*{uaEmail}" /> -->
-		        <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
-		        <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
-		        <button type="submit" class="btn btn-success">Subscribe</button>
-		    </form>
+			    <div th:if="${errors}" class="alert alert-warning" role="alert">
+					<ul>
+						<li th:each="error : ${errors}" th:text="${error}">Error</li>
+					</ul>
+				</div>
+	
+			    <div th:if="${#lists.isEmpty(errors)}" class="alert alert-success" role="alert">
+					<ul>
+						<li th:text="'you will be notified when ' + ${user.uaName} + ' posts new feedback topics'">Notified</li>
+						<li th:text="'your email address and identity is never shared with ' + ${user.uaName}">Safe</li>
+						<li>your subscription is managed by <strong>LisenUp</strong> and is subject to our <a href="/legal/privacy">privacy policy</a></li>
+					</ul>
+				</div>
+				
+			    <form action="#" th:action="@{/sub}" th:object="${newuser}" method="post">
+			    	<div class="form-group">
+			    		<label class="control-label" for="uaEmail">Email Address</label>
+			    		<input th:field="*{uaEmail}" type="email" class="form-control" id="uaEmail" placeholder="Email" aria-describedby="helpBlock1" required>
+			    		<span th:text="'You\'ll receive a confirmation email to this address shortly, when you do - please click the confirmation link to verify your email address.'" id="helpBlock1" class="help-block">Help</span>
+			    	</div>
+			    	<!-- <p>Email Address: <input type="text" th:field="*{uaEmail}" /> -->
+			        <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
+			        <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
+			        <button type="submit" class="btn btn-success">Subscribe</button>
+			    </form>
 	    
 	    	</div>
 	    </div>

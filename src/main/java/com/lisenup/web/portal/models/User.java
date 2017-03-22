@@ -28,10 +28,7 @@ public class User {
 	private String uaUsername;
 
 	@NotNull
-	private String uaFirstname;
-
-	@NotNull
-	private String uaLastname;
+	private String uaName;
 
 	@NotNull
 	private String uaEmail;
@@ -81,21 +78,12 @@ public class User {
 		this.modifiedBy = MODIFIED_BY;
 	}
 
-	public String getUaFirstname() {
-		return uaFirstname;
+	public String getUaName() {
+		return uaName;
 	}
 
-	public void setUaFirstname(String uaFirstname) {
-		this.uaFirstname = uaFirstname;
-		this.modifiedBy = MODIFIED_BY;
-	}
-
-	public String getUaLastname() {
-		return uaLastname;
-	}
-
-	public void setUaLastname(String uaLastname) {
-		this.uaLastname = uaLastname;
+	public void setUaName(String uaName) {
+		this.uaName = uaName;
 		this.modifiedBy = MODIFIED_BY;
 	}
 
@@ -127,10 +115,6 @@ public class User {
 		this.modifiedBy = MODIFIED_BY;
 	}
 	
-	public String getFullName() {
-		return uaFirstname + " " + uaLastname;
-	}
-
 	public String getUaGravatarHash() {
 		return uaGravatarHash;
 	}

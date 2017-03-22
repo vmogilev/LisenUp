@@ -1,5 +1,6 @@
 package com.lisenup.web.portal.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,9 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.lisenup.web.portal.exceptions.EmptyFeedbackException;
 import com.lisenup.web.portal.exceptions.GroupNotFoundException;
-import com.lisenup.web.portal.exceptions.LongFeedbackException;
 import com.lisenup.web.portal.exceptions.TopicNotFoundException;
 import com.lisenup.web.portal.exceptions.UserNotFoundException;
 import com.lisenup.web.portal.models.GroupTopic;
@@ -55,13 +54,15 @@ public class SendController {
 			@RequestParam("orig_gtaId") long orig_gtaId,
 			HttpServletRequest request, 
 			Model model) {
-				
+
+		// check for correctable errors
+		List<String> errors = new ArrayList<>();
 		if ( StringUtils.isEmpty(feedback.getTfaText()) ) {
-			throw new EmptyFeedbackException();
+			errors.add("Please enter your Feedback");
 		}
 
 		if ( feedback.getTfaText().length() > MAX_FEEDBACK ) {
-			throw new LongFeedbackException();
+			errors.add("Sorry, your Feedback is longer than " + MAX_FEEDBACK + " characters");
 		}
 
 		// we have to use findOne() and not check *Active attributes
@@ -82,7 +83,19 @@ public class SendController {
 		if ( orig_gtaId != topic.getGtaId() || !topic.isGtaActive() ) {
 			throw new TopicNotFoundException(orig_gtaId);
 		}
+
 		
+		// if there are any correctable errors send the feedback back to form
+		if ( !errors.isEmpty() ) {
+			model.addAttribute("feedback", feedback);
+			model.addAttribute("user", user);
+			model.addAttribute("group", userGroup);
+			model.addAttribute("topic", topic);
+			model.addAttribute("errors", errors);
+			return "topic_form";
+		}
+		
+		// if we got here save the topic - all good!
 		feedback.setTfaIpAddr(HttpUtils.getIp(request));
 		topicFeedbackRepository.save(feedback);
 

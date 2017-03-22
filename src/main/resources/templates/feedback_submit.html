@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="header :: copy (description=${group.ugaDesc},title='Feedback Sent To: ' + ${user.uaFirstname})">
+<head th:replace="header :: copy (description=${group.ugaDesc},title='Feedback Sent To: ' + ${user.uaName})">
 </head>
 
 <body>
@@ -21,7 +21,7 @@
 		</div>
 		</div>
 
-		<!-- <p th:text="'Thank you! Your Feedback Was Sent To: ' + ${user.uaFirstname}"></p> -->
+		<!-- <p th:text="'Thank you! Your Feedback Was Sent To: ' + ${user.uaName}"></p> -->
 		<!-- <p th:text="${group.ugaName} + ': ' + ${topic.gtaTitle}"></p> -->
 	    
 	<!-- 	<div th:text="${topic.gtaText}">Topic</div>
@@ -36,8 +36,8 @@
 
 			    <div class="alert alert-success" role="alert">
 					<ul>
-						<li th:text="'you will be notified when ' + ${user.uaFirstname} + ' posts new feedback topics'">Notified</li>
-						<li th:text="'your email address and identity is never shared with ' + ${user.uaFirstname}">Safe</li>
+						<li th:text="'you will be notified when ' + ${user.uaName} + ' posts new feedback topics'">Notified</li>
+						<li th:text="'your email address and identity is never shared with ' + ${user.uaName}">Safe</li>
 					</ul>
 				</div>
 	

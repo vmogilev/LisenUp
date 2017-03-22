@@ -135,7 +135,7 @@ public class SubController {
 		GroupUsers newSub = new GroupUsers();
 		newSub.setUaId(newUser.getUaId());
 		newSub.setUgaId(userGroup.getUgaId());
-		newSub.setGuaSubedAt(user.getFullName() + " / " + userGroup.getUgaName());
+		newSub.setGuaSubedAt(user.getUaName() + " / " + userGroup.getUgaName());
 		newSub.setGuaIpAddr(HttpUtils.getIp(request));
 		
 		// make the sub inactive until email is confirmed
@@ -151,7 +151,7 @@ public class SubController {
 				mailer.send(newUser.getUaEmail(), 
 						this.email.getMailFrom(), this.email.getReplyTo(), this.email.getMailSubject(), 
 						"Please confirm your Subsription to " +
-						user.getUaFirstname() + "'s " + userGroup.getUgaName() +
+						user.getUaName() + "'s " + userGroup.getUgaName() +
 						" by clicking the following link: " +
 						this.email.getSubConfirmLink() + 
 						"?u=" + newUser.getUaUsername().replaceAll("\\$", "%24") + 
@@ -200,9 +200,8 @@ public class SubController {
 		newUserName = newUserName.substring(newUserName.lastIndexOf('-'));
 		newUser.setUaUsername(this.email.getSubPrefix() + newUserName);
 		
-		// set fake names
-		newUser.setUaFirstname(this.email.getSubPrefix() + "-FirstName");
-		newUser.setUaLastname(this.email.getSubPrefix() + "-LastName");
+		// set fake name
+		newUser.setUaName(this.email.getSubPrefix() + "-Name");
 		
 		// set the user's password
 		newUser.setUaPassword(this.email.getChangePassword());

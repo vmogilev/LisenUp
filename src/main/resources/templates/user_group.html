@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="header :: copy (description=${group.ugaDesc},title='Feedback For: ' + ${user.uaFirstname})">
+<head th:replace="header :: copy (description=${group.ugaDesc},title='Feedback For: ' + ${user.uaName})">
 </head>
 
 <body>
@@ -9,7 +9,7 @@
     <div class="container">
     
 		<div class="page-header">
-		  <h1 th:text="'Feedback For: ' + ${user.uaFirstname}">Feedback For</h1>
+		  <h1 th:text="'Feedback For: ' + ${user.uaName}">Feedback For</h1>
 		</div>
 
 

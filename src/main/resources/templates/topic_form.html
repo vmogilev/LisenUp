@@ -25,7 +25,13 @@
 				<h3 class="panel-title">Your Feedback</h3>
 			</div>
 			<div class="panel-body">
-		
+
+			    <div th:if="${errors}" class="alert alert-warning" role="alert">
+					<ul>
+						<li th:each="error : ${errors}" th:text="${error}">Error</li>
+					</ul>
+				</div>
+
 			    <form action="#" th:action="@{/feedback}" th:object="${feedback}" method="post">
 				    <div class="form-group">
 				    	<!-- <p>Topic Id: <input type="text" th:field="*{gtaId}" /></p> -->
