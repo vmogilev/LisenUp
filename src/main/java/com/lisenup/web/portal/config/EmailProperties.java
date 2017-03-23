@@ -9,8 +9,10 @@ public class EmailProperties {
 	private String changePassword = "change_me";
 	private String mailFrom = "admin@lisenup.com";
 	private String replyTo = "admin@lisenup.com";
-	private String mailSubject = "Please Confirm Your Subscription";
+	private String subSubject = "Please Confirm Your Subscription";
+	private String replySubject = "Please Confirm Your Reply Request";
 	private String subConfirmLink = "http://localhost:8080/subconf";
+	private String replyConfirmLink = "http://localhost:8080/replyconf";
 	
 	public String getSubPrefix() {
 		return subPrefix;
@@ -36,17 +38,29 @@ public class EmailProperties {
 	public void setReplyTo(String replyTo) {
 		this.replyTo = replyTo;
 	}
-	public String getMailSubject() {
-		return mailSubject;
+	public String getSubSubject() {
+		return subSubject;
 	}
-	public void setMailSubject(String mailSubject) {
-		this.mailSubject = mailSubject;
+	public void setSubSubject(String subSubject) {
+		this.subSubject = subSubject;
+	}
+	public String getReplySubject() {
+		return replySubject;
+	}
+	public void setReplySubject(String replySubject) {
+		this.replySubject = replySubject;
 	}
 	public String getSubConfirmLink() {
 		return subConfirmLink;
 	}
 	public void setSubConfirmLink(String subConfirmLink) {
 		this.subConfirmLink = subConfirmLink;
+	}
+	public String getReplyConfirmLink() {
+		return replyConfirmLink;
+	}
+	public void setReplyConfirmLink(String replyConfirmLink) {
+		this.replyConfirmLink = replyConfirmLink;
 	}
 
 	

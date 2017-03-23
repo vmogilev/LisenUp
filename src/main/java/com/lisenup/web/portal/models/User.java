@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -23,6 +24,9 @@ public class User {
 
 	@NotNull
 	private String modifiedBy;
+
+	@Version
+	private Integer version;
 
 	@NotNull
 	private String uaUsername;
@@ -67,6 +71,10 @@ public class User {
 
 	public void setModifiedBy(String modifiedBy) {
 		this.modifiedBy = modifiedBy;
+	}
+
+	public Integer getVersion() {
+		return version;
 	}
 
 	public String getUaUsername() {

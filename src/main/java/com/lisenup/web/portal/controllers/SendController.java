@@ -2,6 +2,7 @@ package com.lisenup.web.portal.controllers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -97,6 +98,7 @@ public class SendController {
 		
 		// if we got here save the topic - all good!
 		feedback.setTfaIpAddr(HttpUtils.getIp(request));
+		feedback.setTfaUuid(UUID.randomUUID().toString());
 		topicFeedbackRepository.save(feedback);
 
 		model.addAttribute("user", user);

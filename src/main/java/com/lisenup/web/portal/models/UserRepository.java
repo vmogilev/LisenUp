@@ -13,7 +13,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 	public User findByUaEmail(String email);
 	
 	@Modifying
-	@Query("update User ua set ua.uaActive = ?1, ua.modifiedBy = ?2 where ua.uaId = ?3")
-	int setActiveForUserId(Boolean uaActive, String modifiedBy, Long uaId);
+	@Query("update User ua set ua.uaActive = ?1, ua.modifiedBy = ?2, ua.version = ?3 where ua.uaId = ?4")
+	int setActiveForUserId(Boolean uaActive, String modifiedBy, Integer version, Long uaId);
 
 }

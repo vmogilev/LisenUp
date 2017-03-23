@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -26,6 +27,9 @@ public class UserGroup {
 
 	@NotNull
 	private String modifiedBy;
+
+	@Version
+	private Integer version;
 
 	@NotNull
 	private String ugaName;

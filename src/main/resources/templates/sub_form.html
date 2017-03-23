@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="header :: copy (description=${group.ugaDesc},title='Subscribe To: ' + ${user.uaName} + '/' + ${group.ugaName})">
+<head th:replace="header :: copy (description=${group.ugaDesc},title='Get ' + ${user.uaName} + '\'s Reply')">
 </head>
 
 <body>
@@ -9,13 +9,13 @@
     <div class="container">
     
 		<div class="page-header">
-		  <h1 th:text="${user.uaName} + '\'s ' + ${group.ugaName} + ' Group'">Subscribe</h1>
+		  <h1 th:text="'Get ' + ${user.uaName} + '\'s Reply'">Subscribe</h1>
 		</div>
 	    
 
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">Subscribe (anonymously)</h3>
+				<h3 class="panel-title">Get A Reply</h3>
 			</div>
 			<div class="panel-body">
 
@@ -25,24 +25,36 @@
 					</ul>
 				</div>
 	
-			    <div th:if="${#lists.isEmpty(errors)}" class="alert alert-success" role="alert">
-					<ul>
-						<li th:text="'you will be notified when ' + ${user.uaName} + ' posts new feedback topics'">Notified</li>
-						<li th:text="'your email address and identity is never shared with ' + ${user.uaName}">Safe</li>
-						<li>your subscription is managed by <strong>LisenUp</strong> and is subject to our <a href="/legal/privacy">privacy policy</a></li>
-					</ul>
+			    <div class="alert alert-success" role="alert">
+			    	<p>By providing your information you give <strong>LisenUp</strong> permission to:</p>
+					<ol>
+						<li th:text="'share your name and email with ' + ${user.uaName}">Shared</li>
+						<li th:text="'send you ' + ${user.uaName} + '\'s reply to your feedback'">Notified</li>
+						<!-- <li th:text="'subscribe you to ' + ${user.uaName} + '\'s ' + ${group.ugaName} + ' Group and send you new feedback topics'">Subbed</li> -->
+					</ol>
+					<!-- <p>Your subscription will be managed by <strong>LisenUp</strong> and is subject to our <a href="/legal/privacy">privacy policy</a></p> -->
 				</div>
 				
 			    <form action="#" th:action="@{/sub}" th:object="${newuser}" method="post">
+			    	<div class="form-group">
+			    		<label class="control-label" for="uaName">Your Name</label>
+			    		<input th:field="*{uaName}" type="text" class="form-control" id="uaName" placeholder="Name" aria-describedby="helpBlock0" required>
+			    	</div>
 			    	<div class="form-group">
 			    		<label class="control-label" for="uaEmail">Email Address</label>
 			    		<input th:field="*{uaEmail}" type="email" class="form-control" id="uaEmail" placeholder="Email" aria-describedby="helpBlock1" required>
 			    		<span th:text="'You\'ll receive a confirmation email to this address shortly, when you do - please click the confirmation link to verify your email address.'" id="helpBlock1" class="help-block">Help</span>
 			    	</div>
+					<div class="checkbox">
+					  <label>
+					    <input th:checked="${terms}" type="checkbox" id="terms" name="terms" required> I agree to the above terms
+					  </label>
+					</div>
 			    	<!-- <p>Email Address: <input type="text" th:field="*{uaEmail}" /> -->
 			        <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
 			        <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
-			        <button type="submit" class="btn btn-success">Subscribe</button>
+			        <input id="orig_tfaUuid" name="orig_tfaUuid" type="hidden" th:value="${feedback.tfaUuid}" />
+			        <button type="submit" class="btn btn-success btn-lg">Get A Reply</button>
 			    </form>
 	    
 	    	</div>

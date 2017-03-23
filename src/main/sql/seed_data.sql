@@ -16,6 +16,28 @@ insert into lisenupdb.users_all (
   ua_gravatar_hash)
 values (
     1,
+    'SEED',
+    'SEED',
+    'anonymous',
+    'Anonymous',
+    'null@lisenup.com',
+    'junk',
+    0,
+    '-');
+
+
+insert into lisenupdb.users_all (
+  ua_id,
+  created_by,
+  modified_by,
+  ua_username,
+  ua_name,
+  ua_email,
+  ua_password,
+  ua_active,
+  ua_gravatar_hash)
+values (
+    100,
     'VMOGILEV',
     'VMOGILEV',
     'mve',
@@ -37,7 +59,7 @@ insert into lisenupdb.user_groups_all (
   uga_active)
 values (
     1,
-    1,
+    100,
     'VMOGILEV',
     'VMOGILEV',
     'My Job',

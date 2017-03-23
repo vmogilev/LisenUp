@@ -21,11 +21,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.lisenup.web.portal.config.EmailProperties;
+import com.lisenup.web.portal.exceptions.FeedbackNotFoundException;
 import com.lisenup.web.portal.exceptions.GroupNotFoundException;
 import com.lisenup.web.portal.exceptions.InvalidSubException;
 import com.lisenup.web.portal.exceptions.UserNotFoundException;
+import com.lisenup.web.portal.models.GroupTopic;
+import com.lisenup.web.portal.models.GroupTopicRepository;
 import com.lisenup.web.portal.models.GroupUsers;
 import com.lisenup.web.portal.models.GroupUsersRepository;
+import com.lisenup.web.portal.models.TopicFeedback;
+import com.lisenup.web.portal.models.TopicFeedbackRepository;
 import com.lisenup.web.portal.models.User;
 import com.lisenup.web.portal.models.UserGroup;
 import com.lisenup.web.portal.models.UserGroupRepository;
@@ -35,6 +40,9 @@ import com.lisenup.web.portal.utils.HttpUtils;
 
 @Controller
 public class SubController {
+
+	private static final String SUB_USER_CREATION = "SUB_USER_CREATION";
+	private static final long ANON_USER_ID = 1;
 
 	@Autowired
 	private EmailProperties email;
@@ -53,7 +61,56 @@ public class SubController {
 	
 	@Autowired
 	private GroupUsersRepository groupUsersRepository;
+	
+	@Autowired
+	private TopicFeedbackRepository topicFeedbackRepository;
+	
+	@Autowired
+	private GroupTopicRepository groupTopicRepository;
 
+	@GetMapping("/replyconf")
+	public String replyConfirmed(
+			@RequestParam("u") String uaUsername,
+			@RequestParam("t") String tfaUuid,
+			Model model
+			) {
+		
+		User user = userRepository.findByUaUsername(uaUsername);
+		TopicFeedback feedback = topicFeedbackRepository.findByTfaUuid(tfaUuid);
+
+		// Check if the Feedback UUID maps to real Feedback
+		// if not - it's most likely a hack - fail fast and be nasty
+		if ( feedback == null ) {
+			throw new FeedbackNotFoundException(tfaUuid);
+		}
+
+		// see createOrFindUser(newUser) - we have to match on ModifiedBy
+		// if not - it's most likely a hack - fail fast and be nasty
+		if ( !user.getModifiedBy().equals(SUB_USER_CREATION) ) {
+			throw new UserNotFoundException("un: " + uaUsername + " mod: " + user.getModifiedBy());
+		}
+
+		GroupTopic topic = groupTopicRepository.findOne(feedback.getGtaId());
+		UserGroup group = userGroupRepository.findOne(topic.getUgaId());
+		User groupOwner = userRepository.findOne(group.getUaId());
+
+		
+		// update user's active flag if it was not set
+		if ( !user.isUaActive() ) {
+			userRepository.setActiveForUserId(true, SUB_USER_CREATION, user.getVersion()+1, user.getUaId());
+		}
+		
+		// only update Feedback's user from anonymous=1 to real user Id
+		if ( feedback.getUaId() == ANON_USER_ID ) {
+			topicFeedbackRepository.setRealUserForFeedbackId(user.getUaId(), SUB_USER_CREATION, feedback.getVersion()+1, feedback.getTfaId());
+		}
+
+		model.addAttribute("user", groupOwner);
+		model.addAttribute("group", group);
+
+		return "reply_confirmed";
+	}
+	
 	@GetMapping("/subconf")
 	public String subConfirmed(
 			@RequestParam("u") String uaUsername,
@@ -72,7 +129,7 @@ public class SubController {
 		
 		// update user's active flag if it was not set
 		if ( !user.isUaActive() ) {
-			userRepository.setActiveForUserId(true, "SUB_CONFIRMED", user.getUaId());
+			userRepository.setActiveForUserId(true, "SUB_CONFIRMED", user.getVersion()+1, user.getUaId());
 		}
 		
 		// update user's sub active flag if it was not set
@@ -91,11 +148,19 @@ public class SubController {
 			@ModelAttribute User newUser,
 			@RequestParam("orig_uaId") long origUaId,
 			@RequestParam("orig_ugaId") long origUgaId,
+			@RequestParam("orig_tfaUuid") String orig_tfaUuid,
+			@RequestParam(name = "terms", defaultValue = "false", required = false) Boolean terms,
 			HttpServletRequest request, 
 			Model model) {
 		
 		User user = userRepository.findOne(origUaId);
 		UserGroup userGroup = userGroupRepository.findOne(origUgaId);
+		TopicFeedback feedback = topicFeedbackRepository.findByTfaUuid(orig_tfaUuid);
+		
+		// check if the Feedback UUID exists
+		if ( feedback == null ) {
+			throw new FeedbackNotFoundException(orig_tfaUuid);
+		}
 		
 		// check to make sure user is active
 		if ( !user.isUaActive() ) {
@@ -112,18 +177,20 @@ public class SubController {
 		if ( StringUtils.isEmpty(newUser.getUaEmail()) ) {
 			errors.add("Please enter your Email Address");
 		}
-//		if ( StringUtils.isEmpty(newUser.getUaFirstname()) ) {
-//			errors.add("Please enter your First Name");
-//		}
-//		if ( StringUtils.isEmpty(newUser.getUaLastname()) ) {
-//			errors.add("Please enter your Last Name");
-//		}
+		if ( StringUtils.isEmpty(newUser.getUaName()) ) {
+			errors.add("Please enter your Name");
+		}
+		if ( !terms ) {
+			errors.add("Please accept the Terms (check the box)");
+		}
 
 		// if there are any correctable errors send the sub back to form
 		if ( !errors.isEmpty() ) {			
 			model.addAttribute("user", user);
 			model.addAttribute("group", userGroup);
 			model.addAttribute("newuser", newUser);
+			model.addAttribute("feedback", feedback);
+			model.addAttribute("terms", terms);
 			model.addAttribute("errors", errors);
 			
 			return "sub_form";
@@ -131,55 +198,72 @@ public class SubController {
 		
 		newUser = createOrFindUser(newUser);
 		
-		// update sub with the new user Id and where the sub came from
-		GroupUsers newSub = new GroupUsers();
-		newSub.setUaId(newUser.getUaId());
-		newSub.setUgaId(userGroup.getUgaId());
-		newSub.setGuaSubedAt(user.getUaName() + " / " + userGroup.getUgaName());
-		newSub.setGuaIpAddr(HttpUtils.getIp(request));
-		
-		// make the sub inactive until email is confirmed
-		newSub.setGuaActive(false);
-		
-		// check if the email is already sub'ed to this group
-		if ( createOrFindSub(newSub) ) {
-			model.addAttribute("error", true);
-		} else {			 
-			// NOTE: the auto generated username has a $ as a first char
-			//       it has to be URL Encoded as %24
-			try {
-				mailer.send(newUser.getUaEmail(), 
-						this.email.getMailFrom(), this.email.getReplyTo(), this.email.getMailSubject(), 
-						"Please confirm your Subsription to " +
-						user.getUaName() + "'s " + userGroup.getUgaName() +
-						" by clicking the following link: " +
-						this.email.getSubConfirmLink() + 
-						"?u=" + newUser.getUaUsername().replaceAll("\\$", "%24") + 
-						"&g=" + newSub.getGuaId()
-						);				
-			} catch (Exception e) {
-				logger.info("Error Sending Email: " + e.getMessage());
-			}
+//		// update sub with the new user Id and where the sub came from
+//		GroupUsers newSub = new GroupUsers();
+//		newSub.setUaId(newUser.getUaId());
+//		newSub.setUgaId(userGroup.getUgaId());
+//		newSub.setGuaSubedAt(user.getUaName() + " / " + userGroup.getUgaName());
+//		newSub.setGuaIpAddr(HttpUtils.getIp(request));
+//		
+//		// make the sub inactive until email is confirmed
+//		newSub.setGuaActive(false);
+//		
+//		// check if the email is already sub'ed to this group
+//		if ( createOrFindSub(newSub) ) {
+//			model.addAttribute("error", true);
+//		} else {			 
+//			// NOTE: the auto generated username has a $ as a first char
+//			//       it has to be URL Encoded as %24
+//			try {
+//				mailer.send(newUser.getUaEmail(), 
+//						this.email.getMailFrom(), this.email.getReplyTo(), this.email.getSubSubject(), 
+//						"Please confirm your Subsription to " +
+//						user.getUaName() + "'s " + userGroup.getUgaName() +
+//						" by clicking the following link: " +
+//						this.email.getSubConfirmLink() + 
+//						"?u=" + newUser.getUaUsername().replaceAll("\\$", "%24") + 
+//						"&g=" + newSub.getGuaId()
+//						);				
+//			} catch (Exception e) {
+//				logger.info("Error Sending Email: " + e.getMessage());
+//			}
+//		}
+
+
+		// NOTE: the auto generated username has a $ as a first char
+		//       it has to be URL Encoded as %24
+		try {
+			mailer.send(newUser.getUaEmail(), 
+					this.email.getMailFrom(), this.email.getReplyTo(), this.email.getReplySubject(), 
+					"Please confirm your feedback reply request for " +
+					user.getUaName() +
+					" by clicking the following link: " +
+					this.email.getReplyConfirmLink() + 
+					"?t=" + orig_tfaUuid +
+					"&u=" + newUser.getUaUsername().replaceAll("\\$", "%24")
+					);				
+		} catch (Exception e) {
+			logger.info("Error Sending Email to: " + newUser.getUaEmail() + " | ERROR: " + e.getMessage());
 		}
-		
+
 		model.addAttribute("user", user);
 		model.addAttribute("group", userGroup);
 		model.addAttribute("newuser", newUser);
 
-		return "sub_complete";
+		return "reply_requested";
 	}
 
-	private boolean createOrFindSub(GroupUsers newSub) {
-		
-		GroupUsers existingSub = groupUsersRepository.findByUgaIdAndUaId(newSub.getUgaId(), newSub.getUaId());
-		if ( existingSub != null ) {
-			return true;
-		}
-		
-		// if we got here save the sub
-		groupUsersRepository.save(newSub);
-		return false;
-	}
+//	private boolean createOrFindSub(GroupUsers newSub) {
+//		
+//		GroupUsers existingSub = groupUsersRepository.findByUgaIdAndUaId(newSub.getUgaId(), newSub.getUaId());
+//		if ( existingSub != null ) {
+//			return true;
+//		}
+//		
+//		// if we got here save the sub
+//		groupUsersRepository.save(newSub);
+//		return false;
+//	}
 
 	private User createOrFindUser(User newUser) {
 		
@@ -200,9 +284,6 @@ public class SubController {
 		newUserName = newUserName.substring(newUserName.lastIndexOf('-'));
 		newUser.setUaUsername(this.email.getSubPrefix() + newUserName);
 		
-		// set fake name
-		newUser.setUaName(this.email.getSubPrefix() + "-Name");
-		
 		// set the user's password
 		newUser.setUaPassword(this.email.getChangePassword());
 		
@@ -211,6 +292,16 @@ public class SubController {
 		
 		// parse Gravatar email hash
 		newUser.setUaGravatarHash(HttpUtils.getGravatarUrl(newUser.getUaEmail()));
+
+		// THIS HAS TO BE THE LAST STEP OR ModifiedBy will be replaced by the setters
+		//
+		// set created by to SUB_USER_CREATION - we check for this on conf() side
+		// to make sure we don't overwrite a newer update, for example if
+		// user had this conf link in their mailbox for years and then
+		// we axed their account and they decided to click the conf link
+		// and would wipe our deactivation ...
+		newUser.setCreatedBy(SUB_USER_CREATION);
+		newUser.setModifiedBy(SUB_USER_CREATION);
 		
 		// save user
 		// TODO: Duplicate Email will fail with 
@@ -220,18 +311,28 @@ public class SubController {
 	}
 	
 	@RequestMapping(
-			value = "/{toId:[A-Za-z0-9\\-\\_]+}/{groupSlug:[A-Za-z0-9\\-\\_]+}/sub", 
+			value = "/{toId:[A-Za-z0-9\\-\\_]+}/{groupSlug:[A-Za-z0-9\\-\\_]+}/{tfaUuid:[A-Za-z0-9\\-]+}/sub", 
 			method = RequestMethod.GET)
 	public String subForm(
 			@PathVariable("toId") String toId, 
 			@PathVariable("groupSlug") String groupSlug,
+			@PathVariable("tfaUuid") String tfaUuid,
 			Model model) {
 
 		User user = findUser(toId);
 		UserGroup userGroup = findGroup(groupSlug, user);
+		TopicFeedback feedback = topicFeedbackRepository.findByTfaUuid(tfaUuid);
+		
+		// we don't even want to go anywhere unless feedback is still assigned
+		// to ANON user - it it was already processed then we are done and 
+		// this is most likely a hack ...
+		if ( feedback == null || feedback.getUaId() != ANON_USER_ID ) {
+			throw new FeedbackNotFoundException(tfaUuid);
+		}
 		
 		model.addAttribute("user", user);
 		model.addAttribute("group", userGroup);
+		model.addAttribute("feedback", feedback);
 		model.addAttribute("newuser", new User());
 		
 		return "sub_form";
