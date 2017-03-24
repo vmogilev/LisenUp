@@ -20,27 +20,13 @@
 		</ol>
 		
 		<div class="panel panel-default">
-			<div class="panel-heading">
+			<div class="panel-heading text-center">
 				<h3 class="panel-title">Get A Reply</h3>
 			</div>
 			<div class="panel-body">
 
-			    <div th:if="${errors}" class="alert alert-warning" role="alert">
-					<ul>
-						<li th:each="error : ${errors}" th:text="${error}">Error</li>
-					</ul>
-				</div>
-	
-<!-- 			    <div class="alert alert-success" role="alert">
-			    	<p>By providing your information you give <strong>LisenUp</strong> permission to:</p>
-					<ol>
-						<li th:text="'share your name and email with ' + ${user.uaName}">Shared</li>
-						<li th:text="'forward to you ' + ${user.uaName} + '\'s reply to your feedback'">Notified</li>
-						<li th:text="'subscribe you to ' + ${user.uaName} + '\'s ' + ${group.ugaName} + ' Group and send you new feedback topics'">Subbed</li>
-					</ol>
-					<p>Your subscription will be managed by <strong>LisenUp</strong> and is subject to our <a href="/legal/privacy">privacy policy</a></p>
-				</div> -->
-				
+				<div th:replace="body :: errlist"></div>
+					
 			    <form action="#" th:action="@{/getreply}" th:object="${newuser}" method="post">
 			    	<div class="form-group">
 			    		<label class="control-label" for="uaName">Your Name</label>

@@ -14,6 +14,13 @@
 		</div>
 		</div>
 
+			    <ul th:fragment="errlist" th:if="${errors}" class="list-group">
+					<li th:each="error : ${errors}" class="list-group-item list-group-item-danger">
+						<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+						<span th:text="${error}" th:remove="tag">Error</span>
+					</li>
+				</ul>
+
   </body>
   
 </html>

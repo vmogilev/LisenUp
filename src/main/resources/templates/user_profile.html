@@ -19,14 +19,17 @@
 		<div th:replace="body :: user (message=${user.uaGreeting})"></div>
 		
 		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 class="panel-title">I'd Like Your Feedback On:</h3>
+			<div class="panel-heading text-center">
+				<h3 class="panel-title">I'd Like Your Feedback On</h3>
 			</div>
 			<!-- <div class="panel-body">...</div> -->
 		
 			<div class="list-group">
 				<a th:each="group : ${groups}" th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" class="list-group-item list-group-item-success">
-					<h4 th:text="${group.ugaName}" class="list-group-item-heading">Topic</h4>
+					<h4 class="list-group-item-heading">
+						<span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>
+						<span th:text="${group.ugaName}" th:remove="tag">Group</span>
+					</h4>
 				</a>
 			</div>
 		</div>

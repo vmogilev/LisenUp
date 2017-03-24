@@ -20,14 +20,17 @@
 		<div th:replace="body :: user (message=${group.ugaDesc})"></div>
 
 		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3 th:text="'Feedback Topics:'" class="panel-title">Feedback For:</h3>
+			<div class="panel-heading text-center">
+				<h3 th:text="'Feedback Topics'" class="panel-title">Feedback Topics</h3>
 			</div>
 			<!-- <div class="panel-body"></div> -->
 		
 			<div class="list-group">
 				<a th:each="topic : ${topics}" th:href="@{/{usr}/{grp}/{q}(usr=${user.uaUsername},grp=${group.ugaSlug},q=${topic.gtaId})}" class="list-group-item list-group-item-success">
-					<h4 th:text="${topic.gtaTitle}" class="list-group-item-heading">Topic</h4>
+					<h4 class="list-group-item-heading">
+						<span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>
+						<span th:text="${topic.gtaTitle}" th:remove="tag">Topic</span>
+					</h4>
 				</a>
 			</div>
 		</div>
