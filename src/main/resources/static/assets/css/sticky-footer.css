@@ -42,3 +42,15 @@ body {
 .user {
 	padding-bottom: 9px;
 }
+
+
+.panel-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 18px;
+    color: inherit;
+}
+
+.h1, h1 {
+    font-size: 26px;
+}

@@ -49,7 +49,7 @@ values (
     'change',
     1,
     '310bc337aaf8b7ff17ce233a36934fe6',
-    'LisenUp Co-founder / CTO | Rock Climber | Love to hear your feedback!');
+    'LisenUp Co-founder / CTO');
 
 
 insert into lisenupdb.user_groups_all (
@@ -88,7 +88,7 @@ values (
     100,
     'VMOGILEV',
     'VMOGILEV',
-    'LisenUp',
+    'LisenUp Website',
     'LisenUp is still in private beta, so I would love to hear your thoughts on the following:',
     'LisenUp',
     1,
@@ -125,7 +125,7 @@ values (
     1,
     'VMOGILEV',
     'VMOGILEV',
-    'I am Know For ...',
+    'I am Known For ...',
     'If someone asked you what I am known for?  What is the one thing that comes to mind?',
     1
 );
@@ -161,7 +161,25 @@ values (
     2,
     'VMOGILEV',
     'VMOGILEV',
-    'LisenUp Mission',
+    'Our Mission Statement',
     'Does our mission statement at https://lisenup.com/about resonate with you?',
+    1
+);
+
+insert into lisenupdb.group_topics_all (
+  gta_id,
+  uga_id,
+  created_by,
+  modified_by,
+  gta_title,
+  gta_text,
+  gta_active)
+values (
+    5,
+    2,
+    'VMOGILEV',
+    'VMOGILEV',
+    'Feedback Process',
+    'Is it easy to leave a feedback using LisenUp website?',
     1
 );
