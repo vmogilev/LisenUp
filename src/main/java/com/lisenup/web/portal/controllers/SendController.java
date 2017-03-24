@@ -34,6 +34,7 @@ import com.lisenup.web.portal.utils.HttpUtils;
 public class SendController {
 
 	private static final int MAX_FEEDBACK = 1124;
+	private static final int MAX_FEEDBACK_EXT = MAX_FEEDBACK-100;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -63,7 +64,7 @@ public class SendController {
 		}
 
 		if ( feedback.getTfaText().length() > MAX_FEEDBACK ) {
-			errors.add("Sorry, your Feedback is longer than " + MAX_FEEDBACK + " characters");
+			errors.add("Sorry, your Feedback is longer than " + MAX_FEEDBACK_EXT + " characters");
 		}
 
 		// we have to use findOne() and not check *Active attributes

@@ -29,12 +29,13 @@
 					<p>Your email address was already subscribed to this group</p>
 				</div> -->
 				
-				<div th:unless="${error}" class="alert alert-success" role="alert">
-					<ul>
+				<div th:unless="${error}" class="alert alert-info" role="alert">
+					<p th:text="'Please check your mailbox (' + ${newuser.uaEmail} + ') for our confirmation email and make sure to click the link to verify your email address.'" class="lead"></p>
+<!-- 					<ul>
 						<li th:text="'You successfully requested a reply to your feedback from: ' + ${user.uaName}"></li>
 						<li th:text="'Please check your mailbox (' + ${newuser.uaEmail} + ') for our confirmation email and make sure to confirm your email address.'"></li>
 						<li>For your protection we will not send any replies until your email address is confirmed.</li>
-					</ul>
+					</ul> -->
 				</div>				
 
 				<div class="panel-body text-center">

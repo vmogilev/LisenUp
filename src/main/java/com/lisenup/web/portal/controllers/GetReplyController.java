@@ -254,9 +254,7 @@ public class GetReplyController {
 		try {
 			mailer.send(newUser.getUaEmail(), 
 					this.email.getMailFrom(), this.email.getReplyTo(), this.email.getReplySubject(), 
-					"Please confirm your feedback reply request for " +
-					user.getUaName() +
-					" by clicking the following link: " +
+					"Please confirm your email by clicking on the following link: " +
 					this.email.getReplyConfirmLink() + 
 					"?t=" + orig_tfaUuid +
 					"&u=" + newUser.getUaUsername().replaceAll("\\$", "%24")

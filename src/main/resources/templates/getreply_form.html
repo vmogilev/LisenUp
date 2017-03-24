@@ -60,7 +60,14 @@
 			        <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
 			        <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
 			        <input id="orig_tfaUuid" name="orig_tfaUuid" type="hidden" th:value="${feedback.tfaUuid}" />
-			        <button type="submit" class="btn btn-success btn-lg">Submit</button>
+
+				    <div class="panel-body text-center">
+					    <!-- <div class="btn-group" role="group" aria-label="submit-group"> -->
+					    	<button type="submit" class="btn btn-success btn-lg">Submit</button>
+					    	<a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="'Cancel'" class="btn btn-primary btn-lg" role="button">Cancel</a>
+					    <!-- </div> -->
+				    </div>
+
 			    </form>
 	    
 	    	</div>

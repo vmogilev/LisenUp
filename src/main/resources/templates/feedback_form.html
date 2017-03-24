@@ -21,7 +21,7 @@
 
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">Your Feedback</h3>
+				<h3 class="panel-title">Your Feedback <small><mark><span id="chars-left"></span></mark></small></h3>
 			</div>
 			<div class="panel-body">
 
@@ -34,15 +34,17 @@
 			    <form action="#" th:action="@{/feedback}" th:object="${feedback}" method="post">
 				    <div class="form-group">
 				    	<!-- <p>Topic Id: <input type="text" th:field="*{gtaId}" /></p> -->
-				        <textarea th:field="*{tfaText}" class="form-control" rows="5" placeholder="Please Enter Your Feedback Here" required></textarea>
+				        <textarea th:field="*{tfaText}" class="form-control" rows="5" placeholder="Please Enter Your Feedback Here (max length: 1024)" required></textarea>
 				        <input type="hidden" th:field="*{gtaId}" />
 				        <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
 				        <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
 				        <input id="orig_gtaId" name="orig_gtaId" type="hidden" th:value="${topic.gtaId}" />
 				    </div>
-				    <div class="btn-group" role="group" aria-label="submit-group">
-				    	<button type="button" class="btn btn-default" id="chars-left">1024</button>
-				    	<button type="submit" class="btn btn-primary">Send Feedback</button>
+				    <div class="panel-body text-center">
+					    <!-- <div class="btn-group" role="group" aria-label="submit-group"> -->
+					    	<button type="submit" class="btn btn-success btn-lg">Send</button>
+					    	<a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="'Cancel'" class="btn btn-primary btn-lg" role="button">Cancel</a>
+					    <!-- </div> -->
 				    </div>
 			    </form>
 
@@ -70,7 +72,7 @@ $('textarea').keydown(function(e) {
         tlength = tval.length,
         set = 1024,
         remain = parseInt(set - tlength);
-    $("#chars-left").text(remain);
+    $("#chars-left").text('[' + remain + ' remain]');
     if (remain <= 0 && e.which !== 0 && e.charCode !== 0) {
         $('textarea').val((tval).substring(0, tlength - 1))
     }
