@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="header :: copy (description=${group.ugaDesc},title='Feedback For: ' + ${user.uaName})">
+<head th:replace="header :: copy (description=${user.uaName} + ' | LisenUp Profile Page',title=${user.uaName} + ' | LisenUp')">
 </head>
 
 <body>
@@ -9,24 +9,23 @@
     <div class="container">
     
 		<div class="page-header">
-		  <h1 th:text="'Feedback For ' + ${group.ugaName}">Feedback For</h1>
+		  <h1 th:text="${user.uaName}">Profile</h1>
 		</div>
 
 		<ol class="breadcrumb">
-			<li><a th:href="@{/{usr}(usr=${user.uaUsername})}" th:text="${user.uaName}">Profile</a></li>
-			<li th:text="${group.ugaName}" class="active">Group</li>
+		  <li th:text="'Profile'" class="active">Profile</li>
 		</ol>
 
-		<div th:replace="body :: user (message=${group.ugaDesc})"></div>
+		<div th:replace="body :: user (message=${user.uaGreeting})"></div>
 
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">Feedback Topics</h3>
+				<h3 class="panel-title">Feedback Groups</h3>
 			</div>
 			<div class="panel-body">
 		
 				<div class="list-group">
-					<a th:each="topic : ${topics}" th:href="@{/{usr}/{grp}/{q}(usr=${user.uaUsername},grp=${group.ugaSlug},q=${topic.gtaId})}" th:text="${topic.gtaTitle}" class="list-group-item">Topic Title</a>
+					<a th:each="group : ${groups}" th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="${group.ugaName}" class="list-group-item">Group Title</a>
 				</div>
 
 			</div>

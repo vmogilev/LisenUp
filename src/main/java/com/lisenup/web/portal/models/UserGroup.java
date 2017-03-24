@@ -42,12 +42,16 @@ public class UserGroup {
 	
 	@NotNull
 	private boolean ugaActive;
+	
+	@NotNull
+	private boolean ugaPublic;
 
 	// default constructor needed for hibernate
 	public UserGroup() {
 		this.createdBy = CREATED_BY;
 		this.modifiedBy = MODIFIED_BY;
 		this.ugaActive = true;
+		this.ugaPublic = false;
 	}
 
 	public long getUgaId() {
@@ -91,6 +95,15 @@ public class UserGroup {
 
 	public void setUgaActive(boolean ugaActive) {
 		this.ugaActive = ugaActive;
+		this.modifiedBy = MODIFIED_BY;
+	}
+
+	public boolean isUgaPublic() {
+		return ugaPublic;
+	}
+
+	public void setUgaPublic(boolean ugaPublic) {
+		this.ugaPublic = ugaPublic;
 		this.modifiedBy = MODIFIED_BY;
 	}
 

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="header :: copy (description=${group.ugaDesc},title='Confirmed Reply Request To: ' + ${user.uaName} + '/' + ${group.ugaName})">
+<head th:replace="header :: copy (description='Confirmed Reply Request',title='Confirmed Reply Request')">
 </head>
 
 <body>
@@ -9,12 +9,19 @@
     <div class="container">
     
 		<div class="page-header">
-		  <h1 th:text="${user.uaName} + '\'s ' + ${group.ugaName} + ' Group'">Subscribe</h1>
+		  <h1 th:text="'Email Confirmed'">Subscribe</h1>
 		</div>
 
+		<ol class="breadcrumb">
+			<!-- <li><a th:href="@{/{usr}(usr=${user.uaUsername})}" th:text="${user.uaName}">Profile</a></li> -->
+			<!-- <li><a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="${group.ugaName}">Group</a></li> -->
+			<li><a th:href="@{/{usr}/{grp}/{q}(usr=${user.uaUsername},grp=${group.ugaSlug},q=${topic.gtaId})}" th:text="${topic.gtaTitle}">Topic</a></li>
+			<li th:text="'Reply Request Confirmed'" class="active">Email Confirmed</li>
+		</ol>
+		
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3 class="panel-title">Your Reply Requests Confirmed!</h3>
+				<h3 class="panel-title">Your Reply Request Confirmed!</h3>
 			</div>
 			<div class="panel-body">
 
@@ -23,9 +30,7 @@
 				</div>
 				
 				<div th:unless="${error}" class="alert alert-success" role="alert">
-					<ul>
-						<li>Your email and reply request are confirmed!  Thank you!</li>
-					</ul>
+					<p th:text="'Your email and reply request for feedback to ' + ${user.uaName} + '\'s \'' + ${topic.gtaTitle} + '\' are confirmed!  Thank you!'"></p>
 				</div>				
 			
 			</div>

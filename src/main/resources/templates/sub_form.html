@@ -9,10 +9,16 @@
     <div class="container">
     
 		<div class="page-header">
-		  <h1 th:text="'Get ' + ${user.uaName} + '\'s Reply'">Subscribe</h1>
+		  <h1 th:text="'Get A Reply'">Get A Reply</h1>
 		</div>
 	    
-
+		<ol class="breadcrumb">
+			<!-- <li><a th:href="@{/{usr}(usr=${user.uaUsername})}" th:text="${user.uaName}">Profile</a></li> -->
+			<!-- <li><a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="${group.ugaName}">Group</a></li> -->
+			<li><a th:href="@{/{usr}/{grp}/{q}(usr=${user.uaUsername},grp=${group.ugaSlug},q=${topic.gtaId})}" th:text="${topic.gtaTitle}">Topic</a></li>
+			<li th:text="'Get A Reply'" class="active">Get A Reply</li>
+		</ol>
+		
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<h3 class="panel-title">Get A Reply</h3>
@@ -29,7 +35,7 @@
 			    	<p>By providing your information you give <strong>LisenUp</strong> permission to:</p>
 					<ol>
 						<li th:text="'share your name and email with ' + ${user.uaName}">Shared</li>
-						<li th:text="'send you ' + ${user.uaName} + '\'s reply to your feedback'">Notified</li>
+						<li th:text="'forward to you ' + ${user.uaName} + '\'s reply to your feedback'">Notified</li>
 						<!-- <li th:text="'subscribe you to ' + ${user.uaName} + '\'s ' + ${group.ugaName} + ' Group and send you new feedback topics'">Subbed</li> -->
 					</ol>
 					<!-- <p>Your subscription will be managed by <strong>LisenUp</strong> and is subject to our <a href="/legal/privacy">privacy policy</a></p> -->
@@ -54,7 +60,7 @@
 			        <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
 			        <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
 			        <input id="orig_tfaUuid" name="orig_tfaUuid" type="hidden" th:value="${feedback.tfaUuid}" />
-			        <button type="submit" class="btn btn-success btn-lg">Get A Reply</button>
+			        <button type="submit" class="btn btn-success btn-lg">Submit</button>
 			    </form>
 	    
 	    	</div>

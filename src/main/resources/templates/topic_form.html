@@ -11,14 +11,13 @@
 		  <h1 th:text="${topic.gtaTitle}">Topic Title</h1>
 		</div>
 
-		<div class="row">
-		<div class="col-xs-12 col-md-12 col-lg-12">
-		    <div class="clearfix content-heading">
-		        <img th:src="'https://www.gravatar.com/avatar/' + ${user.uaGravatarHash} + '?s=80'" src="" alt="" class="pull-left img-rounded center-block" style="margin-right: 10px; margin-bottom: 5px">
-		        <p th:text="${topic.gtaText}" class="lead"></p>
-		    </div>
-		</div>
-		</div>
+		<ol class="breadcrumb">
+			<!-- <li><a th:href="@{/{usr}(usr=${user.uaUsername})}" th:text="${user.uaName}">Profile</a></li> -->
+			<li><a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="${group.ugaName}">Group</a></li>
+			<li th:text="${topic.gtaTitle}" class="active">Topic Feedback</li>
+		</ol>
+
+		<div th:replace="body :: user (message=${topic.gtaText})"></div>
 
 		<div class="panel panel-default">
 			<div class="panel-heading">

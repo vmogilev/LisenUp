@@ -1,0 +1,19 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+  <body>
+
+		<div th:fragment="user" class="row user">
+		<div class="col-xs-12 col-md-12 col-lg-12">
+		    <div class="clearfix content-heading">
+		        <a th:href="@{/{usr}(usr=${user.uaUsername})}"><img th:alt="${user.uaName}" th:src="'https://www.gravatar.com/avatar/' + ${user.uaGravatarHash} + '?s=80'" src="" alt="" class="pull-left img-rounded center-block" style="margin-right: 10px; margin-bottom: 5px"></a>
+		        <p th:text="${message}" class="lead"></p>
+		    </div>
+		</div>
+		</div>
+
+  </body>
+  
+</html>

@@ -84,9 +84,9 @@ public class SubController {
 			throw new FeedbackNotFoundException(tfaUuid);
 		}
 
-		// see createOrFindUser(newUser) - we have to match on ModifiedBy
+		// see createOrFindUser(newUser) - we have to match on ModifiedBy if user is inactive
 		// if not - it's most likely a hack - fail fast and be nasty
-		if ( !user.getModifiedBy().equals(SUB_USER_CREATION) ) {
+		if ( !user.isUaActive() && !user.getModifiedBy().equals(SUB_USER_CREATION) ) {
 			throw new UserNotFoundException("un: " + uaUsername + " mod: " + user.getModifiedBy());
 		}
 
@@ -107,6 +107,7 @@ public class SubController {
 
 		model.addAttribute("user", groupOwner);
 		model.addAttribute("group", group);
+		model.addAttribute("topic", topic);
 
 		return "reply_confirmed";
 	}
@@ -161,6 +162,8 @@ public class SubController {
 		if ( feedback == null ) {
 			throw new FeedbackNotFoundException(orig_tfaUuid);
 		}
+
+		GroupTopic topic = groupTopicRepository.findOne(feedback.getGtaId());
 		
 		// check to make sure user is active
 		if ( !user.isUaActive() ) {
@@ -190,6 +193,7 @@ public class SubController {
 			model.addAttribute("group", userGroup);
 			model.addAttribute("newuser", newUser);
 			model.addAttribute("feedback", feedback);
+			model.addAttribute("topic", topic);
 			model.addAttribute("terms", terms);
 			model.addAttribute("errors", errors);
 			
@@ -249,6 +253,7 @@ public class SubController {
 		model.addAttribute("user", user);
 		model.addAttribute("group", userGroup);
 		model.addAttribute("newuser", newUser);
+		model.addAttribute("topic", topic);
 
 		return "reply_requested";
 	}
@@ -330,8 +335,11 @@ public class SubController {
 			throw new FeedbackNotFoundException(tfaUuid);
 		}
 		
+		GroupTopic topic = groupTopicRepository.findOne(feedback.getGtaId());
+		
 		model.addAttribute("user", user);
 		model.addAttribute("group", userGroup);
+		model.addAttribute("topic", topic);
 		model.addAttribute("feedback", feedback);
 		model.addAttribute("newuser", new User());
 		

@@ -13,7 +13,8 @@ insert into lisenupdb.users_all (
   ua_email,
   ua_password,
   ua_active,
-  ua_gravatar_hash)
+  ua_gravatar_hash,
+  ua_greeting)
 values (
     1,
     'SEED',
@@ -21,9 +22,10 @@ values (
     'anonymous',
     'Anonymous',
     'null@lisenup.com',
-    'junk',
+    'change',
     0,
-    '-');
+    'z',
+    'Anonymous');
 
 
 insert into lisenupdb.users_all (
@@ -35,17 +37,19 @@ insert into lisenupdb.users_all (
   ua_email,
   ua_password,
   ua_active,
-  ua_gravatar_hash)
+  ua_gravatar_hash,
+  ua_greeting)
 values (
     100,
     'VMOGILEV',
     'VMOGILEV',
     'mve',
-    'Vitaliy',
+    'Vitaliy Mogilevskiy',
     'admin@lisenup.com',
-    'junk',
+    'change',
     1,
-    '310bc337aaf8b7ff17ce233a36934fe6');
+    '310bc337aaf8b7ff17ce233a36934fe6',
+    'LisenUp Co-founder / CTO | Rock Climber | Love to hear your feedback!');
 
 
 insert into lisenupdb.user_groups_all (
@@ -56,7 +60,8 @@ insert into lisenupdb.user_groups_all (
   uga_name,
   uga_desc,
   uga_slug,
-  uga_active)
+  uga_active,
+  uga_public)
 values (
     1,
     100,
@@ -65,6 +70,28 @@ values (
     'My Job',
     'I want to improve my Job and would like to get your candid feedback on the following:',
     'Job',
+    1,
+    1);
+
+insert into lisenupdb.user_groups_all (
+  uga_id,
+  ua_id,
+  created_by,
+  modified_by,
+  uga_name,
+  uga_desc,
+  uga_slug,
+  uga_active,
+  uga_public)
+values (
+    2,
+    100,
+    'VMOGILEV',
+    'VMOGILEV',
+    'LisenUp',
+    'LisenUp is still in private beta, so I would love to hear your thoughts on the following:',
+    'LisenUp',
+    1,
     1);
 
 insert into lisenupdb.group_topics_all (
@@ -118,5 +145,23 @@ values (
     'VMOGILEV',
     'One Thing Better ...',
     'If we were to work together again, what is the one thing that I should do better?',
+    1
+);
+
+insert into lisenupdb.group_topics_all (
+  gta_id,
+  uga_id,
+  created_by,
+  modified_by,
+  gta_title,
+  gta_text,
+  gta_active)
+values (
+    4,
+    2,
+    'VMOGILEV',
+    'VMOGILEV',
+    'LisenUp Mission',
+    'Does our mission statement at https://lisenup.com/about resonate with you?',
     1
 );

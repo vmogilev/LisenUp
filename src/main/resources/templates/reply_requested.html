@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="header :: copy (description=${group.ugaDesc},title='Reply Requested For: ' + ${user.uaName} + '/' + ${group.ugaName})">
+<head th:replace="header :: copy (description='Reply Requested',title='Reply Requested')">
 </head>
 
 <body>
@@ -9,8 +9,15 @@
     <div class="container">
     
 		<div class="page-header">
-		  <h1 th:text="'Get ' + ${user.uaName} + '\'s Reply'">Get A Reply</h1>
+		  <h1 th:text="'Reply Requested'">Reply Requested</h1>
 		</div>
+
+		<ol class="breadcrumb">
+			<!-- <li><a th:href="@{/{usr}(usr=${user.uaUsername})}" th:text="${user.uaName}">Profile</a></li> -->
+			<!-- <li><a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="${group.ugaName}">Group</a></li> -->
+			<li><a th:href="@{/{usr}/{grp}/{q}(usr=${user.uaUsername},grp=${group.ugaSlug},q=${topic.gtaId})}" th:text="${topic.gtaTitle}">Topic</a></li>
+			<li th:text="'Reply Requested'" class="active">Reply Requested</li>
+		</ol>
 
 		<div class="panel panel-default">
 			<div class="panel-heading">
