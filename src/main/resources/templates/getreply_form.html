@@ -48,10 +48,8 @@
 			        <input id="orig_tfaUuid" name="orig_tfaUuid" type="hidden" th:value="${feedback.tfaUuid}" />
 
 				    <div class="panel-body text-center">
-					    <!-- <div class="btn-group" role="group" aria-label="submit-group"> -->
-					    	<button type="submit" class="btn btn-success btn-lg">Submit</button>
-					    	<a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="'Cancel'" class="btn btn-primary btn-lg" role="button">Cancel</a>
-					    <!-- </div> -->
+				    	<a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="'Cancel'" class="btn btn-primary btn-lg" role="button">Cancel</a>
+				    	<button type="submit" class="btn btn-success btn-lg">Submit</button>
 				    </div>
 
 			    </form>
