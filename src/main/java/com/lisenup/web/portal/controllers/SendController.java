@@ -93,7 +93,7 @@ public class SendController {
 			model.addAttribute("group", userGroup);
 			model.addAttribute("topic", topic);
 			model.addAttribute("errors", errors);
-			return "topic_form";
+			return "feedback_form";
 		}
 		
 		// if we got here save the topic - all good!
@@ -132,7 +132,7 @@ public class SendController {
 		model.addAttribute("user", user);
 		model.addAttribute("group", userGroup);
 		model.addAttribute("topic", topic);
-		return "topic_form";
+		return "feedback_form";
 	}
 	
 	// RegEx only allows letters, numbers, '-' and '_'

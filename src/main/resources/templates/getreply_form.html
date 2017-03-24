@@ -31,17 +31,17 @@
 					</ul>
 				</div>
 	
-			    <div class="alert alert-success" role="alert">
+<!-- 			    <div class="alert alert-success" role="alert">
 			    	<p>By providing your information you give <strong>LisenUp</strong> permission to:</p>
 					<ol>
 						<li th:text="'share your name and email with ' + ${user.uaName}">Shared</li>
 						<li th:text="'forward to you ' + ${user.uaName} + '\'s reply to your feedback'">Notified</li>
-						<!-- <li th:text="'subscribe you to ' + ${user.uaName} + '\'s ' + ${group.ugaName} + ' Group and send you new feedback topics'">Subbed</li> -->
+						<li th:text="'subscribe you to ' + ${user.uaName} + '\'s ' + ${group.ugaName} + ' Group and send you new feedback topics'">Subbed</li>
 					</ol>
-					<!-- <p>Your subscription will be managed by <strong>LisenUp</strong> and is subject to our <a href="/legal/privacy">privacy policy</a></p> -->
-				</div>
+					<p>Your subscription will be managed by <strong>LisenUp</strong> and is subject to our <a href="/legal/privacy">privacy policy</a></p>
+				</div> -->
 				
-			    <form action="#" th:action="@{/sub}" th:object="${newuser}" method="post">
+			    <form action="#" th:action="@{/getreply}" th:object="${newuser}" method="post">
 			    	<div class="form-group">
 			    		<label class="control-label" for="uaName">Your Name</label>
 			    		<input th:field="*{uaName}" type="text" class="form-control" id="uaName" placeholder="Name" aria-describedby="helpBlock0" required>
@@ -53,7 +53,7 @@
 			    	</div>
 					<div class="checkbox">
 					  <label>
-					    <input th:checked="${terms}" type="checkbox" id="terms" name="terms" required> I agree to the above terms
+					    <input th:checked="${terms}" type="checkbox" id="terms" name="terms" required><span th:text="'I agree to reveal my name/email to ' + ${user.uaName}"></span>
 					  </label>
 					</div>
 			    	<!-- <p>Email Address: <input type="text" th:field="*{uaEmail}" /> -->

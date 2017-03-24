@@ -23,12 +23,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.lisenup.web.portal.config.EmailProperties;
 import com.lisenup.web.portal.exceptions.FeedbackNotFoundException;
 import com.lisenup.web.portal.exceptions.GroupNotFoundException;
-import com.lisenup.web.portal.exceptions.InvalidSubException;
 import com.lisenup.web.portal.exceptions.UserNotFoundException;
 import com.lisenup.web.portal.models.GroupTopic;
 import com.lisenup.web.portal.models.GroupTopicRepository;
-import com.lisenup.web.portal.models.GroupUsers;
-import com.lisenup.web.portal.models.GroupUsersRepository;
 import com.lisenup.web.portal.models.TopicFeedback;
 import com.lisenup.web.portal.models.TopicFeedbackRepository;
 import com.lisenup.web.portal.models.User;
@@ -39,15 +36,15 @@ import com.lisenup.web.portal.service.MailService;
 import com.lisenup.web.portal.utils.HttpUtils;
 
 @Controller
-public class SubController {
+public class GetReplyController {
 
-	private static final String SUB_USER_CREATION = "SUB_USER_CREATION";
+	private static final String TEMP_USER_CREATION = "TEMP_USER_CREATION";
 	private static final long ANON_USER_ID = 1;
 
 	@Autowired
 	private EmailProperties email;
 			
-	private Logger logger = LoggerFactory.getLogger(SubController.class);
+	private Logger logger = LoggerFactory.getLogger(GetReplyController.class);
 	
 	@Autowired
 	private MailService mailer;
@@ -59,8 +56,8 @@ public class SubController {
 	@Autowired
 	private UserGroupRepository userGroupRepository;
 	
-	@Autowired
-	private GroupUsersRepository groupUsersRepository;
+//	@Autowired
+//	private GroupUsersRepository groupUsersRepository;
 	
 	@Autowired
 	private TopicFeedbackRepository topicFeedbackRepository;
@@ -86,7 +83,7 @@ public class SubController {
 
 		// see createOrFindUser(newUser) - we have to match on ModifiedBy if user is inactive
 		// if not - it's most likely a hack - fail fast and be nasty
-		if ( !user.isUaActive() && !user.getModifiedBy().equals(SUB_USER_CREATION) ) {
+		if ( !user.isUaActive() && !user.getModifiedBy().equals(TEMP_USER_CREATION) ) {
 			throw new UserNotFoundException("un: " + uaUsername + " mod: " + user.getModifiedBy());
 		}
 
@@ -97,55 +94,55 @@ public class SubController {
 		
 		// update user's active flag if it was not set
 		if ( !user.isUaActive() ) {
-			userRepository.setActiveForUserId(true, SUB_USER_CREATION, user.getVersion()+1, user.getUaId());
+			userRepository.setActiveForUserId(true, TEMP_USER_CREATION, user.getVersion()+1, user.getUaId());
 		}
 		
 		// only update Feedback's user from anonymous=1 to real user Id
 		if ( feedback.getUaId() == ANON_USER_ID ) {
-			topicFeedbackRepository.setRealUserForFeedbackId(user.getUaId(), SUB_USER_CREATION, feedback.getVersion()+1, feedback.getTfaId());
+			topicFeedbackRepository.setRealUserForFeedbackId(user.getUaId(), TEMP_USER_CREATION, feedback.getVersion()+1, feedback.getTfaId());
 		}
 
 		model.addAttribute("user", groupOwner);
 		model.addAttribute("group", group);
 		model.addAttribute("topic", topic);
 
-		return "reply_confirmed";
+		return "getreply_confirmed";
 	}
 	
-	@GetMapping("/subconf")
-	public String subConfirmed(
-			@RequestParam("u") String uaUsername,
-			@RequestParam("g") long guaId,
-			Model model
-			) {
-		
-		User user = userRepository.findByUaUsername(uaUsername);
-		GroupUsers sub = groupUsersRepository.findOne(guaId);
-		UserGroup group = userGroupRepository.findOne(sub.getUgaId());
-		User groupOwner = userRepository.findOne(group.getUaId());
-		
-		if ( user.getUaId() != sub.getUaId() ) {
-			throw new InvalidSubException("uaUsername=" + uaUsername + " guaId=" + Long.toString(guaId));
-		}
-		
-		// update user's active flag if it was not set
-		if ( !user.isUaActive() ) {
-			userRepository.setActiveForUserId(true, "SUB_CONFIRMED", user.getVersion()+1, user.getUaId());
-		}
-		
-		// update user's sub active flag if it was not set
-		if ( !sub.isGuaActive() ) {
-			groupUsersRepository.setActiveForSubId(true, "SUB_CONFIRMED", sub.getGuaId());
-		}
-
-		model.addAttribute("user", groupOwner);
-		model.addAttribute("group", group);
-
-		return "sub_confirmed";
-	}
+//	@GetMapping("/subconf")
+//	public String subConfirmed(
+//			@RequestParam("u") String uaUsername,
+//			@RequestParam("g") long guaId,
+//			Model model
+//			) {
+//		
+//		User user = userRepository.findByUaUsername(uaUsername);
+//		GroupUsers sub = groupUsersRepository.findOne(guaId);
+//		UserGroup group = userGroupRepository.findOne(sub.getUgaId());
+//		User groupOwner = userRepository.findOne(group.getUaId());
+//		
+//		if ( user.getUaId() != sub.getUaId() ) {
+//			throw new InvalidSubException("uaUsername=" + uaUsername + " guaId=" + Long.toString(guaId));
+//		}
+//		
+//		// update user's active flag if it was not set
+//		if ( !user.isUaActive() ) {
+//			userRepository.setActiveForUserId(true, "SUB_CONFIRMED", user.getVersion()+1, user.getUaId());
+//		}
+//		
+//		// update user's sub active flag if it was not set
+//		if ( !sub.isGuaActive() ) {
+//			groupUsersRepository.setActiveForSubId(true, "SUB_CONFIRMED", sub.getGuaId());
+//		}
+//
+//		model.addAttribute("user", groupOwner);
+//		model.addAttribute("group", group);
+//
+//		return "sub_confirmed";
+//	}
 	
-	@PostMapping("/sub")
-	public String subComplete(
+	@PostMapping("/getreply")
+	public String getReplyPost(
 			@ModelAttribute User newUser,
 			@RequestParam("orig_uaId") long origUaId,
 			@RequestParam("orig_ugaId") long origUgaId,
@@ -184,7 +181,7 @@ public class SubController {
 			errors.add("Please enter your Name");
 		}
 		if ( !terms ) {
-			errors.add("Please accept the Terms (check the box)");
+			errors.add("Please agree to reveal your name and email (check the box)");
 		}
 
 		// if there are any correctable errors send the sub back to form
@@ -197,7 +194,7 @@ public class SubController {
 			model.addAttribute("terms", terms);
 			model.addAttribute("errors", errors);
 			
-			return "sub_form";
+			return "getreply_form";
 		}
 		
 		newUser = createOrFindUser(newUser);
@@ -255,7 +252,7 @@ public class SubController {
 		model.addAttribute("newuser", newUser);
 		model.addAttribute("topic", topic);
 
-		return "reply_requested";
+		return "getreply_requested";
 	}
 
 //	private boolean createOrFindSub(GroupUsers newSub) {
@@ -300,13 +297,13 @@ public class SubController {
 
 		// THIS HAS TO BE THE LAST STEP OR ModifiedBy will be replaced by the setters
 		//
-		// set created by to SUB_USER_CREATION - we check for this on conf() side
+		// set created by to TEMP_USER_CREATION - we check for this on conf() side
 		// to make sure we don't overwrite a newer update, for example if
 		// user had this conf link in their mailbox for years and then
 		// we axed their account and they decided to click the conf link
 		// and would wipe our deactivation ...
-		newUser.setCreatedBy(SUB_USER_CREATION);
-		newUser.setModifiedBy(SUB_USER_CREATION);
+		newUser.setCreatedBy(TEMP_USER_CREATION);
+		newUser.setModifiedBy(TEMP_USER_CREATION);
 		
 		// save user
 		// TODO: Duplicate Email will fail with 
@@ -316,7 +313,7 @@ public class SubController {
 	}
 	
 	@RequestMapping(
-			value = "/{toId:[A-Za-z0-9\\-\\_]+}/{groupSlug:[A-Za-z0-9\\-\\_]+}/{tfaUuid:[A-Za-z0-9\\-]+}/sub", 
+			value = "/{toId:[A-Za-z0-9\\-\\_]+}/{groupSlug:[A-Za-z0-9\\-\\_]+}/{tfaUuid:[A-Za-z0-9\\-]+}/getreply", 
 			method = RequestMethod.GET)
 	public String subForm(
 			@PathVariable("toId") String toId, 
@@ -343,7 +340,7 @@ public class SubController {
 		model.addAttribute("feedback", feedback);
 		model.addAttribute("newuser", new User());
 		
-		return "sub_form";
+		return "getreply_form";
 	}
 
 	

@@ -32,6 +32,10 @@
 				<div th:unless="${error}" class="alert alert-success" role="alert">
 					<p th:text="'Your email and reply request for feedback to ' + ${user.uaName} + '\'s \'' + ${topic.gtaTitle} + '\' are confirmed!  Thank you!'"></p>
 				</div>				
+
+				<div class="panel-body text-center">
+					<a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="'Leave More Feedback'" class="btn btn-primary btn-lg" role="button">More Feedback</a>
+				</div>
 			
 			</div>
 		</div>
