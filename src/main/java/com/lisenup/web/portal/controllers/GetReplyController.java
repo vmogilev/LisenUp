@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -197,7 +199,23 @@ public class GetReplyController {
 			return "getreply_form";
 		}
 		
-		newUser = createOrFindUser(newUser);
+		// Try to create a user and catch any constraint validation errors
+		try {
+			newUser = createOrFindUser(newUser);
+		} catch (ConstraintViolationException e) {
+			for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
+				errors.add(violation.getMessage());
+			}
+			model.addAttribute("user", user);
+			model.addAttribute("group", userGroup);
+			model.addAttribute("newuser", newUser);
+			model.addAttribute("feedback", feedback);
+			model.addAttribute("topic", topic);
+			model.addAttribute("terms", terms);
+			model.addAttribute("errors", errors);
+			return "getreply_form";
+		}
+		
 		
 //		// update sub with the new user Id and where the sub came from
 //		GroupUsers newSub = new GroupUsers();

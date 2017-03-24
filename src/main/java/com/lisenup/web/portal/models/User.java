@@ -8,6 +8,8 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.Email;
+
 @Entity
 @Table(name = "users_all")
 public class User {
@@ -35,6 +37,8 @@ public class User {
 	private String uaName;
 
 	@NotNull
+	@Email
+	@ExtendedEmailValidator
 	private String uaEmail;
 	
 	@NotNull
