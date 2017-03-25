@@ -30,11 +30,11 @@
 			    <form action="#" th:action="@{/getreply}" th:object="${newuser}" method="post">
 			    	<div class="form-group">
 			    		<label class="control-label" for="uaName">Your Name</label>
-			    		<input th:field="*{uaName}" type="text" class="form-control" id="uaName" placeholder="Name" aria-describedby="helpBlock0" required autofocus>
+			    		<input th:field="*{uaName}" type="text" class="form-control" id="uaName" placeholder="Full Name" aria-describedby="helpBlock0" required autofocus autocomplete="name">
 			    	</div>
 			    	<div class="form-group">
 			    		<label class="control-label" for="uaEmail">Email Address</label>
-			    		<input th:field="*{uaEmail}" type="email" class="form-control" id="uaEmail" placeholder="Email" aria-describedby="helpBlock1" required>
+			    		<input th:field="*{uaEmail}" type="email" class="form-control" id="uaEmail" placeholder="name@example.com" aria-describedby="helpBlock1" required autocomplete="email">
 			    		<span th:text="'You\'ll receive a confirmation email to this address shortly, when you do - please click the confirmation link to verify your email address.'" id="helpBlock1" class="help-block">Help</span>
 			    	</div>
 					<div class="checkbox">
