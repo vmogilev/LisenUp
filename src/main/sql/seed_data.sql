@@ -49,7 +49,7 @@ values (
     'change',
     1,
     '310bc337aaf8b7ff17ce233a36934fe6',
-    'LisenUp Co-founder / CTO');
+    'LisenUp Co-Founder / CTO');
 
 
 insert into lisenupdb.user_groups_all (
@@ -179,7 +179,7 @@ values (
     2,
     'VMOGILEV',
     'VMOGILEV',
-    'Feedback Process',
-    'Is it easy to leave a feedback using LisenUp website?',
+    'Website Usability',
+    'How is the LisenUp website usability? How easy is it to navigate and leave a feedback?',
     1
 );

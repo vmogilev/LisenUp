@@ -30,7 +30,7 @@
 			    <form action="#" th:action="@{/getreply}" th:object="${newuser}" method="post">
 			    	<div class="form-group">
 			    		<label class="control-label" for="uaName">Your Name</label>
-			    		<input th:field="*{uaName}" type="text" class="form-control" id="uaName" placeholder="Name" aria-describedby="helpBlock0" required>
+			    		<input th:field="*{uaName}" type="text" class="form-control" id="uaName" placeholder="Name" aria-describedby="helpBlock0" required autofocus>
 			    	</div>
 			    	<div class="form-group">
 			    		<label class="control-label" for="uaEmail">Email Address</label>

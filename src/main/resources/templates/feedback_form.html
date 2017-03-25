@@ -30,7 +30,7 @@
 			    <form action="#" th:action="@{/feedback}" th:object="${feedback}" method="post">
 				    <div class="form-group">
 				    	<!-- <p>Topic Id: <input type="text" th:field="*{gtaId}" /></p> -->
-				        <textarea th:field="*{tfaText}" class="form-control" rows="5" placeholder="Please Enter Your Feedback Here (max length: 1024)" required></textarea>
+				        <textarea th:field="*{tfaText}" class="form-control" rows="5" placeholder="Please Enter Your Feedback Here (max length: 1024)" required autofocus></textarea>
 				        <input type="hidden" th:field="*{gtaId}" />
 				        <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
 				        <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
