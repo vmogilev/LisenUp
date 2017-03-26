@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.lisenup.web.portal.config.LisenUpProperties;
 import com.lisenup.web.portal.exceptions.GroupNotFoundException;
 import com.lisenup.web.portal.exceptions.TopicNotFoundException;
 import com.lisenup.web.portal.exceptions.UserNotFoundException;
@@ -33,8 +34,8 @@ import com.lisenup.web.portal.utils.HttpUtils;
 @Controller
 public class SendController {
 
-	private static final int MAX_FEEDBACK = 1124;
-	private static final int MAX_FEEDBACK_EXT = MAX_FEEDBACK-100;
+	@Autowired
+	private LisenUpProperties props;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -47,7 +48,7 @@ public class SendController {
 	
 	@Autowired
 	private TopicFeedbackRepository topicFeedbackRepository;
-	
+
 	@PostMapping("/feedback")
 	public String feedbackSubmit(
 			@ModelAttribute TopicFeedback feedback,
@@ -63,8 +64,8 @@ public class SendController {
 			errors.add("Please enter your Feedback");
 		}
 
-		if ( feedback.getTfaText().length() > MAX_FEEDBACK ) {
-			errors.add("Sorry, your Feedback is longer than " + MAX_FEEDBACK_EXT + " characters");
+		if ( feedback.getTfaText().length() > props.getMaxFeedbackLength()+100 ) {
+			errors.add("Sorry, your Feedback is longer than " + props.getMaxFeedbackLength() + " characters");
 		}
 
 		// we have to use findOne() and not check *Active attributes
@@ -94,6 +95,7 @@ public class SendController {
 			model.addAttribute("group", userGroup);
 			model.addAttribute("topic", topic);
 			model.addAttribute("errors", errors);
+			model.addAttribute("props", props);
 			return "feedback_form";
 		}
 		
@@ -133,6 +135,7 @@ public class SendController {
 		model.addAttribute("user", user);
 		model.addAttribute("group", userGroup);
 		model.addAttribute("topic", topic);
+		model.addAttribute("props", props);
 		return "feedback_form";
 	}
 	

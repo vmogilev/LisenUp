@@ -9,11 +9,11 @@ import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import com.lisenup.web.portal.config.EmailProperties;
+import com.lisenup.web.portal.config.LisenUpProperties;
 
 @SpringBootApplication
 @EnableAsync
-@EnableConfigurationProperties(EmailProperties.class)
+@EnableConfigurationProperties(LisenUpProperties.class)
 public class LisenUpWebPortalApplication extends AsyncConfigurerSupport {
 
 	public static void main(String[] args) {

@@ -30,7 +30,7 @@
 			    <form action="#" th:action="@{/feedback}" th:object="${feedback}" method="post">
 				    <div class="form-group">
 				    	<!-- <p>Topic Id: <input type="text" th:field="*{gtaId}" /></p> -->
-				        <textarea th:field="*{tfaText}" class="form-control" rows="5" placeholder="Please Enter Your Feedback Here (max length: 1024)" required autofocus></textarea>
+				        <textarea th:field="*{tfaText}" th:maxlength="${props.maxFeedbackLength}" id="feedback" class="form-control" rows="5" placeholder="Please Enter Your Feedback Here" required autofocus></textarea>
 				        <input type="hidden" th:field="*{gtaId}" />
 				        <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
 				        <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
@@ -61,16 +61,21 @@
     <script src="/assets/js/ie10-viewport-bug-workaround.js"></script>
 
 <script type="text/javascript">
-$('textarea').keydown(function(e) {
-    var tval = $('textarea').val(),
-        tlength = tval.length,
-        set = 1024,
-        remain = parseInt(set - tlength);
-    $("#chars-left").text('[' + remain + ' remain]');
-    if (remain <= 0 && e.which !== 0 && e.charCode !== 0) {
-        $('textarea').val((tval).substring(0, tlength - 1))
-    }
-})
+$(document).ready(function() {
+	
+	// limit the text area to feedback.maxLength chars
+	$('textarea').keyup(function(e) {
+	    var tval = $('textarea').val(),
+	        tlength = tval.length,
+	        set = document.getElementById("feedback").maxLength,
+	        remain = parseInt(set - tlength);
+	    $("#chars-left").text('[' + remain + ' remain]');
+	    if (tlength > set) {
+	    	$('textarea').val(text.substr(0,set));
+	    }
+	});
+	
+});
 </script>
 
 </body>

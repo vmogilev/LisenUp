@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.lisenup.web.portal.config.EmailProperties;
+import com.lisenup.web.portal.config.LisenUpProperties;
 import com.lisenup.web.portal.exceptions.FeedbackNotFoundException;
 import com.lisenup.web.portal.exceptions.GroupNotFoundException;
 import com.lisenup.web.portal.exceptions.UserNotFoundException;
@@ -43,9 +43,8 @@ public class GetReplyController {
 	private static final String TEMP_USER_CREATION = "TEMP_USER_CREATION";
 	private static final long ANON_USER_ID = 1;
 
-	@Autowired
-	private EmailProperties email;
-			
+	private final LisenUpProperties.Email email;
+				
 	private Logger logger = LoggerFactory.getLogger(GetReplyController.class);
 	
 	@Autowired
@@ -57,15 +56,20 @@ public class GetReplyController {
 	
 	@Autowired
 	private UserGroupRepository userGroupRepository;
-	
-//	@Autowired
-//	private GroupUsersRepository groupUsersRepository;
-	
+		
 	@Autowired
 	private TopicFeedbackRepository topicFeedbackRepository;
 	
 	@Autowired
 	private GroupTopicRepository groupTopicRepository;
+	
+	@Autowired
+	public GetReplyController(LisenUpProperties properties) {
+		// see: "To work with @ConfigurationProperties beans you can just inject" section
+		//      in: 
+		//         https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+		this.email = properties.getEmail();
+	}
 
 	@GetMapping("/replyconf")
 	public String replyConfirmed(
