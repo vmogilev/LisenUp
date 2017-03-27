@@ -8,6 +8,8 @@ public class LisenUpProperties {
 	// to modify maxFeedbackLength just set the following ENV VARS:
 	// LISENUP_MAX_FEEDBACK_LENGTH
 	private int maxFeedbackLength = 1024;
+	private String mailChimpApiKey;
+	private String mailChimpListId;
 	private final Email email = new Email();
 	
 	public int getMaxFeedbackLength() {
@@ -19,6 +21,19 @@ public class LisenUpProperties {
 	public Email getEmail() {
 		return email;
 	}
+	public String getMailChimpApiKey() {
+		return mailChimpApiKey;
+	}
+	public void setMailChimpApiKey(String mailChimpApiKey) {
+		this.mailChimpApiKey = mailChimpApiKey;
+	}
+	public String getMailChimpListId() {
+		return mailChimpListId;
+	}
+	public void setMailChimpListId(String mailChimpListId) {
+		this.mailChimpListId = mailChimpListId;
+	}
+
 
 	public static class Email {
 		

@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,8 +42,6 @@ public class GetReplyController {
 	private static final long ANON_USER_ID = 1;
 
 	private final LisenUpProperties.Email email;
-				
-	private Logger logger = LoggerFactory.getLogger(GetReplyController.class);
 	
 	@Autowired
 	private MailService mailer;
@@ -255,17 +251,13 @@ public class GetReplyController {
 
 		// NOTE: the auto generated username has a $ as a first char
 		//       it has to be URL Encoded as %24
-		try {
-			mailer.send(newUser.getUaEmail(), 
-					this.email.getMailFrom(), this.email.getReplyTo(), this.email.getReplySubject(), 
-					"Please confirm your email by clicking on the following link: " +
-					this.email.getReplyConfirmLink() + 
-					"?t=" + orig_tfaUuid +
-					"&u=" + newUser.getUaUsername().replaceAll("\\$", "%24")
-					);				
-		} catch (Exception e) {
-			logger.info("Error Sending Email to: " + newUser.getUaEmail() + " | ERROR: " + e.getMessage());
-		}
+		mailer.send(newUser.getUaEmail(), 
+				this.email.getMailFrom(), this.email.getReplyTo(), this.email.getReplySubject(), 
+				"Please confirm your email by clicking on the following link: " +
+				this.email.getReplyConfirmLink() + 
+				"?t=" + orig_tfaUuid +
+				"&u=" + newUser.getUaUsername().replaceAll("\\$", "%24")
+				);				
 
 		model.addAttribute("user", user);
 		model.addAttribute("group", userGroup);
