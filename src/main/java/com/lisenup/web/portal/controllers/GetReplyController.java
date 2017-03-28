@@ -116,6 +116,11 @@ public class GetReplyController {
 			userRepository.setActiveForUserId(true, TEMP_USER_CREATION, user.getVersion()+1, user.getUaId());
 		}
 		
+		// update user's Name with the latest provided on the feedback
+		if ( !user.getUaName().equals(feedback.getTfaReplyName()) ) {
+			userRepository.setNameForUserId(feedback.getTfaReplyName(), TEMP_USER_CREATION, user.getVersion()+1, user.getUaId());
+		}
+		
 		// only update Feedback's user from anonymous=1 to real user Id
 		if ( feedback.getUaId() == ANON_USER_ID ) {
 			topicFeedbackRepository.setRealUserForFeedbackId(user.getUaId(), TEMP_USER_CREATION, feedback.getVersion()+1, feedback.getTfaId());
@@ -265,6 +270,8 @@ public class GetReplyController {
 		}
 		
 		// Try to create a user and catch any constraint validation errors
+		// but first save the most recent name which we'll use on the feedback
+		String newUserUaName = newUser.getUaName();
 		try {
 			newUser = createOrFindUser(newUser);
 		} catch (ConstraintViolationException e) {
@@ -281,9 +288,10 @@ public class GetReplyController {
 			return "getreply_form";
 		}
 		
-		// update feedback with user data
+		// update feedback with newUser data (NOT the FOUND USER)
+		// we are doing this to make sure we capture the most recent Name
 		feedback.setTfaReplyEmail(newUser.getUaEmail());
-		feedback.setTfaReplyName(newUser.getUaName());
+		feedback.setTfaReplyName(newUserUaName);
 		feedback.setTfaAgreedToSub(subscribe);
 		topicFeedbackRepository.save(feedback);
 		

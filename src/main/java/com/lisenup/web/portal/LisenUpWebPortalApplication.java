@@ -30,7 +30,7 @@ public class LisenUpWebPortalApplication extends AsyncConfigurerSupport {
         executor.setCorePoolSize(2);
         executor.setMaxPoolSize(2);
         executor.setQueueCapacity(500);
-        executor.setThreadNamePrefix("LisenUpExecutor-");
+        executor.setThreadNamePrefix("LUExe-");
         executor.initialize();
         return executor;
     }
