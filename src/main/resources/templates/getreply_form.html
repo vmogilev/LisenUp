@@ -43,6 +43,11 @@
 					    <input th:checked="${terms}" type="checkbox" id="terms" name="terms" required><span th:text="'I agree to reveal my name/email to ' + ${user.uaName}"></span>
 					  </label>
 					</div>
+					<div th:if="${group.ugaMailchimpEnabled}" class="checkbox">
+					  <label>
+					    <input th:checked="${subscribe}" type="checkbox" id="subscribe" name="subscribe"><span th:text="'Subscribe to the ' + ${group.ugaMailchimpListName}"></span>
+					  </label>
+					</div>
 			    	<!-- <p>Email Address: <input type="text" th:field="*{uaEmail}" /> -->
 			        <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
 			        <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />

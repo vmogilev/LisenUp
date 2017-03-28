@@ -43,6 +43,12 @@ public class GroupUsers {
 	@NotNull
 	private String guaIpAddr;
 	
+	private String guaMailchimpId;
+	
+	private String guaMailchimpEmail;
+	
+	private String guaMailchimpResponse;
+	
 	// Default for hibernate
 	public GroupUsers() {
 		this.createdBy = CREATED_BY;
@@ -112,6 +118,33 @@ public class GroupUsers {
 
 	public void setGuaIpAddr(String guaIpAddr) {
 		this.guaIpAddr = guaIpAddr;
+		this.modifiedBy = MODIFIED_BY;
+	}
+
+	public String getGuaMailchimpId() {
+		return guaMailchimpId;
+	}
+
+	public void setGuaMailchimpId(String guaMailchimpId) {
+		this.guaMailchimpId = guaMailchimpId;
+		this.modifiedBy = MODIFIED_BY;
+	}
+
+	public String getGuaMailchimpEmail() {
+		return guaMailchimpEmail;
+	}
+
+	public void setGuaMailchimpEmail(String guaMailchimpEmail) {
+		this.guaMailchimpEmail = guaMailchimpEmail;
+		this.modifiedBy = MODIFIED_BY;
+	}
+
+	public String getGuaMailchimpResponse() {
+		return guaMailchimpResponse;
+	}
+
+	public void setGuaMailchimpResponse(String guaMailchimpResponse) {
+		this.guaMailchimpResponse = guaMailchimpResponse;
 		this.modifiedBy = MODIFIED_BY;
 	}
 	

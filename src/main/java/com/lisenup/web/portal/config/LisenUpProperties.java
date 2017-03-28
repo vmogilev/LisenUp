@@ -9,7 +9,6 @@ public class LisenUpProperties {
 	// LISENUP_MAX_FEEDBACK_LENGTH
 	private int maxFeedbackLength = 1024;
 	private String mailChimpApiKey;
-	private String mailChimpListId;
 	private final Email email = new Email();
 	
 	public int getMaxFeedbackLength() {
@@ -27,13 +26,6 @@ public class LisenUpProperties {
 	public void setMailChimpApiKey(String mailChimpApiKey) {
 		this.mailChimpApiKey = mailChimpApiKey;
 	}
-	public String getMailChimpListId() {
-		return mailChimpListId;
-	}
-	public void setMailChimpListId(String mailChimpListId) {
-		this.mailChimpListId = mailChimpListId;
-	}
-
 
 	public static class Email {
 		

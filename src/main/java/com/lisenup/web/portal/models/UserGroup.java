@@ -45,6 +45,14 @@ public class UserGroup {
 	
 	@NotNull
 	private boolean ugaPublic;
+	
+	private String ugaMailchimpListId;
+	
+	private String ugaMailchimpListName;
+	
+	private String ugaMailchimpApi;
+	
+	private Boolean ugaMailchimpEnabled;
 
 	// default constructor needed for hibernate
 	public UserGroup() {
@@ -104,6 +112,42 @@ public class UserGroup {
 
 	public void setUgaPublic(boolean ugaPublic) {
 		this.ugaPublic = ugaPublic;
+		this.modifiedBy = MODIFIED_BY;
+	}
+
+	public String getUgaMailchimpListId() {
+		return ugaMailchimpListId;
+	}
+
+	public void setUgaMailchimpListId(String ugaMailchimpListId) {
+		this.ugaMailchimpListId = ugaMailchimpListId;
+		this.modifiedBy = MODIFIED_BY;
+	}
+
+	public String getUgaMailchimpListName() {
+		return ugaMailchimpListName;
+	}
+
+	public void setUgaMailchimpListName(String ugaMailchimpListName) {
+		this.ugaMailchimpListName = ugaMailchimpListName;
+		this.modifiedBy = MODIFIED_BY;
+	}
+
+	public String getUgaMailchimpApi() {
+		return ugaMailchimpApi;
+	}
+
+	public void setUgaMailchimpApi(String ugaMailchimpApi) {
+		this.ugaMailchimpApi = ugaMailchimpApi;
+		this.modifiedBy = MODIFIED_BY;
+	}
+
+	public Boolean isUgaMailchimpEnabled() {
+		return ugaMailchimpEnabled;
+	}
+
+	public void setUgaMailchimpEnabled(boolean ugaMailchimpEnabled) {
+		this.ugaMailchimpEnabled = ugaMailchimpEnabled;
 		this.modifiedBy = MODIFIED_BY;
 	}
 

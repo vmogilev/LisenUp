@@ -8,7 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -26,6 +30,8 @@ import com.lisenup.web.portal.exceptions.GroupNotFoundException;
 import com.lisenup.web.portal.exceptions.UserNotFoundException;
 import com.lisenup.web.portal.models.GroupTopic;
 import com.lisenup.web.portal.models.GroupTopicRepository;
+import com.lisenup.web.portal.models.GroupUsers;
+import com.lisenup.web.portal.models.GroupUsersRepository;
 import com.lisenup.web.portal.models.TopicFeedback;
 import com.lisenup.web.portal.models.TopicFeedbackRepository;
 import com.lisenup.web.portal.models.User;
@@ -33,6 +39,7 @@ import com.lisenup.web.portal.models.UserGroup;
 import com.lisenup.web.portal.models.UserGroupRepository;
 import com.lisenup.web.portal.models.UserRepository;
 import com.lisenup.web.portal.service.MailService;
+import com.lisenup.web.portal.service.MailchimpService;
 import com.lisenup.web.portal.utils.HttpUtils;
 
 @Controller
@@ -40,12 +47,19 @@ public class GetReplyController {
 
 	private static final String TEMP_USER_CREATION = "TEMP_USER_CREATION";
 	private static final long ANON_USER_ID = 1;
+	
+	private Logger logger = LoggerFactory.getLogger(GetReplyController.class);
 
 	private final LisenUpProperties.Email email;
-	
+
+	@Autowired
+	private LisenUpProperties props;
+
 	@Autowired
 	private MailService mailer;
-	//private MailUtils mailer;
+	
+	@Autowired
+	private MailchimpService mailchimp;
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -60,6 +74,9 @@ public class GetReplyController {
 	private GroupTopicRepository groupTopicRepository;
 	
 	@Autowired
+	private GroupUsersRepository groupUsersRepository;
+	
+	@Autowired
 	public GetReplyController(LisenUpProperties properties) {
 		// see: "To work with @ConfigurationProperties beans you can just inject" section
 		//      in: 
@@ -71,6 +88,7 @@ public class GetReplyController {
 	public String replyConfirmed(
 			@RequestParam("u") String uaUsername,
 			@RequestParam("t") String tfaUuid,
+			HttpServletRequest request,
 			Model model
 			) {
 		
@@ -103,6 +121,36 @@ public class GetReplyController {
 		if ( feedback.getUaId() == ANON_USER_ID ) {
 			topicFeedbackRepository.setRealUserForFeedbackId(user.getUaId(), TEMP_USER_CREATION, feedback.getVersion()+1, feedback.getTfaId());
 		}
+		
+		// create a new sub if user agreed to it
+		if ( feedback.isTfaAgreedToSub() ) {
+			GroupUsers newSub = new GroupUsers();
+			newSub.setUgaId(group.getUgaId());  // group id
+			newSub.setUaId(user.getUaId());     // subscriber user_id
+			newSub.setGuaActive(true);
+			newSub.setGuaSubedAt(groupOwner.getUaName() + " / " + group.getUgaName() + " / " + topic.getGtaTitle());
+			newSub.setGuaIpAddr(HttpUtils.getIp(request));
+			newSub.setCreatedBy("REPLY_CONF");
+			
+			// sub the user if not already
+			boolean doMailchimp = subUser(newSub);
+			
+			if ( doMailchimp ) {
+				
+				// if we got here push the user to MailChimp (using Async call)
+				
+				// first figure out if it's out own list and pull global level API
+				String apiKey = group.getUgaMailchimpApi();
+				if ( apiKey == null || apiKey.equals("") ) {
+					apiKey = props.getMailChimpApiKey();
+				}
+				
+				mailchimp.sub(
+						apiKey, group.getUgaMailchimpListId(), 
+						user.getUaEmail(), feedback.getTfaReplyName(), 
+						HttpUtils.getIp(request), newSub);
+			}
+		}
 
 		model.addAttribute("user", groupOwner);
 		model.addAttribute("group", group);
@@ -111,6 +159,22 @@ public class GetReplyController {
 		return "getreply_confirmed";
 	}
 	
+
+	private boolean subUser(GroupUsers newSub) {
+		boolean subOk = false;
+		try {
+			groupUsersRepository.save(newSub);
+			subOk = true;
+		} catch (DataIntegrityViolationException e) {
+			//e.printStackTrace();
+			logger.info("User already subbed! Ignoring DUP.");
+			logger.info(e.getMessage());
+		}
+		
+		return subOk;
+		
+	}
+
 //	@GetMapping("/subconf")
 //	public String subConfirmed(
 //			@RequestParam("u") String uaUsername,
@@ -150,6 +214,7 @@ public class GetReplyController {
 			@RequestParam("orig_ugaId") long origUgaId,
 			@RequestParam("orig_tfaUuid") String orig_tfaUuid,
 			@RequestParam(name = "terms", defaultValue = "false", required = false) Boolean terms,
+			@RequestParam(name = "subscribe", defaultValue = "true", required = false) Boolean subscribe,
 			HttpServletRequest request, 
 			Model model) {
 		
@@ -186,7 +251,7 @@ public class GetReplyController {
 			errors.add("Please agree to reveal your name and email (check the box)");
 		}
 
-		// if there are any correctable errors send the sub back to form
+		// if there are any correctable errors go back to form
 		if ( !errors.isEmpty() ) {			
 			model.addAttribute("user", user);
 			model.addAttribute("group", userGroup);
@@ -194,6 +259,7 @@ public class GetReplyController {
 			model.addAttribute("feedback", feedback);
 			model.addAttribute("topic", topic);
 			model.addAttribute("terms", terms);
+			model.addAttribute("subscribe", subscribe);
 			model.addAttribute("errors", errors);
 			
 			return "getreply_form";
@@ -216,6 +282,11 @@ public class GetReplyController {
 			return "getreply_form";
 		}
 		
+		// update feedback with user data
+		feedback.setTfaReplyEmail(newUser.getUaEmail());
+		feedback.setTfaReplyName(newUser.getUaName());
+		feedback.setTfaAgreedToSub(subscribe);
+		topicFeedbackRepository.save(feedback);
 		
 //		// update sub with the new user Id and where the sub came from
 //		GroupUsers newSub = new GroupUsers();
@@ -338,7 +409,7 @@ public class GetReplyController {
 		TopicFeedback feedback = topicFeedbackRepository.findByTfaUuid(tfaUuid);
 		
 		// we don't even want to go anywhere unless feedback is still assigned
-		// to ANON user - it it was already processed then we are done and 
+		// to ANON user - if it was already processed then we are done and 
 		// this is most likely a hack ...
 		if ( feedback == null || feedback.getUaId() != ANON_USER_ID ) {
 			throw new FeedbackNotFoundException(tfaUuid);
@@ -350,6 +421,7 @@ public class GetReplyController {
 		model.addAttribute("group", userGroup);
 		model.addAttribute("topic", topic);
 		model.addAttribute("feedback", feedback);
+		model.addAttribute("subscribe", true);
 		model.addAttribute("newuser", new User());
 		
 		return "getreply_form";

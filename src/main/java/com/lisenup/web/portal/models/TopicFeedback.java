@@ -43,6 +43,12 @@ public class TopicFeedback {
 	@NotNull
 	private String tfaText;
 	
+	private String tfaReplyName;
+	
+	private String tfaReplyEmail;
+	
+	private Boolean tfaAgreedToSub;
+	
 	// default constructor needed for hibernate
 	public TopicFeedback() { 
 		this.uaId = 1; // 1=anonymous
@@ -115,6 +121,33 @@ public class TopicFeedback {
 
 	public void setTfaText(String tfaText) {
 		this.tfaText = tfaText;
+		this.modifiedBy = MODIFIED_BY;
+	}
+
+	public String getTfaReplyName() {
+		return tfaReplyName;
+	}
+
+	public void setTfaReplyName(String tfaReplyName) {
+		this.tfaReplyName = tfaReplyName;
+		this.modifiedBy = MODIFIED_BY;
+	}
+
+	public String getTfaReplyEmail() {
+		return tfaReplyEmail;
+	}
+
+	public void setTfaReplyEmail(String tfaReplyEmail) {
+		this.tfaReplyEmail = tfaReplyEmail;
+		this.modifiedBy = MODIFIED_BY;
+	}
+
+	public Boolean isTfaAgreedToSub() {
+		return tfaAgreedToSub;
+	}
+
+	public void setTfaAgreedToSub(boolean tfaAgreedToSub) {
+		this.tfaAgreedToSub = tfaAgreedToSub;
 		this.modifiedBy = MODIFIED_BY;
 	}
 

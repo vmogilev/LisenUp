@@ -11,7 +11,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.lisenup.web.portal.controllers.GetReplyController;
 import com.lisenup.web.portal.models.EmailLog;
 import com.lisenup.web.portal.models.EmailLogrepository;
 
@@ -25,7 +24,7 @@ public class MailService {
 	@Autowired
 	private EmailLogrepository emailLogrepository;
 	
-	private Logger logger = LoggerFactory.getLogger(GetReplyController.class);
+	private Logger logger = LoggerFactory.getLogger(MailService.class);
 	
 	@Autowired
 	public MailService(JavaMailSender javaMailSender){

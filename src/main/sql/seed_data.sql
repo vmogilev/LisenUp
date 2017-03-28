@@ -82,7 +82,11 @@ insert into lisenupdb.user_groups_all (
   uga_desc,
   uga_slug,
   uga_active,
-  uga_public)
+  uga_public,
+  uga_mailchimp_list_id,
+  uga_mailchimp_list_name,
+  uga_mailchimp_api,
+  uga_mailchimp_enabled)
 values (
     2,
     100,
@@ -92,6 +96,10 @@ values (
     'LisenUp is still in private beta, so I would love to hear your thoughts on the following:',
     'LisenUp',
     1,
+    1,
+    'd53c2f5395',
+    'LisenUp Status Updates',
+    null,
     1);
 
 insert into lisenupdb.group_topics_all (
