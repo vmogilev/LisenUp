@@ -25,7 +25,7 @@
 			<!-- <div class="panel-body">...</div> -->
 		
 			<div class="list-group">
-				<a th:each="group : ${groups}" th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" class="list-group-item list-group-item-success">
+				<a th:each="group : ${groups}" th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:classappend="${#lists.contains(reviewedGroupIds,group.ugaId)} ? list-group-item-warning : list-group-item-success" class="list-group-item">
 					<h4 class="list-group-item-heading">
 						<span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>
 						<span th:text="${group.ugaName}" th:remove="tag">Group</span>
