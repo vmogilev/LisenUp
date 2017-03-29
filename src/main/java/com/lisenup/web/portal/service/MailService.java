@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.lisenup.web.portal.models.EmailLog;
-import com.lisenup.web.portal.models.EmailLogrepository;
+import com.lisenup.web.portal.models.EmailLogRepository;
 
 @Service
 public class MailService {
@@ -22,7 +22,7 @@ public class MailService {
 	private JavaMailSender javaMailSender;
 	
 	@Autowired
-	private EmailLogrepository emailLogrepository;
+	private EmailLogRepository emailLogrepository;
 	
 	private Logger logger = LoggerFactory.getLogger(MailService.class);
 	

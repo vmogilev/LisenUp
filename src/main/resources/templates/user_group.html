@@ -26,7 +26,7 @@
 			<!-- <div class="panel-body"></div> -->
 		
 			<div class="list-group">
-				<a th:each="topic : ${topics}" th:href="@{/{usr}/{grp}/{q}(usr=${user.uaUsername},grp=${group.ugaSlug},q=${topic.gtaId})}" class="list-group-item list-group-item-success">
+				<a th:each="topic : ${topics}" th:href="@{/{usr}/{grp}/{q}(usr=${user.uaUsername},grp=${group.ugaSlug},q=${topic.gtaId})}" th:classappend="${#lists.contains(givenFeedbackIds,topic.gtaId)} ? list-group-item-warning : list-group-item-success" class="list-group-item">
 					<h4 class="list-group-item-heading">
 						<span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>
 						<span th:text="${topic.gtaTitle}" th:remove="tag">Topic</span>
@@ -38,7 +38,8 @@
 		<div class="panel-body text-center">
 			<a th:href="@{/{usr}(usr=${user.uaUsername})}" th:text="'Back To Profile'" class="btn btn-primary btn-lg" role="button">More Feedback</a>
 		</div>
-
+		
+		<!-- <p th:text="${anonUser.sessId}">User</p> -->
 
 
     </div>
