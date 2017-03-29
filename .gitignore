@@ -24,3 +24,6 @@ nbdist/
 .nb-gradle/
 *.swp
 .DS_Store
+
+### sql logs ###
+src/main/sql/*.log
