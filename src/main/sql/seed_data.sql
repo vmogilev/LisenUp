@@ -170,7 +170,7 @@ values (
     'VMOGILEV',
     'VMOGILEV',
     'Our Mission Statement',
-    'Does our mission statement at https://lisenup.com/about resonate with you?',
+    'Does our mission statement resonate with you?',
     1
 );
 
