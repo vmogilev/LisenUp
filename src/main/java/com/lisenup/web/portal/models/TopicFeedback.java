@@ -1,10 +1,15 @@
 package com.lisenup.web.portal.models;
 
+import java.util.Date;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
@@ -30,6 +35,10 @@ public class TopicFeedback {
 
 	@NotNull
 	private String createdBy;
+	
+	@Column(name = "created_at", columnDefinition="DATETIME", insertable=false, updatable=false)
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdAt;
 
 	@NotNull
 	private String modifiedBy;
@@ -48,6 +57,8 @@ public class TopicFeedback {
 	private String tfaReplyEmail;
 	
 	private Boolean tfaAgreedToSub;
+	
+	private String sessId;
 	
 	// default constructor needed for hibernate
 	public TopicFeedback() { 
@@ -96,6 +107,10 @@ public class TopicFeedback {
 
 	public String getCreatedBy() {
 		return createdBy;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
 	}
 
 	public String getModifiedBy() {
@@ -148,6 +163,15 @@ public class TopicFeedback {
 
 	public void setTfaAgreedToSub(boolean tfaAgreedToSub) {
 		this.tfaAgreedToSub = tfaAgreedToSub;
+		this.modifiedBy = MODIFIED_BY;
+	}
+
+	public String getSessId() {
+		return sessId;
+	}
+
+	public void setSessId(String sessId) {
+		this.sessId = sessId;
 		this.modifiedBy = MODIFIED_BY;
 	}
 

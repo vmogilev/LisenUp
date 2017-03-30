@@ -21,12 +21,24 @@
 
 		<div class="panel panel-default">
 			<div class="panel-heading text-center">
-				<h3 class="panel-title">Your Feedback <small><mark><span id="chars-left"></span></mark></small></h3>
+				<h3 class="panel-title">Your Feedback <small><mark><span id="chars-left-old"></span></mark></small></h3>
 			</div>
 			<div class="panel-body">
 
+				<div th:if="${givenFeedback}" id="given-feedback">
+					<div th:each="feedback : ${givenFeedback}">
+						<h5>
+							<span th:text="${#dates.format(feedback.createdAt, 'dd/MMM/yyyy HH:mm')}" class="label label-default">Date</span>
+							<span th:text="${feedback.tfaReplyName == null}? 'Anonymous' : ${feedback.tfaReplyName} + ' [' + ${feedback.tfaReplyEmail} + ']'" th:remove="tag"></span>
+							<span th:text="${feedback.tfaReplyName == null}? '' : (${feedback.uaId == 1}? 'email not verified')" class="label label-warning">Pending</span>
+							<span th:text="${feedback.tfaReplyName == null}? '' : (${feedback.uaId != 1}? 'verified')" class="label label-success">Verified</span>
+						</h5>
+						<pre th:text="${feedback.tfaText}"></pre>
+					</div>
+				</div>
+				
 				<div th:replace="body :: errlist"></div>
-								
+	
 			    <form action="#" th:action="@{/feedback}" th:object="${feedback}" method="post">
 				    <div class="form-group">
 				    	<!-- <p>Topic Id: <input type="text" th:field="*{gtaId}" /></p> -->
@@ -36,6 +48,7 @@
 				        <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
 				        <input id="orig_gtaId" name="orig_gtaId" type="hidden" th:value="${topic.gtaId}" />
 				    </div>
+				    <div class="text-center"><h4><span id="chars-left" class="label label-default"></span></h4></div>
 				    <div class="panel-body text-center">
 				    	<a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="'Cancel'" class="btn btn-primary btn-lg" role="button">Cancel</a>
 				    	<button type="submit" class="btn btn-success btn-lg">Send</button>
@@ -69,7 +82,7 @@ $(document).ready(function() {
 	        tlength = tval.length,
 	        set = document.getElementById("feedback").maxLength,
 	        remain = parseInt(set - tlength);
-	    $("#chars-left").text('[' + remain + ' remain]');
+	    $("#chars-left").text('Characters Remain: ' + remain);
 	    if (tlength > set) {
 	    	$('textarea').val(text.substr(0,set));
 	    }

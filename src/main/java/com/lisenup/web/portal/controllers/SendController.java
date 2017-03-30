@@ -1,12 +1,17 @@
 package com.lisenup.web.portal.controllers;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,6 +50,8 @@ import com.lisenup.web.portal.utils.SessUtils;
 @Controller
 public class SendController {
 
+	private Logger logger = LoggerFactory.getLogger(SendController.class);
+			
 	@Autowired
 	private LisenUpProperties props;
 	
@@ -78,8 +85,8 @@ public class SendController {
 	 * @param orig_ugaId
 	 * @param orig_gtaId
 	 * @param anonCookie
-	 * @param response
 	 * @param request
+	 * @param response
 	 * @param model
 	 * @return
 	 */
@@ -90,8 +97,8 @@ public class SendController {
 			@RequestParam("orig_ugaId") long orig_ugaId,
 			@RequestParam("orig_gtaId") long orig_gtaId,
 			@CookieValue(value = "lu", defaultValue = "") String anonCookie,
-			HttpServletResponse response,
 			HttpServletRequest request, 
+			HttpServletResponse response,
 			Model model) {
 
 		// check for correctable errors
@@ -123,7 +130,7 @@ public class SendController {
 			throw new TopicNotFoundException(orig_gtaId);
 		}
 
-		AnonSession anonUser = sessUtils.getOrSetLuCookie(response, anonCookie);
+		AnonSession anonUser = sessUtils.getOrSetLuCookie(request, response, anonCookie);
 		
 		// if there are any correctable errors send the feedback back to form
 		if ( !errors.isEmpty() ) {
@@ -140,6 +147,7 @@ public class SendController {
 		// if we got here save the topic - all good!
 		feedback.setTfaIpAddr(HttpUtils.getIp(request));
 		feedback.setTfaUuid(UUID.randomUUID().toString());
+		feedback.setSessId(anonUser.getSessId());
 		topicFeedbackRepository.save(feedback);
 		
 		// save the feedback in transient anon_feedback_all table
@@ -147,7 +155,6 @@ public class SendController {
 		anonFeedback.setCreatedBy("feedbackSubmit");
 		anonFeedback.setGtaId(feedback.getGtaId());
 		anonFeedback.setTfaId(feedback.getTfaId());
-		anonFeedback.setTfaText(feedback.getTfaText());
 		anonFeedback.setTfaUuid(feedback.getTfaUuid());
 		anonFeedback.setUaId(feedback.getUaId());
 		anonFeedback.setUgaId(userGroup.getUgaId());
@@ -170,6 +177,9 @@ public class SendController {
 	 * @param toId 			RegEx only allows letters, numbers, '-' and '_'
 	 * @param groupSlug		RegEx only allows letters, numbers, '-' and '_'
 	 * @param topicId		RegEx only allows numbers
+	 * @param anonCookie
+	 * @param request
+	 * @param response
 	 * @param model
 	 * @return
 	 */
@@ -180,6 +190,9 @@ public class SendController {
 			@PathVariable("toId") String toId, 
 			@PathVariable("groupSlug") String groupSlug,
 			@PathVariable("topicId") Long topicId,
+			@CookieValue(value = "lu", defaultValue = "") String anonCookie,
+			HttpServletRequest request,
+			HttpServletResponse response,
 			Model model) {
 		
 		User user = findUser(toId);
@@ -189,11 +202,21 @@ public class SendController {
 		if (topic == null) {
 			throw new TopicNotFoundException(topicId);
 		}
+		
+		AnonSession anonUser = sessUtils.getOrSetLuCookie(request, response, anonCookie);
+		List<TopicFeedback> givenFeedback = topicFeedbackRepository.findBySessIdAndGtaIdOrderByCreatedAtAsc(anonUser.getSessId(), topicId);
+		
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+		for ( TopicFeedback feedback : givenFeedback ) {
+			Date feedDate = feedback.getCreatedAt();
+			logger.info("date: " + df.format(feedDate));
+		}
 
 		model.addAttribute("feedback", new TopicFeedback(topicId));
 		model.addAttribute("user", user);
 		model.addAttribute("group", userGroup);
 		model.addAttribute("topic", topic);
+		model.addAttribute("givenFeedback", givenFeedback);
 		model.addAttribute("props", props);
 		return "feedback_form";
 	}
@@ -204,6 +227,7 @@ public class SendController {
 	 * @param toId			username - RegEx only allows letters, numbers, '-' and '_'
 	 * @param groupSlug		RegEx only allows letters, numbers, '-' and '_'
 	 * @param anonCookie
+	 * @param request
 	 * @param response
 	 * @param model
 	 * @return
@@ -215,10 +239,11 @@ public class SendController {
 			@PathVariable("toId") String toId, 
 			@PathVariable("groupSlug") String groupSlug,
 			@CookieValue(value = "lu", defaultValue = "") String anonCookie,
+			HttpServletRequest request,
 			HttpServletResponse response,
 			Model model) {
 		
-		AnonSession anonUser = sessUtils.getOrSetLuCookie(response, anonCookie); 
+		AnonSession anonUser = sessUtils.getOrSetLuCookie(request, response, anonCookie); 
 		
 		User user = findUser(toId);
 		UserGroup userGroup = findGroup(groupSlug, user);

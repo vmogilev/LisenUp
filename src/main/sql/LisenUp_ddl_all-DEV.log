@@ -15218,3 +15218,1179 @@ values (
 )
 --------------
 
+--------------
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0
+--------------
+
+--------------
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0
+--------------
+
+--------------
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES'
+--------------
+
+--------------
+DROP SCHEMA IF EXISTS `lisenupdb`
+--------------
+
+--------------
+CREATE SCHEMA IF NOT EXISTS `lisenupdb` DEFAULT CHARACTER SET utf8
+--------------
+
+--------------
+SHOW WARNINGS
+--------------
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`users_all`
+--------------
+
+Note (Code 1051): Unknown table 'lisenupdb.users_all'
+--------------
+SHOW WARNINGS
+--------------
+
++-------+------+-------------------------------------+
+| Level | Code | Message                             |
++-------+------+-------------------------------------+
+| Note  | 1051 | Unknown table 'lisenupdb.users_all' |
++-------+------+-------------------------------------+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`users_all` (
+  `ua_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `modified_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_by` VARCHAR(30) NOT NULL,
+  `version` INT NOT NULL DEFAULT 0,
+  `ua_username` VARCHAR(30) NOT NULL,
+  `ua_name` VARCHAR(256) NOT NULL,
+  `ua_email` VARCHAR(256) NOT NULL,
+  `ua_password` VARCHAR(256) NOT NULL,
+  `ua_active` TINYINT(1) NOT NULL,
+  `ua_gravatar_hash` VARCHAR(32) NOT NULL,
+  `ua_greeting` VARCHAR(256) NOT NULL,
+  PRIMARY KEY (`ua_id`),
+  UNIQUE INDEX `ua_uk1` (`ua_username` ASC),
+  UNIQUE INDEX `ua_uk2` (`ua_email` ASC))
+ROW_FORMAT = Dynamic
+--------------
+
+--------------
+SHOW WARNINGS
+--------------
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`user_groups_all`
+--------------
+
+Note (Code 1051): Unknown table 'lisenupdb.user_groups_all'
+--------------
+SHOW WARNINGS
+--------------
+
++-------+------+-------------------------------------------+
+| Level | Code | Message                                   |
++-------+------+-------------------------------------------+
+| Note  | 1051 | Unknown table 'lisenupdb.user_groups_all' |
++-------+------+-------------------------------------------+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`user_groups_all` (
+  `uga_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ua_id` INT UNSIGNED NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `modified_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_by` VARCHAR(30) NOT NULL,
+  `version` INT NOT NULL DEFAULT 0,
+  `uga_name` VARCHAR(45) NOT NULL,
+  `uga_desc` VARCHAR(256) NOT NULL,
+  `uga_slug` VARCHAR(19) NOT NULL,
+  `uga_active` TINYINT(1) NOT NULL,
+  `uga_public` TINYINT(1) NOT NULL DEFAULT 0,
+  `uga_mailchimp_list_id` VARCHAR(10) NULL,
+  `uga_mailchimp_list_name` VARCHAR(45) NULL,
+  `uga_mailchimp_api` VARCHAR(36) NULL,
+  `uga_mailchimp_enabled` TINYINT(1) NULL,
+  PRIMARY KEY (`uga_id`),
+  INDEX `uga_ua_fk_idx` (`ua_id` ASC),
+  UNIQUE INDEX `uga_uk1` (`ua_id` ASC, `uga_slug` ASC),
+  CONSTRAINT `uga_ua_fk`
+    FOREIGN KEY (`ua_id`)
+    REFERENCES `lisenupdb`.`users_all` (`ua_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ROW_FORMAT = Dynamic
+--------------
+
+--------------
+SHOW WARNINGS
+--------------
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`group_topics_all`
+--------------
+
+Note (Code 1051): Unknown table 'lisenupdb.group_topics_all'
+--------------
+SHOW WARNINGS
+--------------
+
++-------+------+--------------------------------------------+
+| Level | Code | Message                                    |
++-------+------+--------------------------------------------+
+| Note  | 1051 | Unknown table 'lisenupdb.group_topics_all' |
++-------+------+--------------------------------------------+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`group_topics_all` (
+  `gta_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uga_id` INT UNSIGNED NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `modified_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_by` VARCHAR(30) NOT NULL,
+  `version` INT NOT NULL DEFAULT 0,
+  `gta_title` VARCHAR(45) NOT NULL,
+  `gta_text` TEXT NOT NULL,
+  `gta_active` TINYINT(1) NOT NULL,
+  `gta_order` INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`gta_id`),
+  INDEX `gta_uga_fk_idx` (`uga_id` ASC),
+  CONSTRAINT `gta_uga_fk`
+    FOREIGN KEY (`uga_id`)
+    REFERENCES `lisenupdb`.`user_groups_all` (`uga_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ROW_FORMAT = Dynamic
+--------------
+
+--------------
+SHOW WARNINGS
+--------------
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`topic_feedback_all`
+--------------
+
+Note (Code 1051): Unknown table 'lisenupdb.topic_feedback_all'
+--------------
+SHOW WARNINGS
+--------------
+
++-------+------+----------------------------------------------+
+| Level | Code | Message                                      |
++-------+------+----------------------------------------------+
+| Note  | 1051 | Unknown table 'lisenupdb.topic_feedback_all' |
++-------+------+----------------------------------------------+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`topic_feedback_all` (
+  `tfa_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `gta_id` INT UNSIGNED NOT NULL,
+  `ua_id` INT UNSIGNED NOT NULL DEFAULT 1,
+  `tfa_uuid` VARCHAR(36) NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `modified_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_by` VARCHAR(30) NOT NULL,
+  `version` INT NOT NULL DEFAULT 0,
+  `tfa_ip_addr` VARCHAR(39) NOT NULL,
+  `tfa_text` TEXT NOT NULL,
+  `tfa_reply_name` VARCHAR(256) NULL,
+  `tfa_reply_email` VARCHAR(256) NULL,
+  `tfa_agreed_to_sub` TINYINT(1) NULL,
+  `sess_id` VARCHAR(36) NULL,
+  PRIMARY KEY (`tfa_id`),
+  INDEX `tfa_gta_fk_idx` (`gta_id` ASC),
+  UNIQUE INDEX `tfa_uuid_UNIQUE` (`tfa_uuid` ASC),
+  INDEX `tfa_ua_fk_idx` (`ua_id` ASC),
+  INDEX `fta_indx1` (`sess_id` ASC),
+  CONSTRAINT `tfa_gta_fk`
+    FOREIGN KEY (`gta_id`)
+    REFERENCES `lisenupdb`.`group_topics_all` (`gta_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `tfa_ua_fk`
+    FOREIGN KEY (`ua_id`)
+    REFERENCES `lisenupdb`.`users_all` (`ua_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ROW_FORMAT = Dynamic
+--------------
+
+--------------
+SHOW WARNINGS
+--------------
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`group_users_all`
+--------------
+
+Note (Code 1051): Unknown table 'lisenupdb.group_users_all'
+--------------
+SHOW WARNINGS
+--------------
+
++-------+------+-------------------------------------------+
+| Level | Code | Message                                   |
++-------+------+-------------------------------------------+
+| Note  | 1051 | Unknown table 'lisenupdb.group_users_all' |
++-------+------+-------------------------------------------+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`group_users_all` (
+  `gua_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uga_id` INT UNSIGNED NOT NULL,
+  `ua_id` INT UNSIGNED NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `modified_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_by` VARCHAR(30) NOT NULL,
+  `version` INT NOT NULL DEFAULT 0,
+  `gua_active` TINYINT(1) NOT NULL,
+  `gua_subed_at` VARCHAR(256) NOT NULL,
+  `gua_ip_addr` VARCHAR(39) NOT NULL,
+  `gua_mailchimp_id` VARCHAR(32) NULL,
+  `gua_mailchimp_email` VARCHAR(256) NULL,
+  `gua_mailchimp_response` TEXT NULL,
+  PRIMARY KEY (`gua_id`),
+  INDEX `gua_uga_fk_idx` (`uga_id` ASC),
+  INDEX `gua_ua_fk_idx` (`ua_id` ASC),
+  UNIQUE INDEX `gua_uk1` (`uga_id` ASC, `ua_id` ASC),
+  CONSTRAINT `gua_uga_fk`
+    FOREIGN KEY (`uga_id`)
+    REFERENCES `lisenupdb`.`user_groups_all` (`uga_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `gua_ua_fk`
+    FOREIGN KEY (`ua_id`)
+    REFERENCES `lisenupdb`.`users_all` (`ua_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ROW_FORMAT = Dynamic
+--------------
+
+--------------
+SHOW WARNINGS
+--------------
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`email_log`
+--------------
+
+Note (Code 1051): Unknown table 'lisenupdb.email_log'
+--------------
+SHOW WARNINGS
+--------------
+
++-------+------+-------------------------------------+
+| Level | Code | Message                             |
++-------+------+-------------------------------------+
+| Note  | 1051 | Unknown table 'lisenupdb.email_log' |
++-------+------+-------------------------------------+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`email_log` (
+  `el_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `el_to` VARCHAR(256) NOT NULL,
+  `el_reply_to` VARCHAR(256) NOT NULL,
+  `el_from` VARCHAR(256) NOT NULL,
+  `el_subject` VARCHAR(256) NOT NULL,
+  `el_body` TEXT NOT NULL,
+  `el_sent` TINYINT(1) NOT NULL,
+  `el_error` TEXT NULL,
+  PRIMARY KEY (`el_id`),
+  INDEX `el_indx1` (`el_sent` ASC, `el_id` ASC))
+--------------
+
+--------------
+SHOW WARNINGS
+--------------
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`anon_sessions_all`
+--------------
+
+Note (Code 1051): Unknown table 'lisenupdb.anon_sessions_all'
+--------------
+SHOW WARNINGS
+--------------
+
++-------+------+---------------------------------------------+
+| Level | Code | Message                                     |
++-------+------+---------------------------------------------+
+| Note  | 1051 | Unknown table 'lisenupdb.anon_sessions_all' |
++-------+------+---------------------------------------------+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`anon_sessions_all` (
+  `sess_id` VARCHAR(36) NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `full_name` VARCHAR(256) NULL,
+  `email_address` VARCHAR(256) NULL,
+  PRIMARY KEY (`sess_id`))
+--------------
+
+--------------
+SHOW WARNINGS
+--------------
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`anon_feedback_all`
+--------------
+
+Note (Code 1051): Unknown table 'lisenupdb.anon_feedback_all'
+--------------
+SHOW WARNINGS
+--------------
+
++-------+------+---------------------------------------------+
+| Level | Code | Message                                     |
++-------+------+---------------------------------------------+
+| Note  | 1051 | Unknown table 'lisenupdb.anon_feedback_all' |
++-------+------+---------------------------------------------+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`anon_feedback_all` (
+  `afa_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `sess_id` VARCHAR(36) NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `tfa_id` INT UNSIGNED NOT NULL,
+  `gta_id` INT UNSIGNED NOT NULL,
+  `ua_id` INT UNSIGNED NOT NULL,
+  `uga_id` INT UNSIGNED NOT NULL,
+  `tfa_uuid` VARCHAR(36) NOT NULL,
+  PRIMARY KEY (`afa_id`),
+  UNIQUE INDEX `tfa_id_UNIQUE` (`tfa_id` ASC),
+  INDEX `afa_indx1` (`sess_id` ASC, `uga_id` ASC, `gta_id` ASC))
+--------------
+
+--------------
+SHOW WARNINGS
+--------------
+
+--------------
+SET SQL_MODE=@OLD_SQL_MODE
+--------------
+
+--------------
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS
+--------------
+
+--------------
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS
+--------------
+
+--------------
+delete from lisenupdb.topic_feedback_all where gta_id in (select gta_id from lisenupdb.group_topics_all where created_by = 'VMOGILEV')
+--------------
+
+--------------
+delete from lisenupdb.group_users_all where uga_id in (select uga_id from lisenupdb.user_groups_all where created_by = 'VMOGILEV')
+--------------
+
+--------------
+delete from lisenupdb.group_topics_all where created_by = 'VMOGILEV'
+--------------
+
+--------------
+delete from lisenupdb.user_groups_all where created_by = 'VMOGILEV'
+--------------
+
+--------------
+delete from lisenupdb.users_all where created_by = 'VMOGILEV'
+--------------
+
+--------------
+insert into lisenupdb.users_all (
+  ua_id,
+  created_by,
+  modified_by,
+  ua_username,
+  ua_name,
+  ua_email,
+  ua_password,
+  ua_active,
+  ua_gravatar_hash,
+  ua_greeting)
+values (
+    1,
+    'SEED',
+    'SEED',
+    'anonymous',
+    'Anonymous',
+    'null@lisenup.com',
+    'change',
+    0,
+    'z',
+    'Anonymous')
+--------------
+
+--------------
+insert into lisenupdb.users_all (
+  ua_id,
+  created_by,
+  modified_by,
+  ua_username,
+  ua_name,
+  ua_email,
+  ua_password,
+  ua_active,
+  ua_gravatar_hash,
+  ua_greeting)
+values (
+    100,
+    'VMOGILEV',
+    'VMOGILEV',
+    'mve',
+    'Vitaliy Mogilevskiy',
+    'admin@lisenup.com',
+    'change',
+    1,
+    '310bc337aaf8b7ff17ce233a36934fe6',
+    'LisenUp Co-Founder / CTO')
+--------------
+
+--------------
+insert into lisenupdb.user_groups_all (
+  uga_id,
+  ua_id,
+  created_by,
+  modified_by,
+  uga_name,
+  uga_desc,
+  uga_slug,
+  uga_active,
+  uga_public)
+values (
+    1,
+    100,
+    'VMOGILEV',
+    'VMOGILEV',
+    'My Job',
+    'I want to improve my Job and would like to get your candid feedback on the following:',
+    'Job',
+    1,
+    1)
+--------------
+
+--------------
+insert into lisenupdb.user_groups_all (
+  uga_id,
+  ua_id,
+  created_by,
+  modified_by,
+  uga_name,
+  uga_desc,
+  uga_slug,
+  uga_active,
+  uga_public,
+  uga_mailchimp_list_id,
+  uga_mailchimp_list_name,
+  uga_mailchimp_api,
+  uga_mailchimp_enabled)
+values (
+    2,
+    100,
+    'VMOGILEV',
+    'VMOGILEV',
+    'LisenUp Website',
+    'LisenUp is still in private beta, so I would love to hear your thoughts on the following:',
+    'LisenUp',
+    1,
+    1,
+    'd53c2f5395',
+    'LisenUp Status Updates',
+    null,
+    1)
+--------------
+
+--------------
+insert into lisenupdb.group_topics_all (
+  gta_id,
+  uga_id,
+  created_by,
+  modified_by,
+  gta_title,
+  gta_text,
+  gta_active)
+values (
+    1,
+    1,
+    'VMOGILEV',
+    'VMOGILEV',
+    'Constructive Criticism',
+    'If you ever wanted to give me a constructive criticism - please do not hesitate to do so now:',
+    1
+)
+--------------
+
+--------------
+insert into lisenupdb.group_topics_all (
+  gta_id,
+  uga_id,
+  created_by,
+  modified_by,
+  gta_title,
+  gta_text,
+  gta_active)
+values (
+    2,
+    1,
+    'VMOGILEV',
+    'VMOGILEV',
+    'I am Known For ...',
+    'If someone asked you what I am known for?  What is the one thing that comes to mind?',
+    1
+)
+--------------
+
+--------------
+insert into lisenupdb.group_topics_all (
+  gta_id,
+  uga_id,
+  created_by,
+  modified_by,
+  gta_title,
+  gta_text,
+  gta_active)
+values (
+    3,
+    1,
+    'VMOGILEV',
+    'VMOGILEV',
+    'One Thing Better ...',
+    'If we were to work together again, what is the one thing that I should do better?',
+    1
+)
+--------------
+
+--------------
+insert into lisenupdb.group_topics_all (
+  gta_id,
+  uga_id,
+  created_by,
+  modified_by,
+  gta_title,
+  gta_text,
+  gta_active)
+values (
+    4,
+    2,
+    'VMOGILEV',
+    'VMOGILEV',
+    'Our Mission Statement',
+    'Does our mission statement at https://lisenup.com/about resonate with you?',
+    1
+)
+--------------
+
+--------------
+insert into lisenupdb.group_topics_all (
+  gta_id,
+  uga_id,
+  created_by,
+  modified_by,
+  gta_title,
+  gta_text,
+  gta_active)
+values (
+    5,
+    2,
+    'VMOGILEV',
+    'VMOGILEV',
+    'Website Usability',
+    'How is the LisenUp website usability? How easy is it to navigate and leave a feedback?',
+    1
+)
+--------------
+
+--------------
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0
+--------------
+
+--------------
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0
+--------------
+
+--------------
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES'
+--------------
+
+--------------
+DROP SCHEMA IF EXISTS `lisenupdb`
+--------------
+
+--------------
+CREATE SCHEMA IF NOT EXISTS `lisenupdb` DEFAULT CHARACTER SET utf8
+--------------
+
+--------------
+SHOW WARNINGS
+--------------
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`users_all`
+--------------
+
+Note (Code 1051): Unknown table 'lisenupdb.users_all'
+--------------
+SHOW WARNINGS
+--------------
+
++-------+------+-------------------------------------+
+| Level | Code | Message                             |
++-------+------+-------------------------------------+
+| Note  | 1051 | Unknown table 'lisenupdb.users_all' |
++-------+------+-------------------------------------+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`users_all` (
+  `ua_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `modified_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_by` VARCHAR(30) NOT NULL,
+  `version` INT NOT NULL DEFAULT 0,
+  `ua_username` VARCHAR(30) NOT NULL,
+  `ua_name` VARCHAR(256) NOT NULL,
+  `ua_email` VARCHAR(256) NOT NULL,
+  `ua_password` VARCHAR(256) NOT NULL,
+  `ua_active` TINYINT(1) NOT NULL,
+  `ua_gravatar_hash` VARCHAR(32) NOT NULL,
+  `ua_greeting` VARCHAR(256) NOT NULL,
+  PRIMARY KEY (`ua_id`),
+  UNIQUE INDEX `ua_uk1` (`ua_username` ASC),
+  UNIQUE INDEX `ua_uk2` (`ua_email` ASC))
+ROW_FORMAT = Dynamic
+--------------
+
+--------------
+SHOW WARNINGS
+--------------
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`user_groups_all`
+--------------
+
+Note (Code 1051): Unknown table 'lisenupdb.user_groups_all'
+--------------
+SHOW WARNINGS
+--------------
+
++-------+------+-------------------------------------------+
+| Level | Code | Message                                   |
++-------+------+-------------------------------------------+
+| Note  | 1051 | Unknown table 'lisenupdb.user_groups_all' |
++-------+------+-------------------------------------------+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`user_groups_all` (
+  `uga_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `ua_id` INT UNSIGNED NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `modified_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_by` VARCHAR(30) NOT NULL,
+  `version` INT NOT NULL DEFAULT 0,
+  `uga_name` VARCHAR(45) NOT NULL,
+  `uga_desc` VARCHAR(256) NOT NULL,
+  `uga_slug` VARCHAR(19) NOT NULL,
+  `uga_active` TINYINT(1) NOT NULL,
+  `uga_public` TINYINT(1) NOT NULL DEFAULT 0,
+  `uga_mailchimp_list_id` VARCHAR(10) NULL,
+  `uga_mailchimp_list_name` VARCHAR(45) NULL,
+  `uga_mailchimp_api` VARCHAR(36) NULL,
+  `uga_mailchimp_enabled` TINYINT(1) NULL,
+  PRIMARY KEY (`uga_id`),
+  INDEX `uga_ua_fk_idx` (`ua_id` ASC),
+  UNIQUE INDEX `uga_uk1` (`ua_id` ASC, `uga_slug` ASC),
+  CONSTRAINT `uga_ua_fk`
+    FOREIGN KEY (`ua_id`)
+    REFERENCES `lisenupdb`.`users_all` (`ua_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ROW_FORMAT = Dynamic
+--------------
+
+--------------
+SHOW WARNINGS
+--------------
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`group_topics_all`
+--------------
+
+Note (Code 1051): Unknown table 'lisenupdb.group_topics_all'
+--------------
+SHOW WARNINGS
+--------------
+
++-------+------+--------------------------------------------+
+| Level | Code | Message                                    |
++-------+------+--------------------------------------------+
+| Note  | 1051 | Unknown table 'lisenupdb.group_topics_all' |
++-------+------+--------------------------------------------+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`group_topics_all` (
+  `gta_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uga_id` INT UNSIGNED NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `modified_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_by` VARCHAR(30) NOT NULL,
+  `version` INT NOT NULL DEFAULT 0,
+  `gta_title` VARCHAR(45) NOT NULL,
+  `gta_text` TEXT NOT NULL,
+  `gta_active` TINYINT(1) NOT NULL,
+  `gta_order` INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`gta_id`),
+  INDEX `gta_uga_fk_idx` (`uga_id` ASC),
+  CONSTRAINT `gta_uga_fk`
+    FOREIGN KEY (`uga_id`)
+    REFERENCES `lisenupdb`.`user_groups_all` (`uga_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ROW_FORMAT = Dynamic
+--------------
+
+--------------
+SHOW WARNINGS
+--------------
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`topic_feedback_all`
+--------------
+
+Note (Code 1051): Unknown table 'lisenupdb.topic_feedback_all'
+--------------
+SHOW WARNINGS
+--------------
+
++-------+------+----------------------------------------------+
+| Level | Code | Message                                      |
++-------+------+----------------------------------------------+
+| Note  | 1051 | Unknown table 'lisenupdb.topic_feedback_all' |
++-------+------+----------------------------------------------+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`topic_feedback_all` (
+  `tfa_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `gta_id` INT UNSIGNED NOT NULL,
+  `ua_id` INT UNSIGNED NOT NULL DEFAULT 1,
+  `tfa_uuid` VARCHAR(36) NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `modified_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_by` VARCHAR(30) NOT NULL,
+  `version` INT NOT NULL DEFAULT 0,
+  `tfa_ip_addr` VARCHAR(39) NOT NULL,
+  `tfa_text` TEXT NOT NULL,
+  `tfa_reply_name` VARCHAR(256) NULL,
+  `tfa_reply_email` VARCHAR(256) NULL,
+  `tfa_agreed_to_sub` TINYINT(1) NULL,
+  `sess_id` VARCHAR(36) NULL,
+  PRIMARY KEY (`tfa_id`),
+  INDEX `tfa_gta_fk_idx` (`gta_id` ASC),
+  UNIQUE INDEX `tfa_uuid_UNIQUE` (`tfa_uuid` ASC),
+  INDEX `tfa_ua_fk_idx` (`ua_id` ASC),
+  INDEX `fta_indx1` (`sess_id` ASC, `gta_id` ASC),
+  CONSTRAINT `tfa_gta_fk`
+    FOREIGN KEY (`gta_id`)
+    REFERENCES `lisenupdb`.`group_topics_all` (`gta_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `tfa_ua_fk`
+    FOREIGN KEY (`ua_id`)
+    REFERENCES `lisenupdb`.`users_all` (`ua_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ROW_FORMAT = Dynamic
+--------------
+
+--------------
+SHOW WARNINGS
+--------------
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`group_users_all`
+--------------
+
+Note (Code 1051): Unknown table 'lisenupdb.group_users_all'
+--------------
+SHOW WARNINGS
+--------------
+
++-------+------+-------------------------------------------+
+| Level | Code | Message                                   |
++-------+------+-------------------------------------------+
+| Note  | 1051 | Unknown table 'lisenupdb.group_users_all' |
++-------+------+-------------------------------------------+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`group_users_all` (
+  `gua_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uga_id` INT UNSIGNED NOT NULL,
+  `ua_id` INT UNSIGNED NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `modified_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `modified_by` VARCHAR(30) NOT NULL,
+  `version` INT NOT NULL DEFAULT 0,
+  `gua_active` TINYINT(1) NOT NULL,
+  `gua_subed_at` VARCHAR(256) NOT NULL,
+  `gua_ip_addr` VARCHAR(39) NOT NULL,
+  `gua_mailchimp_id` VARCHAR(32) NULL,
+  `gua_mailchimp_email` VARCHAR(256) NULL,
+  `gua_mailchimp_response` TEXT NULL,
+  PRIMARY KEY (`gua_id`),
+  INDEX `gua_uga_fk_idx` (`uga_id` ASC),
+  INDEX `gua_ua_fk_idx` (`ua_id` ASC),
+  UNIQUE INDEX `gua_uk1` (`uga_id` ASC, `ua_id` ASC),
+  CONSTRAINT `gua_uga_fk`
+    FOREIGN KEY (`uga_id`)
+    REFERENCES `lisenupdb`.`user_groups_all` (`uga_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `gua_ua_fk`
+    FOREIGN KEY (`ua_id`)
+    REFERENCES `lisenupdb`.`users_all` (`ua_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ROW_FORMAT = Dynamic
+--------------
+
+--------------
+SHOW WARNINGS
+--------------
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`email_log`
+--------------
+
+Note (Code 1051): Unknown table 'lisenupdb.email_log'
+--------------
+SHOW WARNINGS
+--------------
+
++-------+------+-------------------------------------+
+| Level | Code | Message                             |
++-------+------+-------------------------------------+
+| Note  | 1051 | Unknown table 'lisenupdb.email_log' |
++-------+------+-------------------------------------+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`email_log` (
+  `el_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `el_to` VARCHAR(256) NOT NULL,
+  `el_reply_to` VARCHAR(256) NOT NULL,
+  `el_from` VARCHAR(256) NOT NULL,
+  `el_subject` VARCHAR(256) NOT NULL,
+  `el_body` TEXT NOT NULL,
+  `el_sent` TINYINT(1) NOT NULL,
+  `el_error` TEXT NULL,
+  PRIMARY KEY (`el_id`),
+  INDEX `el_indx1` (`el_sent` ASC, `el_id` ASC))
+--------------
+
+--------------
+SHOW WARNINGS
+--------------
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`anon_sessions_all`
+--------------
+
+Note (Code 1051): Unknown table 'lisenupdb.anon_sessions_all'
+--------------
+SHOW WARNINGS
+--------------
+
++-------+------+---------------------------------------------+
+| Level | Code | Message                                     |
++-------+------+---------------------------------------------+
+| Note  | 1051 | Unknown table 'lisenupdb.anon_sessions_all' |
++-------+------+---------------------------------------------+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`anon_sessions_all` (
+  `sess_id` VARCHAR(36) NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `ip_addr` VARCHAR(39) NOT NULL,
+  `full_name` VARCHAR(256) NULL,
+  `email_address` VARCHAR(256) NULL,
+  `email_verified` TINYINT(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`sess_id`))
+--------------
+
+--------------
+SHOW WARNINGS
+--------------
+
+--------------
+DROP TABLE IF EXISTS `lisenupdb`.`anon_feedback_all`
+--------------
+
+Note (Code 1051): Unknown table 'lisenupdb.anon_feedback_all'
+--------------
+SHOW WARNINGS
+--------------
+
++-------+------+---------------------------------------------+
+| Level | Code | Message                                     |
++-------+------+---------------------------------------------+
+| Note  | 1051 | Unknown table 'lisenupdb.anon_feedback_all' |
++-------+------+---------------------------------------------+
+--------------
+CREATE TABLE IF NOT EXISTS `lisenupdb`.`anon_feedback_all` (
+  `afa_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `sess_id` VARCHAR(36) NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` VARCHAR(30) NOT NULL,
+  `tfa_id` INT UNSIGNED NOT NULL,
+  `gta_id` INT UNSIGNED NOT NULL,
+  `ua_id` INT UNSIGNED NOT NULL,
+  `uga_id` INT UNSIGNED NOT NULL,
+  `tfa_uuid` VARCHAR(36) NOT NULL,
+  PRIMARY KEY (`afa_id`),
+  UNIQUE INDEX `tfa_id_UNIQUE` (`tfa_id` ASC),
+  INDEX `afa_indx1` (`sess_id` ASC, `uga_id` ASC, `gta_id` ASC))
+--------------
+
+--------------
+SHOW WARNINGS
+--------------
+
+--------------
+SET SQL_MODE=@OLD_SQL_MODE
+--------------
+
+--------------
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS
+--------------
+
+--------------
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS
+--------------
+
+--------------
+delete from lisenupdb.topic_feedback_all where gta_id in (select gta_id from lisenupdb.group_topics_all where created_by = 'VMOGILEV')
+--------------
+
+--------------
+delete from lisenupdb.group_users_all where uga_id in (select uga_id from lisenupdb.user_groups_all where created_by = 'VMOGILEV')
+--------------
+
+--------------
+delete from lisenupdb.group_topics_all where created_by = 'VMOGILEV'
+--------------
+
+--------------
+delete from lisenupdb.user_groups_all where created_by = 'VMOGILEV'
+--------------
+
+--------------
+delete from lisenupdb.users_all where created_by = 'VMOGILEV'
+--------------
+
+--------------
+insert into lisenupdb.users_all (
+  ua_id,
+  created_by,
+  modified_by,
+  ua_username,
+  ua_name,
+  ua_email,
+  ua_password,
+  ua_active,
+  ua_gravatar_hash,
+  ua_greeting)
+values (
+    1,
+    'SEED',
+    'SEED',
+    'anonymous',
+    'Anonymous',
+    'null@lisenup.com',
+    'change',
+    0,
+    'z',
+    'Anonymous')
+--------------
+
+--------------
+insert into lisenupdb.users_all (
+  ua_id,
+  created_by,
+  modified_by,
+  ua_username,
+  ua_name,
+  ua_email,
+  ua_password,
+  ua_active,
+  ua_gravatar_hash,
+  ua_greeting)
+values (
+    100,
+    'VMOGILEV',
+    'VMOGILEV',
+    'mve',
+    'Vitaliy Mogilevskiy',
+    'admin@lisenup.com',
+    'change',
+    1,
+    '310bc337aaf8b7ff17ce233a36934fe6',
+    'LisenUp Co-Founder / CTO')
+--------------
+
+--------------
+insert into lisenupdb.user_groups_all (
+  uga_id,
+  ua_id,
+  created_by,
+  modified_by,
+  uga_name,
+  uga_desc,
+  uga_slug,
+  uga_active,
+  uga_public)
+values (
+    1,
+    100,
+    'VMOGILEV',
+    'VMOGILEV',
+    'My Job',
+    'I want to improve my Job and would like to get your candid feedback on the following:',
+    'Job',
+    1,
+    1)
+--------------
+
+--------------
+insert into lisenupdb.user_groups_all (
+  uga_id,
+  ua_id,
+  created_by,
+  modified_by,
+  uga_name,
+  uga_desc,
+  uga_slug,
+  uga_active,
+  uga_public,
+  uga_mailchimp_list_id,
+  uga_mailchimp_list_name,
+  uga_mailchimp_api,
+  uga_mailchimp_enabled)
+values (
+    2,
+    100,
+    'VMOGILEV',
+    'VMOGILEV',
+    'LisenUp Website',
+    'LisenUp is still in private beta, so I would love to hear your thoughts on the following:',
+    'LisenUp',
+    1,
+    1,
+    'd53c2f5395',
+    'LisenUp Status Updates',
+    null,
+    1)
+--------------
+
+--------------
+insert into lisenupdb.group_topics_all (
+  gta_id,
+  uga_id,
+  created_by,
+  modified_by,
+  gta_title,
+  gta_text,
+  gta_active)
+values (
+    1,
+    1,
+    'VMOGILEV',
+    'VMOGILEV',
+    'Constructive Criticism',
+    'If you ever wanted to give me a constructive criticism - please do not hesitate to do so now:',
+    1
+)
+--------------
+
+--------------
+insert into lisenupdb.group_topics_all (
+  gta_id,
+  uga_id,
+  created_by,
+  modified_by,
+  gta_title,
+  gta_text,
+  gta_active)
+values (
+    2,
+    1,
+    'VMOGILEV',
+    'VMOGILEV',
+    'I am Known For ...',
+    'If someone asked you what I am known for?  What is the one thing that comes to mind?',
+    1
+)
+--------------
+
+--------------
+insert into lisenupdb.group_topics_all (
+  gta_id,
+  uga_id,
+  created_by,
+  modified_by,
+  gta_title,
+  gta_text,
+  gta_active)
+values (
+    3,
+    1,
+    'VMOGILEV',
+    'VMOGILEV',
+    'One Thing Better ...',
+    'If we were to work together again, what is the one thing that I should do better?',
+    1
+)
+--------------
+
+--------------
+insert into lisenupdb.group_topics_all (
+  gta_id,
+  uga_id,
+  created_by,
+  modified_by,
+  gta_title,
+  gta_text,
+  gta_active)
+values (
+    4,
+    2,
+    'VMOGILEV',
+    'VMOGILEV',
+    'Our Mission Statement',
+    'Does our mission statement at https://lisenup.com/about resonate with you?',
+    1
+)
+--------------
+
+--------------
+insert into lisenupdb.group_topics_all (
+  gta_id,
+  uga_id,
+  created_by,
+  modified_by,
+  gta_title,
+  gta_text,
+  gta_active)
+values (
+    5,
+    2,
+    'VMOGILEV',
+    'VMOGILEV',
+    'Website Usability',
+    'How is the LisenUp website usability? How easy is it to navigate and leave a feedback?',
+    1
+)
+--------------
+

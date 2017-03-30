@@ -14,19 +14,28 @@ public class AnonSession {
 	
 	@NotNull
 	private String createdBy;
+	
+	@NotNull
+	private String ipAddr;
 
 	private String fullName;
 	
 	private String emailAddress;
 	
+	@NotNull
+	private boolean emailVerified;
+	
 	// needed for hibernate
 	public AnonSession() {
 		this.createdBy = "SESSION";
+		this.emailVerified = false;
 	}
 
-	public AnonSession(String sessId) {
+	public AnonSession(String sessId, String ipAddr) {
 		this.createdBy = "SESSION";
 		this.sessId = sessId;
+		this.ipAddr = ipAddr;
+		this.emailVerified = false;
 	}
 
 	public String getSessId() {

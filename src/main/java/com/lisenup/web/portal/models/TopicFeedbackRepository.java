@@ -12,6 +12,7 @@ import org.springframework.data.repository.CrudRepository;
 public interface TopicFeedbackRepository extends CrudRepository<TopicFeedback, Long> {
 
 	public List<TopicFeedback> findByGtaId(long gtaId);
+	public List<TopicFeedback> findBySessIdAndGtaIdOrderByCreatedAtAsc(String sessId, long gtaId);
 	public TopicFeedback findByTfaUuid(String tfaUuid);
 
 	@Modifying

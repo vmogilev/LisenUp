@@ -30,8 +30,6 @@ public class AnonFeedback {
 	private Long ugaId;
 	
 	private String tfaUuid;
-	
-	private String tfaText;
 
 	// for hibernate
 	public AnonFeedback() {
@@ -97,15 +95,6 @@ public class AnonFeedback {
 
 	public void setTfaUuid(String tfaUuid) {
 		this.tfaUuid = tfaUuid;
-	}
-
-	public String getTfaText() {
-		return tfaText;
-	}
-
-	public void setTfaText(String tfaText) {
-		this.tfaText = tfaText;
-	}
-	
+	}	
 	
 }

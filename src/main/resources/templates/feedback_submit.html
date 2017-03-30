@@ -33,7 +33,7 @@
 				<h3 class="panel-title">Need A Reply?</h3>
 			</div>
 			<div class="panel-body text-center">
-				<a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="'No'" class="btn btn-primary btn-lg" role="button">Sub Link</a>
+				<a th:href="@{/{usr}/{grp}/{q}(usr=${user.uaUsername},grp=${group.ugaSlug},q=${topic.gtaId})}" th:text="'No'" class="btn btn-primary btn-lg" role="button">Sub Link</a>
 				<a th:href="@{/{usr}/{grp}/{fuuid}/getreply(usr=${user.uaUsername},grp=${group.ugaSlug},fuuid=${feedback.tfaUuid})}" th:text="'Yes'" class="btn btn-success btn-lg" role="button">Sub Link</a>
 			</div>
 		</div>

@@ -54,3 +54,8 @@ body {
 .h1, h1 {
     font-size: 26px;
 }
+
+pre {
+  white-space: pre-wrap;
+  word-break: normal;
+}

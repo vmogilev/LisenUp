@@ -3,6 +3,7 @@ package com.lisenup.web.portal.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,7 @@ public class ProfileController {
 	public String userProfile(
 			@PathVariable("username") String username,
 			@CookieValue(value = "lu", defaultValue = "") String anonCookie,
+			HttpServletRequest request,
 			HttpServletResponse response,
 			Model model
 			) {
@@ -73,7 +75,7 @@ public class ProfileController {
 		}
 		
 		List<UserGroup> groups = userGroupRepository.findByUaIdAndUgaPublic(user.getUaId(), true); 
-		AnonSession anonUser = sessUtils.getOrSetLuCookie(response, anonCookie);
+		AnonSession anonUser = sessUtils.getOrSetLuCookie(request, response, anonCookie);
 
 		List<Long> reviewedGroupIds = new ArrayList<>();
 		for ( UserGroup group : groups ) {

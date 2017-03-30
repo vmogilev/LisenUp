@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
@@ -15,6 +16,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +29,7 @@ import com.lisenup.web.portal.config.LisenUpProperties;
 import com.lisenup.web.portal.exceptions.FeedbackNotFoundException;
 import com.lisenup.web.portal.exceptions.GroupNotFoundException;
 import com.lisenup.web.portal.exceptions.UserNotFoundException;
+import com.lisenup.web.portal.models.AnonSession;
 import com.lisenup.web.portal.models.GroupTopic;
 import com.lisenup.web.portal.models.GroupTopicRepository;
 import com.lisenup.web.portal.models.GroupUsers;
@@ -40,6 +43,7 @@ import com.lisenup.web.portal.models.UserRepository;
 import com.lisenup.web.portal.service.MailService;
 import com.lisenup.web.portal.service.MailchimpService;
 import com.lisenup.web.portal.utils.HttpUtils;
+import com.lisenup.web.portal.utils.SessUtils;
 
 @Controller
 public class GetReplyController {
@@ -53,6 +57,9 @@ public class GetReplyController {
 
 	@Autowired
 	private LisenUpProperties props;
+
+	@Autowired
+	private SessUtils sessUtils;
 
 	@Autowired
 	private MailService mailer;
@@ -83,11 +90,24 @@ public class GetReplyController {
 		this.email = properties.getEmail();
 	}
 
+	/**
+	 * replyConfirmed - Confirms Email on Reply Request for a Feedback
+	 * 
+	 * @param uaUsername
+	 * @param tfaUuid
+	 * @param anonCookie
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/replyconf")
 	public String replyConfirmed(
 			@RequestParam("u") String uaUsername,
 			@RequestParam("t") String tfaUuid,
+			@CookieValue(value = "lu", defaultValue = "") String anonCookie,
 			HttpServletRequest request,
+			HttpServletResponse response,
 			Model model
 			) {
 		
@@ -156,9 +176,16 @@ public class GetReplyController {
 			}
 		}
 
+		// it's possible that user confirms the email at a later time
+		// or from a different machine / browser and we have to set
+		// their cookie value to what it was while they provided the feedback
+		// so they can view it (getreply_confirmed creates a link to view it)
+		AnonSession anonUser = sessUtils.getOrSetLuCookieHard(request, response, feedback.getSessId());
+		
 		model.addAttribute("user", groupOwner);
 		model.addAttribute("group", group);
 		model.addAttribute("topic", topic);
+		model.addAttribute("anonUser", anonUser);
 
 		return "getreply_confirmed";
 	}

@@ -34,7 +34,7 @@
 				</div>				
 
 				<div class="panel-body text-center">
-					<a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="'Leave More Feedback'" class="btn btn-primary btn-lg" role="button">More Feedback</a>
+					<a th:href="@{/{usr}/{grp}/{q}(usr=${user.uaUsername},grp=${group.ugaSlug},q=${topic.gtaId})}" th:text="'View Your Feedback'" class="btn btn-primary btn-lg" role="button">More Feedback</a>
 				</div>
 			
 			</div>
