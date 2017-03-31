@@ -143,6 +143,9 @@ public class UserGroup {
 	}
 
 	public Boolean isUgaMailchimpEnabled() {
+		if ( ugaMailchimpEnabled == null ) {
+			return false;
+		}
 		return ugaMailchimpEnabled;
 	}
 

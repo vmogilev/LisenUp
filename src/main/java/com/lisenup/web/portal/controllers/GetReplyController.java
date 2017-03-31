@@ -155,8 +155,8 @@ public class GetReplyController {
 			topicFeedbackRepository.setRealUserForFeedbackId(user.getUaId(), TEMP_USER_CREATION, feedback.getVersion()+1, feedback.getTfaId());
 		}
 		
-		// create a new sub if user agreed to it
-		if ( feedback.isTfaAgreedToSub() ) {
+		// create a new sub if user agreed to it and it's enabled
+		if ( feedback.isTfaAgreedToSub() && group.isUgaMailchimpEnabled() ) {
 			GroupUsers newSub = new GroupUsers();
 			newSub.setUgaId(group.getUgaId());  // group id
 			newSub.setUaId(user.getUaId());     // subscriber user_id
@@ -251,7 +251,7 @@ public class GetReplyController {
 			@RequestParam("orig_ugaId") long origUgaId,
 			@RequestParam("orig_tfaUuid") String orig_tfaUuid,
 			@RequestParam(name = "terms", defaultValue = "false", required = false) Boolean terms,
-			@RequestParam(name = "subscribe", defaultValue = "true", required = false) Boolean subscribe,
+			@RequestParam(name = "subscribe", defaultValue = "false", required = false) Boolean subscribe,
 			@CookieValue(value = "lu", defaultValue = "") String anonCookie,
 			HttpServletRequest request,
 			HttpServletResponse response,
@@ -332,7 +332,9 @@ public class GetReplyController {
 		// we are doing this to make sure we capture the most recent Name
 		feedback.setTfaReplyEmail(newUser.getUaEmail());
 		feedback.setTfaReplyName(newUserUaName);
-		feedback.setTfaAgreedToSub(subscribe);
+		if ( userGroup.isUgaMailchimpEnabled() ) {
+			feedback.setTfaAgreedToSub(subscribe);
+		}
 		topicFeedbackRepository.save(feedback);
 
 

@@ -158,6 +158,9 @@ public class TopicFeedback {
 	}
 
 	public Boolean isTfaAgreedToSub() {
+		if ( tfaAgreedToSub == null ) {
+			return false;
+		}
 		return tfaAgreedToSub;
 	}
 
