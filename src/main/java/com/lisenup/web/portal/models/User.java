@@ -52,6 +52,8 @@ public class User {
 	
 	@NotNull
 	private String uaGreeting;
+	
+	private String uaFirstTfaUuid;
 
 	// default constructor needed for hibernate
 	public User() {
@@ -148,5 +150,13 @@ public class User {
 		this.uaGreeting = uaGreeting;
 		this.modifiedBy = MODIFIED_BY;
 	}
-	
+
+	public String getUaFirstTfaUuid() {
+		return uaFirstTfaUuid;
+	}
+
+	public void setUaFirstTfaUuid(String uaFirstTfaUuid) {
+		this.uaFirstTfaUuid = uaFirstTfaUuid;
+		this.modifiedBy = MODIFIED_BY;
+	}
 }

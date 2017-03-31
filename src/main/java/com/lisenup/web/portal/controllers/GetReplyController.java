@@ -309,8 +309,11 @@ public class GetReplyController {
 		}
 		
 		// Try to create a user and catch any constraint validation errors
-		// but first save the most recent name which we'll use on the feedback
+		// but first:
+		// 1) save the most recent name which we'll use on the feedback
+		// 2) tag the new user's first feedback UUID
 		String newUserUaName = newUser.getUaName();
+		newUser.setUaFirstTfaUuid(feedback.getTfaUuid());
 		try {
 			newUser = createOrFindUser(newUser);
 		} catch (ConstraintViolationException e) {
@@ -330,13 +333,24 @@ public class GetReplyController {
 		
 		// update feedback with newUser data (NOT the FOUND USER)
 		// we are doing this to make sure we capture the most recent Name
+		// the user.uaName is updated on the confirmation cycle since
+		// we have to first make sure the use owns this account/email address
 		feedback.setTfaReplyEmail(newUser.getUaEmail());
 		feedback.setTfaReplyName(newUserUaName);
 		if ( userGroup.isUgaMailchimpEnabled() ) {
 			feedback.setTfaAgreedToSub(subscribe);
 		}
 		topicFeedbackRepository.save(feedback);
-
+		
+		
+		// update AnonSession with the matched uaId - this is the indicator that AnonUser
+		// has requested to share the name/email at least once and for us a way
+		// to identify if the email was verified or not through user.uaFirstTfaUuid
+		if ( anonUser.getUaId() == null ) {
+			anonSessionRepository.setUaIdForSessId(newUser.getUaId(), anonUser.getSessId());
+		}
+		
+		// TODO: check if anon user has validated email and if so process it right here instead of sending email validation requests
 
 		// NOTE: the auto generated username has a $ as a first char
 		//       it has to be URL Encoded as %24

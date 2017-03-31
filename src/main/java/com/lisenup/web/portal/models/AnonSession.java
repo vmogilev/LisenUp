@@ -25,6 +25,9 @@ public class AnonSession {
 	@NotNull
 	private boolean emailVerified;
 	
+	// has to be boxed long to allow for nulls
+	private Long uaId;
+	
 	// needed for hibernate
 	public AnonSession() {
 		this.createdBy = "SESSION";
@@ -84,6 +87,14 @@ public class AnonSession {
 
 	public void setEmailVerified(boolean emailVerified) {
 		this.emailVerified = emailVerified;
+	}
+
+	public Long getUaId() {
+		return uaId;
+	}
+
+	public void setUaId(Long uaId) {
+		this.uaId = uaId;
 	}
 
 }

@@ -12,5 +12,8 @@ public interface AnonSessionRepository extends CrudRepository<AnonSession, Strin
 	@Query("update AnonSession x set x.fullName = ?1 where x.sessId = ?2")
 	int setFullNameForSessId(String fullName, String sessId);
 
+	@Modifying
+	@Query("update AnonSession x set x.uaId = ?1 where x.sessId = ?2")
+	int setUaIdForSessId(Long uaId, String sessId);
 
 }
