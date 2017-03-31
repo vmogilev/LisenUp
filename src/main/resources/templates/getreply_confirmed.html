@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="header :: copy (description='Confirmed Reply Request',title='Confirmed Reply Request')">
+<head th:replace="header :: copy (description='Email Confirmed',title='Email Confirmed')">
 </head>
 
 <body>
@@ -13,15 +13,13 @@
 		</div>
 
 		<ol class="breadcrumb">
-			<!-- <li><a th:href="@{/{usr}(usr=${user.uaUsername})}" th:text="${user.uaName}">Profile</a></li> -->
-			<!-- <li><a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="${group.ugaName}">Group</a></li> -->
 			<li><a th:href="@{/{usr}/{grp}/{q}(usr=${user.uaUsername},grp=${group.ugaSlug},q=${topic.gtaId})}" th:text="${topic.gtaTitle}">Topic</a></li>
-			<li th:text="'Reply Request Confirmed'" class="active">Email Confirmed</li>
+			<li th:text="'Email Confirmed'" class="active">Email Confirmed</li>
 		</ol>
 		
 		<div class="panel panel-default">
 			<div class="panel-heading text-center">
-				<h3 class="panel-title">Your Reply Request Confirmed!</h3>
+				<h3 class="panel-title">Your Email Confirmed!</h3>
 			</div>
 			<div class="panel-body">
 
@@ -30,7 +28,7 @@
 				</div>
 				
 				<div th:unless="${error}" class="alert alert-success" role="alert">
-					<p th:text="'Your email and reply request for feedback to ' + ${user.uaName} + '\'s \'' + ${topic.gtaTitle} + '\' are confirmed!  Thank you!'" class="lead"></p>
+					<p th:text="'Your email address on the feedback you left for ' + ${user.uaName} + '\'s \'' + ${topic.gtaTitle} + '\' is confirmed!  Thank you!'" class="lead"></p>
 				</div>				
 
 				<div class="panel-body text-center">

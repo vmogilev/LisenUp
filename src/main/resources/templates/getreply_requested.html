@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="header :: copy (description='Reply Requested',title='Reply Requested')">
+<head th:replace="header :: copy (description='Reply Requested',title='Your Name/Email Received')">
 </head>
 
 <body>
@@ -9,35 +9,24 @@
     <div class="container">
     
 		<div class="page-header">
-		  <h1 th:text="'Reply Requested'">Reply Requested</h1>
+		  <h1 th:text="'Your Name/Email Received'">Your Name/Email Received</h1>
 		</div>
 
 		<ol class="breadcrumb">
 			<!-- <li><a th:href="@{/{usr}(usr=${user.uaUsername})}" th:text="${user.uaName}">Profile</a></li> -->
 			<!-- <li><a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="${group.ugaName}">Group</a></li> -->
 			<li><a th:href="@{/{usr}/{grp}/{q}(usr=${user.uaUsername},grp=${group.ugaSlug},q=${topic.gtaId})}" th:text="${topic.gtaTitle}">Topic</a></li>
-			<li th:text="'Reply Requested'" class="active">Reply Requested</li>
+			<li th:text="'Your Name/Email Received'" class="active">Your Name/Email Received</li>
 		</ol>
 
 		<div class="panel panel-default">
 			<div class="panel-heading text-center">
-				<h3 class="panel-title">Reply Requested</h3>
+				<h3 class="panel-title">Your Name/Email Received</h3>
 			</div>
-			<div class="panel-body">
-
-<!-- 				<div th:if="${error}" class="alert alert-warning" role="alert">
-					<p>Your email address was already subscribed to this group</p>
-				</div> -->
-				
+			<div class="panel-body">				
 				<div th:unless="${error}" class="alert alert-info" role="alert">
 					<p th:text="'Please check your mailbox (' + ${newuser.uaEmail} + ') for our confirmation email and make sure to click the link to verify your email address.'" class="lead"></p>
-<!-- 					<ul>
-						<li th:text="'You successfully requested a reply to your feedback from: ' + ${user.uaName}"></li>
-						<li th:text="'Please check your mailbox (' + ${newuser.uaEmail} + ') for our confirmation email and make sure to confirm your email address.'"></li>
-						<li>For your protection we will not send any replies until your email address is confirmed.</li>
-					</ul> -->
 				</div>				
-
 				<div class="panel-body text-center">
 					<a th:href="@{/{usr}/{grp}/{q}(usr=${user.uaUsername},grp=${group.ugaSlug},q=${topic.gtaId})}" th:text="'View Your Feedback'" class="btn btn-primary btn-lg" role="button">More Feedback</a>
 				</div>

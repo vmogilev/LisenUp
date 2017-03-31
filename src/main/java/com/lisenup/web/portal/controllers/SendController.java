@@ -31,7 +31,6 @@ import com.lisenup.web.portal.exceptions.UserNotFoundException;
 import com.lisenup.web.portal.models.AnonFeedback;
 import com.lisenup.web.portal.models.AnonFeedbackRepository;
 import com.lisenup.web.portal.models.AnonSession;
-import com.lisenup.web.portal.models.AnonSessionRepository;
 import com.lisenup.web.portal.models.GroupTopic;
 import com.lisenup.web.portal.models.GroupTopicRepository;
 import com.lisenup.web.portal.models.TopicFeedback;
@@ -70,8 +69,8 @@ public class SendController {
 	@Autowired
 	private TopicFeedbackRepository topicFeedbackRepository;
 
-	@Autowired
-	private AnonSessionRepository anonSessionRepository;
+//	@Autowired
+//	private AnonSessionRepository anonSessionRepository;
 	
 	@Autowired
 	private AnonFeedbackRepository anonFeedbackRepository;

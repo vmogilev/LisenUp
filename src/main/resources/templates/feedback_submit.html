@@ -19,18 +19,11 @@
 			<li th:text="'Thank You!'" class="active">Thank You</li>
 		</ol>
 
-		<div th:replace="body :: user (message='Thank you for your feedback!  If you would like to receive a reply, then please click the button below:')"></div>
-
-		<!-- <p th:text="'Thank you! Your Feedback Was Sent To: ' + ${user.uaName}"></p> -->
-		<!-- <p th:text="${group.ugaName} + ': ' + ${topic.gtaTitle}"></p> -->
-	    
-	<!-- 	<div th:text="${topic.gtaText}">Topic</div>
-		<div th:text="${feedback.tfaId}">Id</div>
-		<div th:text="${feedback.tfaText}">Feedback</div> -->
+		<div th:replace="body :: user (message='Thank you for your feedback!  If you would like to share your name - please click the button below:')"></div>
 		
 		<div class="panel panel-default">
 			<div class="panel-heading text-center">
-				<h3 class="panel-title">Need A Reply?</h3>
+				<h3 class="panel-title">Want To Share Your Name?</h3>
 			</div>
 			<div class="panel-body text-center">
 				<a th:href="@{/{usr}/{grp}/{q}(usr=${user.uaUsername},grp=${group.ugaSlug},q=${topic.gtaId})}" th:text="'No'" class="btn btn-primary btn-lg" role="button">Sub Link</a>

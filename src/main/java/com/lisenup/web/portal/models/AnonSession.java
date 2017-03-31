@@ -54,6 +54,14 @@ public class AnonSession {
 		this.createdBy = createdBy;
 	}
 
+	public String getIpAddr() {
+		return ipAddr;
+	}
+
+	public void setIpAddr(String ipAddr) {
+		this.ipAddr = ipAddr;
+	}
+
 	public String getFullName() {
 		return fullName;
 	}
@@ -69,6 +77,13 @@ public class AnonSession {
 	public void setEmailAddress(String emailAddress) {
 		this.emailAddress = emailAddress;
 	}
-	
-	
+
+	public boolean isEmailVerified() {
+		return emailVerified;
+	}
+
+	public void setEmailVerified(boolean emailVerified) {
+		this.emailVerified = emailVerified;
+	}
+
 }

@@ -25,35 +25,42 @@
 			</div>
 			<div class="panel-body">
 
-				<div th:if="${givenFeedback}" id="given-feedback">
+				<div th:if="${not #lists.isEmpty(givenFeedback)}" id="given-feedback">
 					<div th:each="feedback : ${givenFeedback}">
 						<h5>
 							<span th:text="${#dates.format(feedback.createdAt, 'dd/MMM/yyyy HH:mm')}" class="label label-default">Date</span>
-							<span th:text="${feedback.tfaReplyName == null}? 'Anonymous' : ${feedback.tfaReplyName} + ' [' + ${feedback.tfaReplyEmail} + ']'" th:remove="tag"></span>
-							<span th:text="${feedback.tfaReplyName == null}? '' : (${feedback.uaId == 1}? 'email not verified')" class="label label-warning">Pending</span>
-							<span th:text="${feedback.tfaReplyName == null}? '' : (${feedback.uaId != 1}? 'verified')" class="label label-success">Verified</span>
+							<span th:text="${feedback.tfaReplyName == null}? 'Anonymous' : ${feedback.tfaReplyName}" th:remove="tag"></span>
+							<span th:text="${feedback.tfaReplyName == null}? '' : (${feedback.uaId == 1}? ${feedback.tfaReplyEmail})" class="label label-warning">Pending</span>
+							<span th:text="${feedback.tfaReplyName == null}? '' : (${feedback.uaId != 1}? ${feedback.tfaReplyEmail})" class="label label-success">Verified</span>
 						</h5>
 						<pre th:text="${feedback.tfaText}"></pre>
+					</div>
+					
+					<div id="more-controls" class="panel-body text-center">
+						<a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="'View Topics'" class="btn btn-primary btn-lg" role="button">Other</a>
+						<a data-target="#feedback-form" class="btn btn-success btn-lg" data-toggle="collapse">Add More</a>
 					</div>
 				</div>
 				
 				<div th:replace="body :: errlist"></div>
 	
-			    <form action="#" th:action="@{/feedback}" th:object="${feedback}" method="post">
-				    <div class="form-group">
-				    	<!-- <p>Topic Id: <input type="text" th:field="*{gtaId}" /></p> -->
-				        <textarea th:field="*{tfaText}" th:maxlength="${props.maxFeedbackLength}" id="feedback" class="form-control" rows="5" placeholder="Please Enter Your Feedback Here" required autofocus></textarea>
-				        <input type="hidden" th:field="*{gtaId}" />
-				        <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
-				        <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
-				        <input id="orig_gtaId" name="orig_gtaId" type="hidden" th:value="${topic.gtaId}" />
-				    </div>
-				    <div class="text-center"><h4><span id="chars-left" class="label label-default"></span></h4></div>
-				    <div class="panel-body text-center">
-				    	<a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="'Cancel'" class="btn btn-primary btn-lg" role="button">Cancel</a>
-				    	<button type="submit" class="btn btn-success btn-lg">Send</button>
-				    </div>
-			    </form>
+				<div th:classappend="${not #lists.isEmpty(givenFeedback)}? collapse" id="feedback-form">
+				    <form action="#" th:action="@{/feedback}" th:object="${feedback}" method="post">
+					    <div class="form-group">
+					    	<!-- <p>Topic Id: <input type="text" th:field="*{gtaId}" /></p> -->
+					        <textarea th:field="*{tfaText}" th:maxlength="${props.maxFeedbackLength}" id="feedback" class="form-control" rows="5" placeholder="Please Enter Your Feedback Here" required autofocus></textarea>
+					        <input type="hidden" th:field="*{gtaId}" />
+					        <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
+					        <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
+					        <input id="orig_gtaId" name="orig_gtaId" type="hidden" th:value="${topic.gtaId}" />
+					    </div>
+					    <div class="text-center"><h4><span id="chars-left" class="label label-default"></span></h4></div>
+					    <div class="panel-body text-center">
+					    	<a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="'Cancel'" class="btn btn-primary btn-lg" role="button">Cancel</a>
+					    	<button type="submit" class="btn btn-success btn-lg">Send</button>
+					    </div>
+				    </form>
+			    </div>
 
 			</div>
 		</div>
@@ -87,6 +94,12 @@ $(document).ready(function() {
 	    	$('textarea').val(text.substr(0,set));
 	    }
 	});
+
+	// hide the more-controls div after it's button is clicked
+	$("#feedback-form").on('shown.bs.collapse', function() {
+	    $('#more-controls').addClass('collapse');
+	});
+
 	
 });
 </script>

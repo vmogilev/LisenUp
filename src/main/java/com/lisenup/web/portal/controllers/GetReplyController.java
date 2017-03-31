@@ -30,6 +30,7 @@ import com.lisenup.web.portal.exceptions.FeedbackNotFoundException;
 import com.lisenup.web.portal.exceptions.GroupNotFoundException;
 import com.lisenup.web.portal.exceptions.UserNotFoundException;
 import com.lisenup.web.portal.models.AnonSession;
+import com.lisenup.web.portal.models.AnonSessionRepository;
 import com.lisenup.web.portal.models.GroupTopic;
 import com.lisenup.web.portal.models.GroupTopicRepository;
 import com.lisenup.web.portal.models.GroupUsers;
@@ -45,6 +46,10 @@ import com.lisenup.web.portal.service.MailchimpService;
 import com.lisenup.web.portal.utils.HttpUtils;
 import com.lisenup.web.portal.utils.SessUtils;
 
+/**
+ * @author mve
+ *
+ */
 @Controller
 public class GetReplyController {
 
@@ -83,6 +88,10 @@ public class GetReplyController {
 	private GroupUsersRepository groupUsersRepository;
 	
 	@Autowired
+	private AnonSessionRepository anonSessionRepository; 
+
+	
+	@Autowired
 	public GetReplyController(LisenUpProperties properties) {
 		// see: "To work with @ConfigurationProperties beans you can just inject" section
 		//      in: 
@@ -91,7 +100,7 @@ public class GetReplyController {
 	}
 
 	/**
-	 * replyConfirmed - Confirms Email on Reply Request for a Feedback
+	 * replyConfirmed - Confirms Email on Reply Request for a Feedback (aka Share Your Name)
 	 * 
 	 * @param uaUsername
 	 * @param tfaUuid
@@ -182,6 +191,20 @@ public class GetReplyController {
 		// so they can view it (getreply_confirmed creates a link to view it)
 		AnonSession anonUser = sessUtils.getOrSetLuCookieHard(request, response, feedback.getSessId());
 		
+		if ( !anonUser.isEmailVerified() ) {
+			// Save the name/email to Anon Session
+			anonUser.setFullName(feedback.getTfaReplyName());
+			anonUser.setEmailAddress(feedback.getTfaReplyEmail());
+			anonUser.setEmailVerified(true);
+			anonSessionRepository.save(anonUser);
+		}
+		
+		// update Anon user's Name with the latest provided on the feedback
+		if ( !anonUser.getFullName().equals(feedback.getTfaReplyName()) ) {
+			anonSessionRepository.setFullNameForSessId(feedback.getTfaReplyName(), anonUser.getSessId());
+		}
+
+		
 		model.addAttribute("user", groupOwner);
 		model.addAttribute("group", group);
 		model.addAttribute("topic", topic);
@@ -205,39 +228,22 @@ public class GetReplyController {
 		return subOk;
 		
 	}
-
-//	@GetMapping("/subconf")
-//	public String subConfirmed(
-//			@RequestParam("u") String uaUsername,
-//			@RequestParam("g") long guaId,
-//			Model model
-//			) {
-//		
-//		User user = userRepository.findByUaUsername(uaUsername);
-//		GroupUsers sub = groupUsersRepository.findOne(guaId);
-//		UserGroup group = userGroupRepository.findOne(sub.getUgaId());
-//		User groupOwner = userRepository.findOne(group.getUaId());
-//		
-//		if ( user.getUaId() != sub.getUaId() ) {
-//			throw new InvalidSubException("uaUsername=" + uaUsername + " guaId=" + Long.toString(guaId));
-//		}
-//		
-//		// update user's active flag if it was not set
-//		if ( !user.isUaActive() ) {
-//			userRepository.setActiveForUserId(true, "SUB_CONFIRMED", user.getVersion()+1, user.getUaId());
-//		}
-//		
-//		// update user's sub active flag if it was not set
-//		if ( !sub.isGuaActive() ) {
-//			groupUsersRepository.setActiveForSubId(true, "SUB_CONFIRMED", sub.getGuaId());
-//		}
-//
-//		model.addAttribute("user", groupOwner);
-//		model.addAttribute("group", group);
-//
-//		return "sub_confirmed";
-//	}
 	
+	/**
+	 * getReplyPost - Get Reply (aka Share Your Name) Form Processor
+	 * 
+	 * @param newUser
+	 * @param origUaId
+	 * @param origUgaId
+	 * @param orig_tfaUuid
+	 * @param terms
+	 * @param subscribe
+	 * @param anonCookie
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 */
 	@PostMapping("/getreply")
 	public String getReplyPost(
 			@ModelAttribute User newUser,
@@ -246,7 +252,9 @@ public class GetReplyController {
 			@RequestParam("orig_tfaUuid") String orig_tfaUuid,
 			@RequestParam(name = "terms", defaultValue = "false", required = false) Boolean terms,
 			@RequestParam(name = "subscribe", defaultValue = "true", required = false) Boolean subscribe,
-			HttpServletRequest request, 
+			@CookieValue(value = "lu", defaultValue = "") String anonCookie,
+			HttpServletRequest request,
+			HttpServletResponse response,
 			Model model) {
 		
 		User user = userRepository.findOne(origUaId);
@@ -269,7 +277,10 @@ public class GetReplyController {
 		if ( origUaId != userGroup.getUaId() || !userGroup.isUgaActive() ) {
 			throw new GroupNotFoundException(Long.toString(origUgaId));
 		}
-
+		
+		// pull anon user
+		AnonSession anonUser = sessUtils.getOrSetLuCookie(request, response, anonCookie);
+		
 		// check for correctable errors
 		List<String> errors = new ArrayList<>();
 		if ( StringUtils.isEmpty(newUser.getUaEmail()) ) {
@@ -289,6 +300,7 @@ public class GetReplyController {
 			model.addAttribute("newuser", newUser);
 			model.addAttribute("feedback", feedback);
 			model.addAttribute("topic", topic);
+			model.addAttribute("anonUser", anonUser);
 			model.addAttribute("terms", terms);
 			model.addAttribute("subscribe", subscribe);
 			model.addAttribute("errors", errors);
@@ -310,6 +322,7 @@ public class GetReplyController {
 			model.addAttribute("newuser", newUser);
 			model.addAttribute("feedback", feedback);
 			model.addAttribute("topic", topic);
+			model.addAttribute("anonUser", anonUser);
 			model.addAttribute("terms", terms);
 			model.addAttribute("errors", errors);
 			return "getreply_form";
@@ -321,37 +334,6 @@ public class GetReplyController {
 		feedback.setTfaReplyName(newUserUaName);
 		feedback.setTfaAgreedToSub(subscribe);
 		topicFeedbackRepository.save(feedback);
-		
-//		// update sub with the new user Id and where the sub came from
-//		GroupUsers newSub = new GroupUsers();
-//		newSub.setUaId(newUser.getUaId());
-//		newSub.setUgaId(userGroup.getUgaId());
-//		newSub.setGuaSubedAt(user.getUaName() + " / " + userGroup.getUgaName());
-//		newSub.setGuaIpAddr(HttpUtils.getIp(request));
-//		
-//		// make the sub inactive until email is confirmed
-//		newSub.setGuaActive(false);
-//		
-//		// check if the email is already sub'ed to this group
-//		if ( createOrFindSub(newSub) ) {
-//			model.addAttribute("error", true);
-//		} else {			 
-//			// NOTE: the auto generated username has a $ as a first char
-//			//       it has to be URL Encoded as %24
-//			try {
-//				mailer.send(newUser.getUaEmail(), 
-//						this.email.getMailFrom(), this.email.getReplyTo(), this.email.getSubSubject(), 
-//						"Please confirm your Subsription to " +
-//						user.getUaName() + "'s " + userGroup.getUgaName() +
-//						" by clicking the following link: " +
-//						this.email.getSubConfirmLink() + 
-//						"?u=" + newUser.getUaUsername().replaceAll("\\$", "%24") + 
-//						"&g=" + newSub.getGuaId()
-//						);				
-//			} catch (Exception e) {
-//				logger.info("Error Sending Email: " + e.getMessage());
-//			}
-//		}
 
 
 		// NOTE: the auto generated username has a $ as a first char
@@ -372,17 +354,6 @@ public class GetReplyController {
 		return "getreply_requested";
 	}
 
-//	private boolean createOrFindSub(GroupUsers newSub) {
-//		
-//		GroupUsers existingSub = groupUsersRepository.findByUgaIdAndUaId(newSub.getUgaId(), newSub.getUaId());
-//		if ( existingSub != null ) {
-//			return true;
-//		}
-//		
-//		// if we got here save the sub
-//		groupUsersRepository.save(newSub);
-//		return false;
-//	}
 
 	private User createOrFindUser(User newUser) {
 		
@@ -429,6 +400,18 @@ public class GetReplyController {
 		return newUser;
 	}
 	
+	/**
+	 * subForm - Get Reply aka Share Your Name Form
+	 * 
+	 * @param toId
+	 * @param groupSlug
+	 * @param tfaUuid
+	 * @param anonCookie
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(
 			value = "/{toId:[A-Za-z0-9\\-\\_]+}/{groupSlug:[A-Za-z0-9\\-\\_]+}/{tfaUuid:[A-Za-z0-9\\-]+}/getreply", 
 			method = RequestMethod.GET)
@@ -436,6 +419,9 @@ public class GetReplyController {
 			@PathVariable("toId") String toId, 
 			@PathVariable("groupSlug") String groupSlug,
 			@PathVariable("tfaUuid") String tfaUuid,
+			@CookieValue(value = "lu", defaultValue = "") String anonCookie,
+			HttpServletRequest request,
+			HttpServletResponse response,
 			Model model) {
 
 		User user = findUser(toId);
@@ -450,13 +436,29 @@ public class GetReplyController {
 		}
 		
 		GroupTopic topic = groupTopicRepository.findOne(feedback.getGtaId());
+
+		// pull anon user
+		AnonSession anonUser = sessUtils.getOrSetLuCookie(request, response, anonCookie);
 		
+		// 1) we have to do this here because Spring doesn't support Thymeleaf's ELVIS Conditionals in forms
+		//    see: http://forum.thymeleaf.org/Using-conditional-logic-in-th-object-td4028232.html
+		//    on the getreply_form we simply make the email field as readonly when anonUser.isEmailVerified
+		//
+		// 2) we allow name changes but no email changes because email is tied to a username so we don't want
+		//    to give anon users a feature to change their email address which is not given to real registered users 
+		User newUser = new User();
+		if ( anonUser.isEmailVerified() ) {
+			newUser.setUaEmail(anonUser.getEmailAddress());
+			newUser.setUaName(anonUser.getFullName());
+		}
+
 		model.addAttribute("user", user);
 		model.addAttribute("group", userGroup);
 		model.addAttribute("topic", topic);
 		model.addAttribute("feedback", feedback);
+		model.addAttribute("anonUser", anonUser);
 		model.addAttribute("subscribe", true);
-		model.addAttribute("newuser", new User());
+		model.addAttribute("newuser", newUser);
 		
 		return "getreply_form";
 	}
