@@ -74,7 +74,6 @@ public class SendController {
 	
 	@Autowired
 	private AnonFeedbackRepository anonFeedbackRepository;
-
 	
 	/**
 	 * feedbackSubmit - receives call from feedback_form and saves Feedback

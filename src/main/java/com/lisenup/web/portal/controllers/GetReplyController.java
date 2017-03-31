@@ -9,10 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -29,6 +26,7 @@ import com.lisenup.web.portal.config.LisenUpProperties;
 import com.lisenup.web.portal.exceptions.FeedbackNotFoundException;
 import com.lisenup.web.portal.exceptions.GroupNotFoundException;
 import com.lisenup.web.portal.exceptions.UserNotFoundException;
+import com.lisenup.web.portal.flows.ShareNameFlow;
 import com.lisenup.web.portal.models.AnonSession;
 import com.lisenup.web.portal.models.AnonSessionRepository;
 import com.lisenup.web.portal.models.GroupTopic;
@@ -42,7 +40,6 @@ import com.lisenup.web.portal.models.UserGroup;
 import com.lisenup.web.portal.models.UserGroupRepository;
 import com.lisenup.web.portal.models.UserRepository;
 import com.lisenup.web.portal.service.MailService;
-import com.lisenup.web.portal.service.MailchimpService;
 import com.lisenup.web.portal.utils.HttpUtils;
 import com.lisenup.web.portal.utils.SessUtils;
 
@@ -56,12 +53,12 @@ public class GetReplyController {
 	private static final String TEMP_USER_CREATION = "TEMP_USER_CREATION";
 	private static final long ANON_USER_ID = 1;
 	
-	private Logger logger = LoggerFactory.getLogger(GetReplyController.class);
+//	private Logger logger = LoggerFactory.getLogger(GetReplyController.class);
 
 	private final LisenUpProperties.Email email;
 
-	@Autowired
-	private LisenUpProperties props;
+//	@Autowired
+//	private LisenUpProperties props;
 
 	@Autowired
 	private SessUtils sessUtils;
@@ -69,8 +66,8 @@ public class GetReplyController {
 	@Autowired
 	private MailService mailer;
 	
-	@Autowired
-	private MailchimpService mailchimp;
+//	@Autowired
+//	private MailchimpService mailchimp;
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -89,6 +86,9 @@ public class GetReplyController {
 	
 	@Autowired
 	private AnonSessionRepository anonSessionRepository; 
+	
+	@Autowired
+	private ShareNameFlow shareNameFlow;
 
 	
 	@Autowired
@@ -139,70 +139,73 @@ public class GetReplyController {
 		UserGroup group = userGroupRepository.findOne(topic.getUgaId());
 		User groupOwner = userRepository.findOne(group.getUaId());
 
-		
-		// update user's active flag if it was not set
-		if ( !user.isUaActive() ) {
-			userRepository.setActiveForUserId(true, TEMP_USER_CREATION, user.getVersion()+1, user.getUaId());
-		}
-		
-		// update user's Name with the latest provided on the feedback
-		if ( !user.getUaName().equals(feedback.getTfaReplyName()) ) {
-			userRepository.setNameForUserId(feedback.getTfaReplyName(), TEMP_USER_CREATION, user.getVersion()+1, user.getUaId());
-		}
-		
-		// only update Feedback's user from anonymous=1 to real user Id
-		if ( feedback.getUaId() == ANON_USER_ID ) {
-			topicFeedbackRepository.setRealUserForFeedbackId(user.getUaId(), TEMP_USER_CREATION, feedback.getVersion()+1, feedback.getTfaId());
-		}
-		
-		// create a new sub if user agreed to it and it's enabled
-		if ( feedback.isTfaAgreedToSub() && group.isUgaMailchimpEnabled() ) {
-			GroupUsers newSub = new GroupUsers();
-			newSub.setUgaId(group.getUgaId());  // group id
-			newSub.setUaId(user.getUaId());     // subscriber user_id
-			newSub.setGuaActive(true);
-			newSub.setGuaSubedAt(groupOwner.getUaName() + " / " + group.getUgaName() + " / " + topic.getGtaTitle());
-			newSub.setGuaIpAddr(HttpUtils.getIp(request));
-			newSub.setCreatedBy("REPLY_CONF");
-			
-			// sub the user if not already
-			boolean doMailchimp = subUser(newSub);
-			
-			if ( doMailchimp ) {
-				
-				// if we got here push the user to MailChimp (using Async call)
-				
-				// first figure out if it's out own list and pull global level API
-				String apiKey = group.getUgaMailchimpApi();
-				if ( apiKey == null || apiKey.equals("") ) {
-					apiKey = props.getMailChimpApiKey();
-				}
-				
-				mailchimp.sub(
-						apiKey, group.getUgaMailchimpListId(), 
-						user.getUaEmail(), feedback.getTfaReplyName(), 
-						HttpUtils.getIp(request), newSub);
-			}
-		}
-
 		// it's possible that user confirms the email at a later time
 		// or from a different machine / browser and we have to set
 		// their cookie value to what it was while they provided the feedback
 		// so they can view it (getreply_confirmed creates a link to view it)
 		AnonSession anonUser = sessUtils.getOrSetLuCookieHard(request, response, feedback.getSessId());
+
+		// save the Share Name Flow updates to the DB
+		shareNameFlow.save(request, user, feedback, topic, group, groupOwner, anonUser);
 		
-		if ( !anonUser.isEmailVerified() ) {
-			// Save the name/email to Anon Session
-			anonUser.setFullName(feedback.getTfaReplyName());
-			anonUser.setEmailAddress(feedback.getTfaReplyEmail());
-			anonUser.setEmailVerified(true);
-			anonSessionRepository.save(anonUser);
-		}
-		
-		// update Anon user's Name with the latest provided on the feedback
-		if ( !anonUser.getFullName().equals(feedback.getTfaReplyName()) ) {
-			anonSessionRepository.setFullNameForSessId(feedback.getTfaReplyName(), anonUser.getSessId());
-		}
+//		// update user's active flag if it was not set
+//		if ( !user.isUaActive() ) {
+//			userRepository.setActiveForUserId(true, TEMP_USER_CREATION, user.getVersion()+1, user.getUaId());
+//		}
+//		
+//		// update user's Name with the latest provided on the feedback
+//		if ( !user.getUaName().equals(feedback.getTfaReplyName()) ) {
+//			userRepository.setNameForUserId(feedback.getTfaReplyName(), TEMP_USER_CREATION, user.getVersion()+1, user.getUaId());
+//		}
+//		
+//		// only update Feedback's user from anonymous=1 to real user Id
+//		if ( feedback.getUaId() == ANON_USER_ID ) {
+//			topicFeedbackRepository.setRealUserForFeedbackId(user.getUaId(), TEMP_USER_CREATION, feedback.getVersion()+1, feedback.getTfaId());
+//		}
+//		
+//		// create a new sub if user agreed to it and it's enabled
+//		if ( feedback.isTfaAgreedToSub() && group.isUgaMailchimpEnabled() ) {
+//			GroupUsers newSub = new GroupUsers();
+//			newSub.setUgaId(group.getUgaId());  // group id
+//			newSub.setUaId(user.getUaId());     // subscriber user_id
+//			newSub.setGuaActive(true);
+//			newSub.setGuaSubedAt(groupOwner.getUaName() + " / " + group.getUgaName() + " / " + topic.getGtaTitle());
+//			newSub.setGuaIpAddr(HttpUtils.getIp(request));
+//			newSub.setCreatedBy("REPLY_CONF");
+//			
+//			// sub the user if not already
+//			boolean doMailchimp = subUser(newSub);
+//			
+//			if ( doMailchimp ) {
+//				
+//				// if we got here push the user to MailChimp (using Async call)
+//				
+//				// first figure out if it's out own list and pull global level API
+//				String apiKey = group.getUgaMailchimpApi();
+//				if ( apiKey == null || apiKey.equals("") ) {
+//					apiKey = props.getMailChimpApiKey();
+//				}
+//				
+//				mailchimp.sub(
+//						apiKey, group.getUgaMailchimpListId(), 
+//						user.getUaEmail(), feedback.getTfaReplyName(), 
+//						HttpUtils.getIp(request), newSub);
+//			}
+//		}
+//
+//		
+//		if ( !anonUser.isEmailVerified() ) {
+//			// Save the name/email to Anon Session
+//			anonUser.setFullName(feedback.getTfaReplyName());
+//			anonUser.setEmailAddress(feedback.getTfaReplyEmail());
+//			anonUser.setEmailVerified(true);
+//			anonSessionRepository.save(anonUser);
+//		}
+//		
+//		// update Anon user's Name with the latest provided on the feedback
+//		if ( !anonUser.getFullName().equals(feedback.getTfaReplyName()) ) {
+//			anonSessionRepository.setFullNameForSessId(feedback.getTfaReplyName(), anonUser.getSessId());
+//		}
 
 		
 		model.addAttribute("user", groupOwner);
@@ -214,20 +217,20 @@ public class GetReplyController {
 	}
 	
 
-	private boolean subUser(GroupUsers newSub) {
-		boolean subOk = false;
-		try {
-			groupUsersRepository.save(newSub);
-			subOk = true;
-		} catch (DataIntegrityViolationException e) {
-			//e.printStackTrace();
-			logger.info("User already subbed! Ignoring DUP.");
-			logger.info(e.getMessage());
-		}
-		
-		return subOk;
-		
-	}
+//	private boolean subUser(GroupUsers newSub) {
+//		boolean subOk = false;
+//		try {
+//			groupUsersRepository.save(newSub);
+//			subOk = true;
+//		} catch (DataIntegrityViolationException e) {
+//			//e.printStackTrace();
+//			logger.info("User already subbed! Ignoring DUP.");
+//			logger.info(e.getMessage());
+//		}
+//		
+//		return subOk;
+//		
+//	}
 	
 	/**
 	 * getReplyPost - Get Reply (aka Share Your Name) Form Processor
@@ -250,6 +253,7 @@ public class GetReplyController {
 			@RequestParam("orig_uaId") long origUaId,
 			@RequestParam("orig_ugaId") long origUgaId,
 			@RequestParam("orig_tfaUuid") String orig_tfaUuid,
+			@RequestParam("printSub") Boolean printSub,
 			@RequestParam(name = "terms", defaultValue = "false", required = false) Boolean terms,
 			@RequestParam(name = "subscribe", defaultValue = "false", required = false) Boolean subscribe,
 			@CookieValue(value = "lu", defaultValue = "") String anonCookie,
@@ -303,6 +307,7 @@ public class GetReplyController {
 			model.addAttribute("anonUser", anonUser);
 			model.addAttribute("terms", terms);
 			model.addAttribute("subscribe", subscribe);
+			model.addAttribute("printSub", printSub);			
 			model.addAttribute("errors", errors);
 			
 			return "getreply_form";
@@ -327,6 +332,8 @@ public class GetReplyController {
 			model.addAttribute("topic", topic);
 			model.addAttribute("anonUser", anonUser);
 			model.addAttribute("terms", terms);
+			model.addAttribute("subscribe", subscribe);
+			model.addAttribute("printSub", printSub);
 			model.addAttribute("errors", errors);
 			return "getreply_form";
 		}
@@ -337,7 +344,10 @@ public class GetReplyController {
 		// we have to first make sure the use owns this account/email address
 		feedback.setTfaReplyEmail(newUser.getUaEmail());
 		feedback.setTfaReplyName(newUserUaName);
-		if ( userGroup.isUgaMailchimpEnabled() ) {
+		
+		// only set agrred to Sub to 0/1 if Sub was printed on the form to choose from
+		// and only if mailchimp sub is enabled at the group level - otherwise leave it at null
+		if ( userGroup.isUgaMailchimpEnabled() && printSub ) {
 			feedback.setTfaAgreedToSub(subscribe);
 		}
 		topicFeedbackRepository.save(feedback);
@@ -350,8 +360,21 @@ public class GetReplyController {
 			anonSessionRepository.setUaIdForSessId(newUser.getUaId(), anonUser.getSessId());
 		}
 		
-		// TODO: check if anon user has validated email and if so process it right here instead of sending email validation requests
+		// Check if anon user has a validated email and if so process it right here instead of sending email validation requests
+		if ( anonUser.isEmailVerified() ) {
+			// save the Share Name Flow updates to the DB
+			shareNameFlow.save(request, newUser, feedback, topic, userGroup, user, anonUser);
+			
+			// Return email validated view right here
+			model.addAttribute("user", user); //groupOwner
+			model.addAttribute("group", userGroup);
+			model.addAttribute("topic", topic);
+			model.addAttribute("anonUser", anonUser);
 
+			return "getreply_confirmed";
+
+		}
+		
 		// NOTE: the auto generated username has a $ as a first char
 		//       it has to be URL Encoded as %24
 		mailer.send(newUser.getUaEmail(), 
@@ -456,6 +479,17 @@ public class GetReplyController {
 		// pull anon user
 		AnonSession anonUser = sessUtils.getOrSetLuCookie(request, response, anonCookie);
 		
+		// Check if the user is already subbed to the list - if so disable the sub checkbox
+		GroupUsers sub = null;
+		boolean printSub = true;
+		if ( anonUser.getUaId() != null ) {
+			sub = groupUsersRepository.findByUgaIdAndUaId(userGroup.getUgaId(), anonUser.getUaId());
+		}
+		if ( sub != null ) {
+			printSub = false;
+		}
+		
+		
 		// 1) we have to do this here because Spring doesn't support Thymeleaf's ELVIS Conditionals in forms
 		//    see: http://forum.thymeleaf.org/Using-conditional-logic-in-th-object-td4028232.html
 		//    on the getreply_form we simply make the email field as readonly when anonUser.isEmailVerified
@@ -474,6 +508,7 @@ public class GetReplyController {
 		model.addAttribute("feedback", feedback);
 		model.addAttribute("anonUser", anonUser);
 		model.addAttribute("subscribe", true);
+		model.addAttribute("printSub", printSub);
 		model.addAttribute("newuser", newUser);
 		
 		return "getreply_form";

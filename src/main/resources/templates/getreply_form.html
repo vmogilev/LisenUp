@@ -42,14 +42,17 @@
 					  </label>
 					</div>
 					<div th:if="${group.ugaMailchimpEnabled}" class="checkbox">
+					<div th:if="${printSub}" class="checkbox">
 					  <label>
 					    <input th:checked="${subscribe}" type="checkbox" id="subscribe" name="subscribe"><span th:text="'Subscribe to the ' + ${group.ugaMailchimpListName}"></span>
 					  </label>
+					</div>
 					</div>
 			    	<!-- <p>Email Address: <input type="text" th:field="*{uaEmail}" /> -->
 			        <input id="orig_uaId" name="orig_uaId" type="hidden" th:value="${user.uaId}" />
 			        <input id="orig_ugaId" name="orig_ugaId" type="hidden" th:value="${group.ugaId}" />
 			        <input id="orig_tfaUuid" name="orig_tfaUuid" type="hidden" th:value="${feedback.tfaUuid}" />
+			        <input id="printSub" name="printSub" type="hidden" th:value="${printSub}" />
 
 				    <div class="panel-body text-center">
 				    	<a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="'Cancel'" class="btn btn-primary btn-lg" role="button">Cancel</a>
