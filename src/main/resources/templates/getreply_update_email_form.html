@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header :: copy (description='Update Email',title='Update Email')">
+</head>
+
+<body>
+
+    <!-- Begin page content -->
+    <div class="container">
+    
+		<div class="page-header">
+		  <h1 th:text="'Update Email'">Update Email</h1>
+		</div>
+
+		<ol class="breadcrumb">
+			<li>Account</li>
+			<li th:text="'Email'" class="active">Email</li>
+		</ol>
+
+		<div class="panel panel-default">
+			<div class="panel-heading text-center">
+				<h3 class="panel-title">Update Email</h3>
+			</div>
+			<div class="panel-body">
+				
+				<div th:replace="body :: errlist"></div>
+				
+			    <form action="#" th:action="@{/updateAnonEmail}" th:object="${linkedUser}" method="post">
+			    	<div class="form-group">
+			    		<label class="control-label" for="uaEmail">Email Address</label>
+			    		<input th:field="*{uaEmail}" type="email" class="form-control" id="uaEmail" placeholder="name@example.com" aria-describedby="helpBlock1" required autocomplete="email">
+			    		<span th:text="'You\'ll receive a confirmation email to this address shortly, when you do - please click the confirmation link to verify your email address.'" id="helpBlock1" class="help-block">Help</span>
+			    	</div>
+				    <div class="form-group">
+				        <input id="next" name="next" type="hidden" th:value="${next}" />
+				    </div>
+				    <div class="panel-body text-center">
+				    	<a th:href="${next}" th:text="'Cancel'" class="btn btn-primary btn-lg" role="button">Cancel</a>
+				    	<button type="submit" class="btn btn-success btn-lg">Update Email</button>
+				    </div>
+			    </form>
+				
+			</div>
+		</div>
+		    
+    </div>
+    <!-- End page content -->
+    
+ 	<div th:replace="footer :: copy"></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="/assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/assets/js/ie10-viewport-bug-workaround.js"></script>
+    
+</body>
+</html>

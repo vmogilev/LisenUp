@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header :: copy (description='Update Email',title='Email Not Validated')">
+</head>
+
+<body>
+
+    <!-- Begin page content -->
+    <div class="container">
+    
+		<div class="page-header">
+		  <h1 th:text="'Email Not Validated'">Email Not Validated</h1>
+		</div>
+
+		<ol class="breadcrumb">
+			<li>Account</li>
+			<li th:text="'Email'" class="active">Email</li>
+		</ol>
+
+		<div class="panel panel-default">
+			<div class="panel-heading text-center">
+				<h3 class="panel-title">Email Not Validated</h3>
+			</div>
+			<div class="panel-body">
+				
+				<div id="not-validated">			
+					<div class="alert alert-danger" role="alert">
+						<p th:text="'The email you provided earlier is pending validation.  Please check your mailbox (' + ${linkedUser.uaEmail} + ') for our confirmation email and make sure to click the link to verify your email address. Then return here and click [Email Validated] button below:'" class="lead"></p>
+					</div>				
+					<div class="alert alert-warning" role="alert">
+						<p class="lead">If the email you provided is not correct then <a data-target="#email-form" data-toggle="collapse"><strong>Update Email Here</strong></a></p>
+					</div>				
+					<div class="panel-body text-center">
+						<a th:href="${next}" th:text="'Email Validated'" class="btn btn-primary btn-lg" role="button">Email Validated</a>
+					</div>
+				</div>
+				
+				<div class="collapse" id="email-form">
+				    <form action="#" th:action="@{/updateAnonEmail}" th:object="${linkedUser}" method="post">
+				    	<div class="form-group">
+				    		<label class="control-label" for="uaEmail">Email Address</label>
+				    		<input th:field="*{uaEmail}" type="email" class="form-control" id="uaEmail" placeholder="name@example.com" aria-describedby="helpBlock1" required autocomplete="email">
+				    		<span th:text="'You\'ll receive a confirmation email to this address shortly, when you do - please click the confirmation link to verify your email address.'" id="helpBlock1" class="help-block">Help</span>
+				    	</div>
+					    <div class="form-group">
+					        <input id="next" name="next" type="hidden" th:value="${next}" />
+					    </div>
+					    <div class="panel-body text-center">
+					    	<button type="submit" class="btn btn-success btn-lg">Update Email</button>
+					    </div>
+				    </form>
+			    </div>
+
+				
+			</div>
+		</div>
+		    
+    </div>
+    <!-- End page content -->
+    
+ 	<div th:replace="footer :: copy"></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="/assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/assets/js/ie10-viewport-bug-workaround.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	
+	// hide the more-controls div after it's button is clicked
+	$("#email-form").on('shown.bs.collapse', function() {
+	    $('#not-validated').addClass('collapse');
+	});
+
+	
+});
+</script>
+    
+</body>
+</html>

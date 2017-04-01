@@ -231,6 +231,103 @@ public class GetReplyController {
 //		return subOk;
 //		
 //	}
+
+	@PostMapping("/updateAnonEmail")
+	public String updateAnonEmailPost(
+			@ModelAttribute User newUser,
+			@RequestParam("next") String next,
+			@CookieValue(value = "lu", defaultValue = "") String anonCookie,
+			HttpServletRequest request,
+			HttpServletResponse response,
+			Model model) {
+		
+		// pull anon user
+		AnonSession anonUser = sessUtils.getOrSetLuCookie(request, response, anonCookie);
+
+		// First check if anon user's email is still not verified 
+		if ( anonUser.isEmailVerified() ) {
+			
+			model.addAttribute("newUser", newUser);
+			model.addAttribute("anonUser", anonUser);
+			model.addAttribute("next", next);
+			
+			return "getreply_update_email_done";			
+		}
+
+		// FIRST: deal with hard errors that we'll fail on HARD
+		User linkedUser = userRepository.findOne(anonUser.getUaId());
+
+		// check to make sure Linked User is STILL NOT active
+		// if it is - I have no idea how this could have happened - fail fast!
+		if ( linkedUser != null && linkedUser.isUaActive() ) {
+			throw new UserNotFoundException("Linked User Id is already active! " + Long.toString(anonUser.getUaId()));
+		}
+
+		// find the original topic on which we need to update the email address
+		TopicFeedback firstFeedback = topicFeedbackRepository.findByTfaUuid(linkedUser.getUaFirstTfaUuid());
+		
+		// we don't even want to go anywhere unless feedback is still assigned
+		// to ANON user - if it was already processed then we are done and 
+		// this is most likely a hack ...
+		if ( firstFeedback == null || firstFeedback.getUaId() != ANON_USER_ID ) {
+			throw new FeedbackNotFoundException(linkedUser.getUaFirstTfaUuid());
+		}
+
+		
+		
+		// NEXT: check for correctable errors
+		List<String> errors = new ArrayList<>();
+
+		// Try to find/create a user by email address and catch any constraint validation errors
+		// but first:
+		// 1) put the linkedUser's Name on the newUser
+		// 2) tag the new user's first feedback UUID
+		newUser.setUaName(linkedUser.getUaName());
+		newUser.setUaFirstTfaUuid(firstFeedback.getTfaUuid());
+		try {
+			newUser = createOrFindUser(newUser);
+		} catch (ConstraintViolationException e) {
+			for (ConstraintViolation<?> violation : e.getConstraintViolations()) {
+				errors.add(violation.getMessage());
+			}
+			model.addAttribute("linkedUser", newUser);
+			model.addAttribute("anonUser", anonUser);
+			model.addAttribute("next", next);
+			model.addAttribute("errors", errors);
+			
+			return "getreply_update_email_form";			
+		}
+		
+		
+		// if IDs of the new user and linked users don't match
+		// link AnonUser with new user's ID and delete the old user
+		if ( newUser.getUaId() != linkedUser.getUaId() ) {
+			anonSessionRepository.setUaIdForSessId(newUser.getUaId(), anonUser.getSessId());
+			userRepository.delete(linkedUser.getUaId());
+		}
+		
+		// update first feedback with newUser.email
+		firstFeedback.setTfaReplyEmail(newUser.getUaEmail());
+		topicFeedbackRepository.save(firstFeedback);
+
+		
+		// NOTE: the auto generated username has a $ as a first char
+		//       it has to be URL Encoded as %24
+		mailer.send(newUser.getUaEmail(), 
+				this.email.getMailFrom(), this.email.getReplyTo(), this.email.getReplySubject(), 
+				"Please confirm your email by clicking on the following link: " +
+				this.email.getReplyConfirmLink() + 
+				"?t=" + firstFeedback.getTfaUuid() +
+				"&u=" + newUser.getUaUsername().replaceAll("\\$", "%24")
+				);				
+
+		model.addAttribute("newUser", newUser);
+		model.addAttribute("anonUser", anonUser);
+		model.addAttribute("next", next);
+		
+		return "getreply_update_email_done";
+
+	}
 	
 	/**
 	 * getReplyPost - Get Reply (aka Share Your Name) Form Processor
@@ -265,8 +362,11 @@ public class GetReplyController {
 		UserGroup userGroup = userGroupRepository.findOne(origUgaId);
 		TopicFeedback feedback = topicFeedbackRepository.findByTfaUuid(orig_tfaUuid);
 		
-		// check if the Feedback UUID exists
-		if ( feedback == null ) {
+
+		// we don't even want to go anywhere unless feedback is still assigned
+		// to ANON user - if it was already processed then we are done and 
+		// this is most likely a hack ...
+		if ( feedback == null || feedback.getUaId() != ANON_USER_ID ) {
 			throw new FeedbackNotFoundException(orig_tfaUuid);
 		}
 
@@ -440,7 +540,7 @@ public class GetReplyController {
 	}
 	
 	/**
-	 * subForm - Get Reply aka Share Your Name Form
+	 * getReplyForm - Get Reply aka Share Your Name Form
 	 * 
 	 * @param toId
 	 * @param groupSlug
@@ -454,7 +554,7 @@ public class GetReplyController {
 	@RequestMapping(
 			value = "/{toId:[A-Za-z0-9\\-\\_]+}/{groupSlug:[A-Za-z0-9\\-\\_]+}/{tfaUuid:[A-Za-z0-9\\-]+}/getreply", 
 			method = RequestMethod.GET)
-	public String subForm(
+	public String getReplyForm(
 			@PathVariable("toId") String toId, 
 			@PathVariable("groupSlug") String groupSlug,
 			@PathVariable("tfaUuid") String tfaUuid,
@@ -478,7 +578,19 @@ public class GetReplyController {
 
 		// pull anon user
 		AnonSession anonUser = sessUtils.getOrSetLuCookie(request, response, anonCookie);
-		
+
+		// if anon user is already tied to a pending user and it's email is not verified 
+		// we have to stop here and warn them to confirm email before doing anything
+		if ( !anonUser.isEmailVerified() && anonUser.getUaId() != null ) {
+			User linkedUser = userRepository.findOne(anonUser.getUaId());
+			
+			model.addAttribute("linkedUser", linkedUser);
+			model.addAttribute("anonUser", anonUser);
+			model.addAttribute("next", ("/" + toId + "/" + groupSlug + "/" + tfaUuid + "/getreply"));
+			
+			return "getreply_unvalidated_email";			
+		}
+
 		// Check if the user is already subbed to the list - if so disable the sub checkbox
 		GroupUsers sub = null;
 		boolean printSub = true;
@@ -501,7 +613,7 @@ public class GetReplyController {
 			newUser.setUaEmail(anonUser.getEmailAddress());
 			newUser.setUaName(anonUser.getFullName());
 		}
-
+		
 		model.addAttribute("user", user);
 		model.addAttribute("group", userGroup);
 		model.addAttribute("topic", topic);
