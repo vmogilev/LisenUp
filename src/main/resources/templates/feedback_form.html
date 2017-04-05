@@ -5,17 +5,20 @@
 
 <body>
 
+	<div th:replace="body :: nav-bar"></div>
+
     <!-- Begin page content -->
     <div class="container">
-		<div class="page-header">
-		  <h1 th:text="${topic.gtaTitle}">Topic Title</h1>
-		</div>
 
 		<ol class="breadcrumb">
 			<!-- <li><a th:href="@{/{usr}(usr=${user.uaUsername})}" th:text="${user.uaName}">Profile</a></li> -->
 			<li><a th:href="@{/{usr}/{grp}(usr=${user.uaUsername},grp=${group.ugaSlug})}" th:text="${group.ugaName}">Group</a></li>
 			<li th:text="${topic.gtaTitle}" class="active">Topic Feedback</li>
 		</ol>
+
+		<div class="page-header">
+		  <h1 th:text="${topic.gtaTitle}">Topic Title</h1>
+		</div>
 
 		<div th:replace="body :: user (message=${topic.gtaText})"></div>
 

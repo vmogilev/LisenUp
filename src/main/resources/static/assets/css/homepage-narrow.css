@@ -78,6 +78,10 @@ body {
   }
 }
 
+
+
+/* LisenUp Custom */
+
 .navbar-brand {
   padding: 0px;
 }
@@ -87,9 +91,6 @@ body {
   margin:-5px;
   width: auto;
 }
-
-
-/* LisenUp Custom */
 
 .nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover {
     color: #fff;

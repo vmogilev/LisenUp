@@ -5,6 +5,41 @@
 
   <body>
 
+    <!-- Fixed navbar -->
+    <nav th:fragment="nav-bar" class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <!-- <a class="navbar-brand" href="#">Project name</a> -->
+          <a class="navbar-brand" href="/"><img src="/assets/img/LisenUp-logo-home-page.png" alt="LisenUp"></a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <!-- <li class="active"><a href="/">Home</a></li> -->
+            <!-- <li><a href="#about">About</a></li> -->
+            <!-- <li><a href="#contact">Contact</a></li> -->
+            <li><a href="http://eepurl.com/cE8PY5">Sign Up</a></li>
+            <li><a href="#">Log In</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Me <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Help</a></li>
+                <li role="separator" class="divider"></li>
+                <li class="dropdown-header">My Feedback</li>
+                <li><a href="#">Given</a></li>
+                <li><a href="#">Received</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
 		<div th:fragment="user" class="row user">
 		<div class="col-xs-12 col-md-12 col-lg-12">
 		    <div class="clearfix content-heading">

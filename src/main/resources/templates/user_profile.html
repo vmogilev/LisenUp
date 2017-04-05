@@ -4,18 +4,19 @@
 </head>
 
 <body>
-
+	<div th:replace="body :: nav-bar"></div>
+	
     <!-- Begin page content -->
     <div class="container">
     
-		<div class="page-header">
-		  <h1 th:text="${user.uaName}">Profile</h1>
-		</div>
-
 		<ol class="breadcrumb">
 		  <li th:text="'Profile'" class="active">Profile</li>
 		</ol>
-
+		
+		<div class="page-header">
+		  <h1 th:text="${user.uaName}">Profile</h1>
+		</div>
+		
 		<div th:replace="body :: user (message=${user.uaGreeting})"></div>
 		
 		<div class="panel panel-default">

@@ -5,17 +5,19 @@
 
 <body>
 
+	<div th:replace="body :: nav-bar"></div>
+
     <!-- Begin page content -->
     <div class="container">
     
-		<div class="page-header">
-		  <h1 th:text="'Update Email'">Update Email</h1>
-		</div>
-
 		<ol class="breadcrumb">
 			<li>Account</li>
 			<li th:text="'Email'" class="active">Email</li>
 		</ol>
+
+		<div class="page-header">
+		  <h1 th:text="'Update Email'">Update Email</h1>
+		</div>
 
 		<div class="panel panel-default">
 			<div class="panel-heading text-center">
