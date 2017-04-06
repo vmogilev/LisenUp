@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header :: copy (description='Your Given Feedback',title='Your Given Feedback')">
+</head>
+
+<body>
+
+	<div th:replace="body :: nav-bar"></div>
+
+    <!-- Begin page content -->
+    <div class="container">
+
+		<ol class="breadcrumb">
+			<!-- <li><a th:href="@{/{usr}(usr=${user.uaUsername})}" th:text="${user.uaName}">Profile</a></li> -->
+			<li>My Feedback</li>
+			<li class="active">Given</li>
+		</ol>
+
+		<div class="page-header">
+		  <h1>Given Feedback</h1>
+		</div>
+
+		<div th:replace="body :: user (message='Here\'s all the feedback that you\'ve given so far:')"></div>
+
+		<div class="panel panel-default">
+			<div class="panel-heading text-center">
+				<h3 class="panel-title">Your Feedback</h3>
+			</div>
+			<div class="panel-body">
+
+				<div th:if="${not #lists.isEmpty(givenFeedback)}" id="given-feedback">
+					<div th:each="feedback : ${givenFeedback}">
+						<h5>
+							<span th:text="${#dates.format(feedback.createdAt, 'dd/MMM/yyyy HH:mm')}" class="label label-default">Date</span>
+							<span th:text="${feedback.tfaReplyName == null}? 'Anonymous' : ${feedback.tfaReplyName}" th:remove="tag"></span>
+							<span th:text="${feedback.tfaReplyName == null}? '' : (${feedback.uaId == 1}? ${feedback.tfaReplyEmail})" class="label label-warning">Pending</span>
+							<span th:text="${feedback.tfaReplyName == null}? '' : (${feedback.uaId != 1}? ${feedback.tfaReplyEmail})" class="label label-success">Verified</span>
+						</h5>
+						<pre th:text="${feedback.tfaText}"></pre>
+					</div>
+				</div>
+			
+			</div>
+		</div>
+
+    </div>
+    <!-- End page content -->
+    
+ 	<div th:replace="footer :: copy"></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="/assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
+    
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/assets/js/ie10-viewport-bug-workaround.js"></script>
+
+</body>
+</html>
