@@ -24,7 +24,7 @@ values (
     'null@lisenup.com',
     'change',
     0,
-    'z',
+    '356d07e095d531c739b30835d8c33fdf',
     'Anonymous');
 
 

@@ -13,6 +13,8 @@ public interface TopicFeedbackRepository extends CrudRepository<TopicFeedback, L
 
 	public List<TopicFeedback> findByGtaId(long gtaId);
 	public List<TopicFeedback> findBySessIdAndGtaIdOrderByCreatedAtAsc(String sessId, long gtaId);
+	public List<TopicFeedback> findBySessIdOrderByCreatedAtDesc(String sessId);
+	public List<TopicFeedback> findByUaIdOrderByCreatedAtDesc(Long uaId);
 	public TopicFeedback findByTfaUuid(String tfaUuid);
 
 	@Modifying
