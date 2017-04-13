@@ -39,6 +39,7 @@ import com.lisenup.web.portal.models.User;
 import com.lisenup.web.portal.models.UserGroup;
 import com.lisenup.web.portal.models.UserGroupRepository;
 import com.lisenup.web.portal.models.UserRepository;
+import com.lisenup.web.portal.service.MailService;
 import com.lisenup.web.portal.utils.HttpUtils;
 import com.lisenup.web.portal.utils.SessUtils;
 
@@ -50,7 +51,9 @@ import com.lisenup.web.portal.utils.SessUtils;
 public class SendController {
 
 	private Logger logger = LoggerFactory.getLogger(SendController.class);
-			
+
+	private final LisenUpProperties.Email email;
+
 	@Autowired
 	private LisenUpProperties props;
 	
@@ -74,7 +77,18 @@ public class SendController {
 	
 	@Autowired
 	private AnonFeedbackRepository anonFeedbackRepository;
-	
+
+	@Autowired
+	private MailService mailer;
+
+	@Autowired
+	public SendController(LisenUpProperties properties) {
+		// see: "To work with @ConfigurationProperties beans you can just inject" section
+		//      in: 
+		//         https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+		this.email = properties.getEmail();
+	}
+
 	/**
 	 * feedbackSubmit - receives call from feedback_form and saves Feedback
 	 * 
@@ -157,6 +171,16 @@ public class SendController {
 		anonFeedback.setUaId(feedback.getUaId());
 		anonFeedback.setUgaId(userGroup.getUgaId());
 		anonFeedbackRepository.save(anonFeedback);
+		
+		// Email feedback to the topic owner
+		mailer.send(
+				user.getUaEmail(), 
+				this.email.getMailFrom(), 
+				this.email.getReplyTo(), 
+				"New Feedback on: " + topic.getGtaTitle(),
+				feedback.getTfaText()
+		);
+
 
 		model.addAttribute("user", user);
 		model.addAttribute("group", userGroup);
