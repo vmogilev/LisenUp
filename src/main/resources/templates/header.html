@@ -10,9 +10,24 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta th:content="${description}" name="description" content="">
     <meta name="author" content="LisenUp">
+    
+	<meta name="robots" content="noodp">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:description" th:content="${description}" content="">
+	<meta name="twitter:title" th:content="${title}" content="">
+	<meta name="twitter:site" content="@JoinLisenUp">
+	<meta name="twitter:image" content="https://lisenup.com/assets/img/LisenUp_Feedback_1200.png">
+	<meta name="twitter:creator" content="@JoinLisenUp">
+
+	<meta th:if="${user}" property="og:url" th:content="@{(${group}? 'https://lisenup.com/{usr}/{grp}' : 'https://lisenup.com/{usr}')(__${group}? 'usr=${user.uaUsername},grp=${group.ugaSlug}' : 'usr=${user.uaUsername}'__)}" content="" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" th:content="${title}" content="" />
+	<meta property="og:description" th:content="${description}" content="" />
+	<meta property="og:image" content="https://lisenup.com/assets/img/LisenUp_Feedback_1200.png" />
+	    
     <link rel="icon" href="/favicon.ico">
 
-    <title th:text="${title}">Sticky Footer Template for Bootstrap</title>
+    <title th:text="${title}">Page Title</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
