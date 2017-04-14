@@ -27,3 +27,4 @@ nbdist/
 
 ### sql logs ###
 src/main/sql/*.log
+src/main/sql/clients/silverado/*.log
