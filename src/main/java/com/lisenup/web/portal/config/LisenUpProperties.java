@@ -9,6 +9,10 @@ public class LisenUpProperties {
 	// LISENUP_MAX_FEEDBACK_LENGTH
 	private int maxFeedbackLength = 1024;
 	private String mailChimpApiKey;
+	private String luTitle = "LisenUp And Stop Negative Reviews Go Viral";
+	private String luDesc = "Get yourself a LisenUp page and start to listen to your customers, because bad word gets out when they have no easy way to voice their frustration.";
+	private String luImage = "https://lisenup.com/assets/img/LisenUp_About_Mega_1200.png";
+	
 	private final Email email = new Email();
 	
 	public int getMaxFeedbackLength() {
@@ -17,14 +21,32 @@ public class LisenUpProperties {
 	public void setMaxFeedbackLength(int maxFeedbackLength) {
 		this.maxFeedbackLength = maxFeedbackLength;
 	}
-	public Email getEmail() {
-		return email;
-	}
 	public String getMailChimpApiKey() {
 		return mailChimpApiKey;
 	}
 	public void setMailChimpApiKey(String mailChimpApiKey) {
 		this.mailChimpApiKey = mailChimpApiKey;
+	}
+	public String getLuTitle() {
+		return luTitle;
+	}
+	public void setLuTitle(String luTitle) {
+		this.luTitle = luTitle;
+	}
+	public String getLuDesc() {
+		return luDesc;
+	}
+	public void setLuDesc(String luDesc) {
+		this.luDesc = luDesc;
+	}
+	public String getLuImage() {
+		return luImage;
+	}
+	public void setLuImage(String luImage) {
+		this.luImage = luImage;
+	}
+	public Email getEmail() {
+		return email;
 	}
 
 	public static class Email {

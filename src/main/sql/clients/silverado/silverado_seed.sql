@@ -26,7 +26,7 @@ values (
     'change',
     1,
     '6ea6e5e0932828618681fdd519d063d3',
-    'Silverado Beverly Place Memory Care Community');
+    'The management team at the Silverado Beverly Place Memory Care Community highly values your opinion, please tell us how we are doing.');
 
 
 insert into lisenupdb.user_groups_all (
@@ -86,8 +86,8 @@ values (
     99,
     'SILVERADO',
     'SILVERADO',
-    'Management / Administration',
-    'Our Administrator of Beverly Place - Jason Russo would love to get your candid feedback on the following:',
+    'Administration',
+    'Our Administrator - Jason Russo would love to get your candid feedback on the following:',
     'Admin',
     1,
     1);

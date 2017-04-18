@@ -5,25 +5,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="LisenUp is your private feedback channel that lets you receive anonymous advice from anyone that has a link to your LisenUp page.">
+    <meta name="description" th:content="${props.luDesc}" content="">
     <meta name="author" content="LisenUp">
 	<meta name="robots" content="noodp">
 	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:description" content="LisenUp is your private feedback channel that lets you receive anonymous advice from anyone that has a link to your LisenUp page.">
-	<meta name="twitter:title" content="LisenUp - Your Private Feedback Channel">
+	<meta name="twitter:description" th:content="${props.luDesc}">
+	<meta name="twitter:title" th:content="${props.luTitle}" content="">
 	<meta name="twitter:site" content="@JoinLisenUp">
-	<meta name="twitter:image" content="https://lisenup.com/assets/img/LisenUp_About_1200.png">
+	<meta name="twitter:image" th:content="${props.luImage}" content="">
 	<meta name="twitter:creator" content="@JoinLisenUp">
 
 	<meta property="og:url" content="https://lisenup.com/" />
 	<meta property="og:type" content="article" />
-	<meta property="og:title" content="LisenUp - Your Private Feedback Channel" />
-	<meta property="og:description" content="LisenUp is your private feedback channel that lets you receive anonymous advice from anyone that has a link to your LisenUp page." />
-	<meta property="og:image" content="https://lisenup.com/assets/img/LisenUp_Idea_1200.png" />
+	<meta property="og:title" th:content="${props.luTitle}" content="" />
+	<meta property="og:description" th:content="${props.luDesc}" content="" />
+	<meta property="og:image" th:content="${props.luImage}" content="" />
 	
 	<link rel="icon" href="favicon.ico">
 
-    <title>LisenUp - Your Private Feedback Channel</title>
+    <title th:text="${props.luTitle}">LisenUp Title</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/bootstrap-3.3.7-dist/css/bootstrap.min.css" rel="stylesheet">
@@ -61,21 +61,25 @@
 
       <div class="jumbotron">
         <h1>LisenUp!</h1>
-        <p class="lead">It's Your Private Feedback Channel</p>
+        <p class="lead">And Stop Negative Reviews Go Viral</p>
       </div>
 
 
-<p class="lead"><strong>LisenUp</strong> is a private feedback channel that lets you receive anonymous advice from anyone that has a link to your LisenUp page.</p>
+<p class="lead">Get yourself a <strong>LisenUp</strong> page and start to listen to your customers, because bad word gets out when they have no easy way to voice their frustration.</p>
 
-<p class="lead">LisenUp mission is based on two Biblical principles. <a href="http://www.letgodbetrue.com/proverbs/commentaries/15_22.php">First</a>, to succeed - get advise from many people. <a href="http://www.letgodbetrue.com/proverbs/commentaries/15_23.php">Second</a>, people actually enjoy giving you their feedback.</p>
-
-<p class="lead">Want to see how this works?  Our Co-Founder has a LisenUp page - go there and leave your feedback on what you think about LisenUp Website:</p>
+<p class="lead">Want to see how this works?  Our Co-Founder has a <strong>LisenUp</strong> page - go there and leave your feedback on what you think about LisenUp:</p>
 
 		<div class="jumbotron">
-			<a href="/mve" class="btn btn-primary btn-lg" role="button">What Do You Think?</a>
+			<a href="/mve/LisenUp" class="btn btn-primary btn-lg" role="button">Try It!</a>
 		</div>
 
-<p class="lead">We are still in private beta.  But you can join our mailing list to be the first to know when we launch:</p>  
+<p class="lead">Don't you think that was easy?  No long forms to fill out, no sign up page -- you simply voiced your opinion and if you needed a reply, gave your email address.  And the feedback you left is completely private - no one else can see it, only you and us.</p>  
+
+<p class="lead">Imagine how many negative reviews you can prevent by giving your customers a super easy way to voice their opinion?  Having a LisenUp page tells your customers - "<mark>I value your opinion and would love to get your candid feedback</mark>" - anytime!</p>
+
+<p class="lead">Put a link to your LisenUp page on your Yelp, Twitter and Facebook profiles and ask your customers to give you one more chance to get it right through LisenUp before giving you a negative review elsewhere.</p>
+
+<p class="lead">Want to have a LisenUp page for your business?  Then join our mailing list to be the first to know when we launch:</p>  
 
       <div class="jumbotron">
         <a class="btn btn-lg btn-success" href="http://eepurl.com/cE8PY5" role="button">Join Us!</a>

@@ -93,7 +93,7 @@ values (
     'VMOGILEV',
     'VMOGILEV',
     'LisenUp Website',
-    'LisenUp is still in private beta, so I would love to hear your thoughts on the following:',
+    'LisenUp is in private beta, so I would love to hear your thoughts on the following:',
     'LisenUp',
     1,
     1,
@@ -169,8 +169,8 @@ values (
     2,
     'VMOGILEV',
     'VMOGILEV',
-    'Our Mission Statement',
-    'Does our mission statement resonate with you?',
+    'Do You Get LisenUp?',
+    'Do you understand how LisenUp works and why it\'s important for your business?',
     1
 );
 
@@ -187,7 +187,7 @@ values (
     2,
     'VMOGILEV',
     'VMOGILEV',
-    'Website Usability',
-    'How is the LisenUp website usability? How easy is it to navigate and leave a feedback?',
+    'How Is Website Usability?',
+    'How is the LisenUp website usability? Is it easy to navigate and leave a feedback?',
     1
 );
