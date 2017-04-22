@@ -9,8 +9,8 @@ public class LisenUpProperties {
 	// LISENUP_MAX_FEEDBACK_LENGTH
 	private int maxFeedbackLength = 1024;
 	private String mailChimpApiKey;
-	private String luTitle = "LisenUp And Stop Negative Reviews Go Viral";
-	private String luDesc = "Get yourself a LisenUp page and start to listen to your customers, because bad word gets out when they have no easy way to voice their frustration.";
+	private String luTitle = "LisenUp - CEOs Within Reach";
+	private String luDesc = "Only CEOs can change the culture of a company, yet it's the customers and employees that know what's really broken.  LisenUp bridges this gap and puts CEOs within reach.";
 	private String luImage = "https://lisenup.com/assets/img/LisenUp_About_Mega_1200.png";
 	
 	private final Email email = new Email();
